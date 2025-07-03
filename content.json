@@ -1,0 +1,554 @@
+{
+  "meta": {
+    "title": "Whiskr - Pet Shop Management Ecosystem",
+    "description": "Complete Pet Shop Management Ecosystem"
+  },
+  "navigation": {
+    "logo": "Whiskr",
+    "logoAlt": "Whiskr Logo",
+    "menuItems": [
+      {
+        "key": "overview",
+        "label": "Overview",
+        "href": "#overview"
+      },
+      {
+        "key": "features",
+        "label": "Features",
+        "href": "#features"
+      },
+      {
+        "key": "mobileApp",
+        "label": "Mobile App",
+        "href": "#mobile-app"
+      },
+      {
+        "key": "businessModel",
+        "label": "Business Model",
+        "href": "#business-model"
+      },
+      {
+        "key": "demo",
+        "label": "Demo",
+        "href": "#demo"
+      }
+    ],
+    "cta": "Get Started"
+  },
+  "hero": {
+    "title": "Whiskr",
+    "subtitle": "Complete Pet Shop Management Ecosystem",
+    "logoAlt": "Whiskr Logo",
+    "buttons": {
+      "primary": "See Live Demo",
+      "secondary": "Learn More"
+    }
+  },
+  "overview": {
+    "title": "Welcome to the Future of Pet Shop Management",
+    "hero": {
+      "title": "Transform Your Pet Shop",
+      "description": "Revolutionize your operations with Whiskr - a cutting-edge ecosystem that combines powerful admin management with an innovative mobile marketplace designed for dedicated pet owners."
+    },
+    "stats": [
+      {
+        "number": "Ready",
+        "label": "Market-Ready\nSolution"
+      },
+      {
+        "number": "Proven",
+        "label": "Research-Backed\nDesign"
+      },
+      {
+        "number": "25%",
+        "label": "Projected Sales\nIncrease"
+      },
+      {
+        "number": "3 Hours",
+        "label": "Daily Time\nSaved"
+      }
+    ]
+  },
+  "features": {
+    "title": "Comprehensive Admin Features",
+    "subtitle": "Powerful tools designed to streamline your pet shop operations and boost efficiency",
+    "adminFeatures": [
+      {
+        "key": "smartDashboard",
+        "title": "Smart Dashboard",
+        "subtitle": "Real-time Business Intelligence:",
+        "description": "Monitor total revenue, today's sales, pending orders, and low stock alerts instantly.",
+        "features": [
+          "Live revenue tracking and daily sales comparison",
+          "Order status overview (Pending, Confirmed, Processing, Delivered)",
+          "Low stock product alerts with quantity indicators",
+          "Recent customer orders with quick status updates"
+        ]
+      },
+      {
+        "key": "inventoryManagement",
+        "title": "Advanced Inventory Management",
+        "subtitle": "Complete Product Lifecycle Control:",
+        "description": "Manage your entire product catalog with intelligent categorization and real-time tracking.",
+        "features": [
+          "Smart search and filter by category, stock level, or status",
+          "Add/edit products with images, descriptions, and pricing",
+          "Stock quantity tracking with visual indicators",
+          "Bulk operations for mass updates and deletions",
+          "Product status management (Active/Inactive)"
+        ]
+      },
+      {
+        "key": "orderProcessing",
+        "title": "Intelligent Order Processing",
+        "subtitle": "Seamless Mobile App Integration:",
+        "description": "Process orders with full lifecycle management and real-time tracking.",
+        "features": [
+          "Order status workflow: Pending → Confirmed → Processing → Shipped → Delivered",
+          "Customer information display (name, email, phone)",
+          "Order details with item breakdown and totals",
+          "Order history tracking and search functionality",
+          "List and grid view options for different preferences"
+        ]
+      },
+      {
+        "key": "businessAnalytics",
+        "title": "Business Analytics & Insights",
+        "subtitle": "Data-Driven Decision Making:",
+        "description": "Comprehensive analytics dashboard with revenue trends, order statistics, and product performance metrics.",
+        "features": [
+          "Revenue overview with daily, weekly, and monthly comparisons",
+          "Order statistics by status and time periods",
+          "Product performance tracking and top sellers",
+          "Low stock monitoring and reorder suggestions",
+          "Sales trend analysis with customizable time ranges"
+        ]
+      },
+      {
+        "key": "enterpriseSecurity",
+        "title": "Enterprise Security",
+        "subtitle": "Professional Access Control:",
+        "description": "Secure authentication system with role-based permissions and comprehensive data protection.",
+        "features": [
+          "Secure login with email and password authentication",
+          "User session management and automatic logout",
+          "Role-based access control for different user types",
+          "Profile management and user preferences",
+          "Secure API communication with backend systems"
+        ]
+      },
+      {
+        "key": "universalAccessibility",
+        "title": "Universal Accessibility",
+        "subtitle": "Work From Anywhere:",
+        "description": "Beautiful, responsive design that adapts perfectly to all devices and screen sizes.",
+        "features": [
+          "Responsive design that works on all screen sizes",
+          "Touch-friendly interface for mobile devices",
+          "Cross-browser compatibility (Chrome, Safari, Firefox, Edge)",
+          "Fast loading times and smooth animations",
+          "Offline capability for basic functions"
+        ]
+      }
+    ]
+  },
+  "mobileApp": {
+    "title": "Whiskr Mobile App",
+    "subtitle": "A complete ecosystem that includes a powerful mobile app for pet owners. Your customers get a comprehensive pet management solution while you benefit from seamless order processing and customer engagement.",
+    "features": [
+      {
+        "key": "petProfileManagement",
+        "title": "Pet Profile Management",
+        "subtitle": "Complete Digital Pet Records:",
+        "description": "Store detailed pet information including breed, age, weight, medical history, and photo galleries.",
+        "features": [
+          "Multiple pet profiles with detailed information",
+          "Photo gallery and QR code generation",
+          "Profile sharing with family and veterinarians",
+          "Breed-specific information and recommendations"
+        ]
+      },
+      {
+        "key": "aiNutrition",
+        "title": "AI-Powered Nutrition & Diet",
+        "subtitle": "Smart Meal Planning:",
+        "description": "Track meals, analyze nutrition patterns, and receive AI-generated meal plans based on breed, weight, and health conditions.",
+        "features": [
+          "AI meal plan generation based on pet specifics",
+          "Food journal with portion and calorie tracking",
+          "Weight monitoring with trend analysis",
+          "Custom recipe storage and meal scheduling"
+        ]
+      },
+      {
+        "key": "healthTracking",
+        "title": "Health & Wellness Tracking",
+        "subtitle": "Complete Health Management:",
+        "description": "Track vaccinations, medications, vet visits, and daily activities with smart reminders.",
+        "features": [
+          "Medical records and vaccination tracking",
+          "Medication reminders and schedules",
+          "Activity monitoring and exercise logging",
+          "Veterinary appointment management"
+        ]
+      },
+      {
+        "key": "smartCalendar",
+        "title": "Smart Calendar & Reminders",
+        "subtitle": "Never Miss Important Events:",
+        "description": "Comprehensive calendar system for appointments, feeding schedules, and activities.",
+        "features": [
+          "Appointment scheduling and management",
+          "Recurring event setup (walks, feeding)",
+          "Notification system for reminders",
+          "Calendar sharing with family members"
+        ]
+      },
+      {
+        "key": "parksLocation",
+        "title": "Parks & Location Services",
+        "subtitle": "Discover Pet-Friendly Places:",
+        "description": "Find nearby parks, pet services, and dog-friendly locations with interactive maps and reviews.",
+        "features": [
+          "Interactive maps with pet-friendly locations",
+          "Park reviews and rating system",
+          "Check-in functionality and social sharing",
+          "Directions and location services"
+        ]
+      },
+      {
+        "key": "petShopIntegration",
+        "title": "Integrated Pet Shop Experience",
+        "subtitle": "Seamless Shopping Integration:",
+        "description": "Browse and order pet products directly from the app with real-time sync to your admin panel.",
+        "features": [
+          "Browse product catalog by category",
+          "Add items to cart and place orders",
+          "Order tracking and status updates",
+          "Integration with admin panel for processing"
+        ]
+      },
+      {
+        "key": "lostFound",
+        "title": "Lost & Found Network",
+        "subtitle": "Community Safety Net:",
+        "description": "Quick alert system for lost pets with location tracking and community support features.",
+        "features": [
+          "Quick lost pet alert creation",
+          "Location tracking and sightings",
+          "Community support and notifications",
+          "Found pet reporting and matching"
+        ]
+      },
+      {
+        "key": "socialCommunity",
+        "title": "Social Pet Community",
+        "subtitle": "Connect with Fellow Pet Owners:",
+        "description": "Join a vibrant community of pet lovers to share experiences and build connections.",
+        "features": [
+          "Pet social networking features",
+          "Playdate arrangement and meetups",
+          "Photo sharing and community forums",
+          "Local pet event discovery"
+        ]
+      }
+    ]
+  },
+  "businessModel": {
+    "title": "Revolutionary Two-Sided Marketplace",
+    "hero": {
+      "title": "The Game-Changing Opportunity",
+      "description": "Whiskr Mobile is designed as a comprehensive pet management app that will attract dedicated pet owners. When you join the Whiskr ecosystem, your pet shop will be prominently featured in the app's \"Services\" section.",
+      "futureDescription": "As Whiskr mobile users engage with pet care and actively manage their pets' needs, your shop will be there as a featured service provider. You'll have direct access to this highly targeted audience of engaged pet owners."
+    },
+    "advantages": [
+      {
+        "key": "firstMover",
+        "title": "First-Mover Advantage",
+        "description": "Be among the first pet shops featured when Whiskr Mobile launches, establishing your business as a founding partner and trusted service provider."
+      },
+      {
+        "key": "preQualified",
+        "title": "Pre-Qualified Customer Base",
+        "description": "The app is designed to attract users who are deeply invested in their pets' wellbeing, making them ideal customers for pet products and services."
+      },
+      {
+        "key": "seamlessIntegration",
+        "title": "Seamless Integration",
+        "description": "Orders from mobile users flow directly into your admin panel for processing - no additional platforms needed."
+      },
+      {
+        "key": "smartRecommendations",
+        "title": "Smart Recommendations",
+        "description": "The app's AI features create natural opportunities for product recommendations based on pets' specific needs."
+      }
+    ],
+    "ecosystem": {
+      "title": "How the Ecosystem Works",
+      "description": "Your gateway to a revolutionary pet care ecosystem",
+      "components": [
+        {
+          "title": "Whiskr Mobile Users",
+          "description": "Dedicated pet owners using the app for comprehensive pet management, health tracking, and nutrition planning."
+        },
+        {
+          "title": "Your Pet Shop",
+          "description": "Featured prominently in the Services section, giving you prime visibility to motivated pet owners in your market."
+        }
+      ],
+      "pipeline": "Direct integration ensures seamless order flow from customer to your admin panel, creating an efficient and professional experience."
+    },
+    "whyItWorks": {
+      "title": "Why This Model Works",
+      "reasons": [
+        {
+          "title": "Data-Driven Targeting",
+          "description": "Leverage detailed pet profiles for personalized product recommendations based on breed, age, and health conditions."
+        },
+        {
+          "title": "Perfect Timing",
+          "description": "Appear at crucial moments when users track supplies or schedule pet care activities."
+        },
+        {
+          "title": "Trust & Convenience",
+          "description": "Benefit from the established trust users have in the Whiskr platform for their pet care needs."
+        },
+        {
+          "title": "Network Effect",
+          "description": "Growing platform value as more shops and pet owners join the ecosystem."
+        }
+      ]
+    }
+  },
+  "dailyOperations": {
+    "title": "Daily Operations Workflow",
+    "subtitle": "Streamlined processes designed for efficiency and growth",
+    "workflow": [
+      {
+        "title": "Morning Routine",
+        "duration": "5 minutes",
+        "section": "Dashboard Check",
+        "tasks": [
+          "Review overnight orders",
+          "Check revenue targets",
+          "Monitor stock alerts"
+        ]
+      },
+      {
+        "title": "Inventory Management",
+        "duration": "Throughout the day",
+        "section": "Smart Stock Control",
+        "tasks": [
+          "Quick search and filters",
+          "Automatic stock alerts",
+          "Rapid product updates"
+        ]
+      },
+      {
+        "title": "Order Processing",
+        "duration": "Real-time",
+        "section": "Seamless Customer Service",
+        "tasks": [
+          "Status updates",
+          "Automatic notifications",
+          "Full order visibility"
+        ]
+      },
+      {
+        "title": "End-of-Day Analysis",
+        "duration": "10 minutes",
+        "section": "Business Intelligence",
+        "tasks": [
+          "Performance review",
+          "Top product analysis",
+          "Growth opportunities"
+        ]
+      }
+    ]
+  },
+  "benefits": {
+    "title": "Quantifiable Benefits",
+    "subtitle": "Measurable improvements for your business operations",
+    "metrics": [
+      {
+        "title": "Time Savings",
+        "value": "2-3 hrs",
+        "description": "Daily time saved with automated inventory tracking and streamlined order processing."
+      },
+      {
+        "title": "Increased Revenue",
+        "value": "15-25%",
+        "description": "Sales boost through better stock management and improved customer service."
+      },
+      {
+        "title": "Data-Driven Decisions",
+        "value": "100%",
+        "description": "Comprehensive analytics for informed business decisions and growth planning."
+      },
+      {
+        "title": "Mobile Integration",
+        "value": "24/7",
+        "description": "Access and process orders anytime, anywhere with seamless mobile integration."
+      },
+      {
+        "title": "Scalability",
+        "value": "∞",
+        "description": "Unlimited growth potential with robust infrastructure and flexible scaling."
+      },
+      {
+        "title": "Professional Security",
+        "value": "Enterprise",
+        "description": "Top-tier security with role-based access control and data protection."
+      }
+    ]
+  },
+  "screenshots": {
+    "title": "📸 Admin Panel Screenshots",
+    "subtitle": "Here's how you'll manage everything from your admin dashboard:",
+    "sections": [
+      {
+        "title": "Dashboard Overview",
+        "images": [
+          {
+            "src": "assets/proposal_screenshots/dahboard_sc_1.png",
+            "alt": "Whiskr Dashboard - Real-time metrics, recent orders, and low stock alerts"
+          }
+        ]
+      },
+      {
+        "title": "Inventory Management",
+        "images": [
+          {
+            "src": "assets/proposal_screenshots/inventory_sc_1.png",
+            "alt": "Whiskr Inventory Management - Product catalog with search and filters"
+          },
+          {
+            "src": "assets/proposal_screenshots/inventory_sc_2.png",
+            "alt": "Whiskr Inventory Management - Product details and bulk operations"
+          }
+        ]
+      },
+      {
+        "title": "Order Management",
+        "images": [
+          {
+            "src": "assets/proposal_screenshots/order_sc_1.png",
+            "alt": "Whiskr Order Management - Order processing with status updates"
+          },
+          {
+            "src": "assets/proposal_screenshots/order_sc_2.png",
+            "alt": "Whiskr Order Management - Customer details and order tracking"
+          }
+        ]
+      },
+      {
+        "title": "Analytics Dashboard",
+        "images": [
+          {
+            "src": "assets/proposal_screenshots/analytics_sc_1.png",
+            "alt": "Whiskr Analytics - Revenue overview and order statistics"
+          },
+          {
+            "src": "assets/proposal_screenshots/analytics_sc_2.png",
+            "alt": "Whiskr Analytics - Product performance and sales trends"
+          }
+        ]
+      }
+    ]
+  },
+  "mobileScreenshots": {
+    "title": "📸 Mobile App Screenshots",
+    "subtitle": "See how pet owners interact with your business through our beautiful mobile interface:",
+    "carousels": [
+      {
+        "title": "🏠 Home Interface",
+        "images": [
+          {
+            "src": "assets/proposal_mobile_screenshots/homepage.png",
+            "alt": "Whiskr Mobile - Beautiful home interface"
+          },
+          {
+            "src": "assets/proposal_mobile_screenshots/homepage_sc_2.png",
+            "alt": "Whiskr Mobile - Home screen with pet management"
+          }
+        ]
+      },
+      {
+        "title": "🐾 Pet Profile Creation Process",
+        "images": [
+          {
+            "src": "assets/proposal_mobile_screenshots/create_pet_sc_1.png",
+            "alt": "Create Pet Step 1"
+          },
+          {
+            "src": "assets/proposal_mobile_screenshots/create_pet_sc_2.png",
+            "alt": "Create Pet Step 2"
+          }
+        ]
+      },
+      {
+        "title": "🛍️ Pet Services & Shopping Integration (Your Shop Here!)",
+        "images": [
+          {
+            "src": "assets/proposal_mobile_screenshots/services_sc_1.png",
+            "alt": "Services Directory - Where Your Shop Appears"
+          },
+          {
+            "src": "assets/proposal_mobile_screenshots/services_sc_2.png",
+            "alt": "Service Provider Details"
+          }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "title": "Ready to Be a Founding Partner?",
+    "description": "Don't just get an admin system - become a founding partner in an innovative marketplace designed to connect dedicated pet owners with trusted services. With Whiskr, you'll be positioned at the forefront of a revolutionary pet care ecosystem, ready to serve motivated pet owners from day one.",
+    "earlyAdopter": {
+      "title": "🎁 Limited Time: Early Adopter Benefits",
+      "benefits": [
+        {
+          "title": "Premium Placement",
+          "description": "Featured position in Services directory"
+        },
+        {
+          "title": "Featured Status",
+          "description": "Highlighted for first 6 months"
+        },
+        {
+          "title": "Direct Support",
+          "description": "Integration support and training"
+        },
+        {
+          "title": "Priority Support",
+          "description": "Dedicated customer service"
+        }
+      ]
+    },
+    "cta": "Join the Whiskr Ecosystem Today",
+    "email": "whiskrpet@gmail.com"
+  },
+  "footer": {
+    "brand": {
+      "name": "Whiskr",
+      "description": "Complete Pet Shop Management Ecosystem - connecting pet owners with trusted service providers.",
+      "logoAlt": "Whiskr Logo"
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "whiskrpet@gmail.com",
+      "phone": "+387 62748065",
+      "location": "Available Worldwide"
+    },
+    "features": {
+      "title": "Features",
+      "items": [
+        "Admin Dashboard",
+        "Inventory Management",
+        "Order Processing",
+        "Mobile App Integration"
+      ]
+    },
+    "copyright": "© 2025 Whiskr. All rights reserved. Built with ❤️ for modern pet owners."
+  }
+} 
