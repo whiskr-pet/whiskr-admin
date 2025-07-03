@@ -1,0 +1,89 @@
+<script>
+    // Carousel functionality
+    const carouselStates = {};
+
+    function initCarousel(carouselId) {
+        if (!carouselStates[carouselId]) {
+            carouselStates[carouselId] = {
+                currentSlide: 0,
+                totalSlides: document.querySelectorAll(`#${carouselId} .carousel-slide`).length
+            };
+        }
+    }
+
+    function showSlide(carouselId, slideIndex) {
+        initCarousel(carouselId);
+        const carousel = document.getElementById(carouselId);
+        const slides = carousel.querySelectorAll('.carousel-slide');
+        const state = carouselStates[carouselId];
+        
+        if (slideIndex >= state.totalSlides) state.currentSlide = 0;
+        if (slideIndex < 0) state.currentSlide = state.totalSlides - 1;
+        if (slideIndex >= 0 && slideIndex < state.totalSlides) state.currentSlide = slideIndex;
+        
+        carousel.style.transform = `translateX(-${state.currentSlide * 100}%)`;
+        
+        // Update indicators
+        const container = carousel.closest('.carousel-container');
+        const dots = container.querySelectorAll('.carousel-dot');
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === state.currentSlide);
+        });
+        
+        // Update button states
+        const prevBtn = container.querySelector('.carousel-btn:first-child');
+        const nextBtn = container.querySelector('.carousel-btn:last-child');
+        if (prevBtn) prevBtn.disabled = state.currentSlide === 0;
+        if (nextBtn) nextBtn.disabled = state.currentSlide === state.totalSlides - 1;
+    }
+
+    function nextSlide(carouselId) {
+        initCarousel(carouselId);
+        showSlide(carouselId, carouselStates[carouselId].currentSlide + 1);
+    }
+
+    function prevSlide(carouselId) {
+        initCarousel(carouselId);
+        showSlide(carouselId, carouselStates[carouselId].currentSlide - 1);
+    }
+
+    function currentSlide(carouselId, slideIndex) {
+        showSlide(carouselId, slideIndex - 1);
+    }
+
+    // Initialize all carousels on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const carousels = document.querySelectorAll('[id$="Carousel"]');
+        carousels.forEach(carousel => {
+            initCarousel(carousel.id);
+            showSlide(carousel.id, 0);
+        });
+        
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    });
+</script> 
