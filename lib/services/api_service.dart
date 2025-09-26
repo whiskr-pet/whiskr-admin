@@ -4,13 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 import '../models/product.dart';
 import '../models/order.dart';
+import '../models/service_offering.dart';
 
 class ApiService {
   static const String baseUrl = 'https://your-whiskr-api.com/api'; // Not used for demo
   static const String authTokenKey = 'auth_token';
   static const String productsKey = 'local_products';
   static const String ordersKey = 'local_orders';
+  static const String servicesKey = 'local_services';
 
+  // ignore: unused_field
   late Dio _dio;
 
   ApiService() {
@@ -28,6 +31,7 @@ class ApiService {
   Future<SharedPreferences> get _prefs => SharedPreferences.getInstance();
 
   // Authentication methods
+  // ignore: unused_element
   Future<String?> _getAuthToken() async {
     final prefs = await _prefs;
     return prefs.getString(authTokenKey);
@@ -55,7 +59,7 @@ class ApiService {
       id: 'demo_user_1',
       email: email,
       name: 'Demo Admin',
-      role: 'admin',
+      role: email.contains('shop') ? 'pet_shop' : 'admin',
       shopId: 'demo_shop_1',
       shopName: 'Whiskr Pet Shop',
       createdAt: DateTime.now(),
@@ -77,7 +81,8 @@ class ApiService {
       id: 'demo_user_1',
       email: 'admin@whiskr.com',
       name: 'Demo Admin',
-      role: 'admin',
+      // role: 'admin',
+      role: 'pet_shop',
       shopId: 'demo_shop_1',
       shopName: 'Whiskr Pet Shop',
       createdAt: DateTime.now(),
@@ -103,7 +108,6 @@ class ApiService {
 
   Future<Product> createProduct(Map<String, dynamic> productData) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    final prefs = await _prefs;
 
     final newProduct = Product(
       id: 'product_${DateTime.now().millisecondsSinceEpoch}',
@@ -336,6 +340,55 @@ class ApiService {
     await prefs.setString(ordersKey, ordersJson);
   }
 
+  // Local services storage (demo)
+  Future<List<ServiceOffering>> getServices() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    final prefs = await _prefs;
+    final String? servicesJson = prefs.getString(servicesKey);
+    if (servicesJson != null) {
+      final List<dynamic> list = json.decode(servicesJson) as List<dynamic>;
+      return list.map((dynamic j) => ServiceOffering.fromJson(j as Map<String, dynamic>)).toList();
+    }
+    return _getDemoServices();
+  }
+
+  Future<ServiceOffering> createService(ServiceOffering service) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    final List<ServiceOffering> list = await getServices();
+    final ServiceOffering created = service.copyWith(
+      id: service.id.isEmpty ? 'service_${DateTime.now().millisecondsSinceEpoch}' : service.id,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    list.insert(0, created);
+    await _saveServices(list);
+    return created;
+  }
+
+  Future<ServiceOffering> updateService(String id, ServiceOffering update) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    final List<ServiceOffering> list = await getServices();
+    final int index = list.indexWhere((ServiceOffering s) => s.id == id);
+    if (index == -1) throw Exception('Service not found');
+    final ServiceOffering updated = update.copyWith(updatedAt: DateTime.now());
+    list[index] = updated;
+    await _saveServices(list);
+    return updated;
+  }
+
+  Future<void> deleteService(String id) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    final List<ServiceOffering> list = await getServices();
+    list.removeWhere((ServiceOffering s) => s.id == id);
+    await _saveServices(list);
+  }
+
+  Future<void> _saveServices(List<ServiceOffering> services) async {
+    final prefs = await _prefs;
+    final String payload = json.encode(services.map((ServiceOffering s) => s.toJson()).toList());
+    await prefs.setString(servicesKey, payload);
+  }
+
   // Dashboard statistics
   Future<Map<String, dynamic>> getDashboardStats() async {
     await Future.delayed(const Duration(milliseconds: 500));
@@ -345,7 +398,13 @@ class ApiService {
     final totalRevenue = orders.where((order) => order.isDelivered).fold(0.0, (sum, order) => sum + order.total);
 
     final todayRevenue = orders
-        .where((order) => order.isDelivered && order.createdAt.day == DateTime.now().day && order.createdAt.month == DateTime.now().month && order.createdAt.year == DateTime.now().year)
+        .where(
+          (order) =>
+              order.isDelivered &&
+              order.createdAt.day == DateTime.now().day &&
+              order.createdAt.month == DateTime.now().month &&
+              order.createdAt.year == DateTime.now().year,
+        )
         .fold(0.0, (sum, order) => sum + order.total);
 
     return {
@@ -468,7 +527,55 @@ class ApiService {
     ];
   }
 
+  List<ServiceOffering> _getDemoServices() {
+    return <ServiceOffering>[
+      ServiceOffering(
+        id: 'service_1',
+        shopId: 'demo_shop_1',
+        name: 'Full Grooming Package',
+        type: 'grooming',
+        description: 'Bath, haircut, nail trim, ear cleaning',
+        price: 59.99,
+        durationMinutes: 90,
+        tags: const <String>['grooming', 'dogs', 'full'],
+        isActive: true,
+        imageUrl: null,
+        createdAt: DateTime.now().subtract(const Duration(days: 7)),
+        updatedAt: DateTime.now(),
+      ),
+      ServiceOffering(
+        id: 'service_2',
+        shopId: 'demo_shop_1',
+        name: 'Dog Walking (30 min)',
+        type: 'walking',
+        description: 'Leash walk around the neighborhood',
+        price: 15.00,
+        durationMinutes: 30,
+        tags: const <String>['walking', 'dogs'],
+        isActive: true,
+        imageUrl: null,
+        createdAt: DateTime.now().subtract(const Duration(days: 3)),
+        updatedAt: DateTime.now(),
+      ),
+      ServiceOffering(
+        id: 'service_3',
+        shopId: 'demo_shop_1',
+        name: 'Basic Obedience Training',
+        type: 'training',
+        description: 'Sit, stay, come, leash manners',
+        price: 120.00,
+        durationMinutes: 60,
+        tags: const <String>['training', 'obedience'],
+        isActive: true,
+        imageUrl: null,
+        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        updatedAt: DateTime.now(),
+      ),
+    ];
+  }
+
   // Error handling
+  // ignore: unused_element
   String _handleDioError(DioException error) {
     return 'Demo mode - no actual API calls';
   }
