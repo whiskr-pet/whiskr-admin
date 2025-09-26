@@ -13,6 +13,9 @@ doc/api/
 
 # dotenv environment variables file
 .env*
+env_dev.sh
+env_prod.sh
+env_test.sh
 
 # Avoid committing generated Javascript files:
 *.dart.js

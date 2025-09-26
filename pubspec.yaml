@@ -38,41 +38,31 @@ dependencies:
   # HTTP and API communication
   http: ^1.1.0
   dio: ^5.3.2
-  
-  # State management
-  provider: ^6.1.1
-  
-  # UI components
+  provider: ^6.1.1  
+  flutter_dotenv: ^5.1.0
   flutter_svg: ^2.0.9
   cached_network_image: ^3.3.0
   image_picker: ^1.0.4
-  
-  # Charts and analytics
   fl_chart: ^0.65.0
-  
-  # Date and time
-  intl: ^0.18.1
-  
-  # Local storage
   shared_preferences: ^2.2.2
-  
-  # Form validation
   form_validator: ^2.1.1
-  
-  # Loading and animations
   flutter_spinkit: ^5.2.0
-  
-  # Notifications
-  flutter_local_notifications: ^16.3.0
-  
-  # File handling
   file_picker: ^6.1.1
-  
-  # QR code generation
   qr_flutter: ^4.1.0
-  
-  # Responsive framework for landing page
   responsive_framework: ^1.5.1
+
+  # network module
+  w_network_module:
+    git:
+      url: https://github.com/Pet-Pals/whiskr_mobile_modules.git
+      path: packages/w_network_module
+      ref: ab7b1516f7c15aec28eb47b0bd351c676f7f056f
+  w_utils:
+    git:
+      url: https://github.com/Pet-Pals/whiskr_mobile_modules.git
+      path: packages/w_utils
+      ref: ab7b1516f7c15aec28eb47b0bd351c676f7f056f
+
 
 dev_dependencies:
   flutter_test:

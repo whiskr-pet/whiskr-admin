@@ -10,6 +10,8 @@ import '../widgets/low_stock_products_widget.dart';
 import 'inventory_screen.dart';
 import 'orders_screen.dart';
 import 'analytics_screen.dart';
+import 'services_screen.dart';
+import 'login_screen.dart';
 import '../models/order.dart';
 import '../models/product.dart';
 
@@ -27,6 +29,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     _loadData();
+  }
+
+  bool _isPetShop(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    return auth.currentUser?.role == 'pet_shop';
+  }
+
+  List<BottomNavigationBarItem> _buildBottomNavItems(BuildContext context) {
+    final bool petShop = _isPetShop(context);
+    return [
+      const BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
+      BottomNavigationBarItem(icon: Icon(petShop ? Icons.room_service : Icons.inventory), label: petShop ? 'Services' : 'Inventory'),
+      const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Orders'),
+      const BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Analytics'),
+    ];
+  }
+
+  Widget _buildRoleAwareDrawerItem(BuildContext context) {
+    final bool petShop = _isPetShop(context);
+    return ListTile(
+      leading: Icon(petShop ? Icons.room_service : Icons.inventory),
+      title: Text(petShop ? 'Services Offered' : 'Inventory'),
+      selected: _selectedIndex == 1,
+      onTap: () => _onItemTapped(1),
+    );
   }
 
   Future<void> _loadData() async {
@@ -166,12 +193,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onTap: _onItemTapped,
         selectedItemColor: AppTheme.primaryColor,
         unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(Icons.inventory), label: 'Inventory'),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Orders'),
-          BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Analytics'),
-        ],
+        items: _buildBottomNavItems(context),
       ),
     );
   }
@@ -213,7 +235,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           ListTile(leading: const Icon(Icons.dashboard), title: const Text('Dashboard'), selected: _selectedIndex == 0, onTap: () => _onItemTapped(0)),
-          ListTile(leading: const Icon(Icons.inventory), title: const Text('Inventory'), selected: _selectedIndex == 1, onTap: () => _onItemTapped(1)),
+          _buildRoleAwareDrawerItem(context),
           ListTile(leading: const Icon(Icons.shopping_cart), title: const Text('Orders'), selected: _selectedIndex == 2, onTap: () => _onItemTapped(2)),
           ListTile(leading: const Icon(Icons.analytics), title: const Text('Analytics'), selected: _selectedIndex == 3, onTap: () => _onItemTapped(3)),
           const Divider(),
@@ -241,7 +263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       case 0:
         return _buildDashboardContent();
       case 1:
-        return const InventoryScreen();
+        return _isPetShop(context) ? const ServicesScreen() : const InventoryScreen();
       case 2:
         return const OrdersScreen();
       case 3:
@@ -266,7 +288,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
             ),
             const SizedBox(height: 8),
-            Text('Here\'s what\'s happening with your pet shop today.', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondaryColor)),
+            Text(
+              'Here\'s what\'s happening with your pet shop today.',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppTheme.textSecondaryColor),
+            ),
             const SizedBox(height: 20),
 
             // Quick Actions
@@ -279,10 +304,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => _onItemTapped(1), // Navigate to Inventory
+                    onPressed: () => _onItemTapped(1), // Navigate to Inventory or Services
                     icon: const Icon(Icons.add, size: 16),
-                    label: const Text('Add Product', style: TextStyle(fontSize: 12)),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 8)),
+                    label: Text(_isPetShop(context) ? 'Add Service' : 'Add Product', style: const TextStyle(fontSize: 12)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -291,7 +320,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onPressed: () => _onItemTapped(2), // Navigate to Orders
                     icon: const Icon(Icons.shopping_cart, size: 16),
                     label: const Text('View Orders', style: TextStyle(fontSize: 12)),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.secondaryColor, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 8)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.secondaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -300,7 +333,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     onPressed: () => _onItemTapped(3), // Navigate to Analytics
                     icon: const Icon(Icons.analytics, size: 16),
                     label: const Text('Analytics', style: TextStyle(fontSize: 12)),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.successColor, foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 8)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.successColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                    ),
                   ),
                 ),
               ],
@@ -344,7 +381,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       color: AppTheme.successColor,
                       subtitle: '${orderProvider.recentOrders.length} orders today',
                     ),
-                    DashboardStatsCard(title: 'Total Revenue', value: '\$${orderProvider.totalRevenue.toStringAsFixed(2)}', icon: Icons.trending_up, color: AppTheme.infoColor, subtitle: 'All time'),
+                    DashboardStatsCard(
+                      title: 'Total Revenue',
+                      value: '\$${orderProvider.totalRevenue.toStringAsFixed(2)}',
+                      icon: Icons.trending_up,
+                      color: AppTheme.infoColor,
+                      subtitle: 'All time',
+                    ),
                   ],
                 );
               },
@@ -395,7 +438,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.logout();
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed('/login');
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
     }
   }
 }
