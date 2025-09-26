@@ -3,7 +3,7 @@
 # Files and directories created by pub
 .dart_tool/
 .packages
-# build/
+build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
 
@@ -30,3 +30,19 @@ env_test.sh
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Flutter/Dart build artifacts
+*.dill
+*.dill.track.dill
+*.cache.dill.track.dill
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Backup files
+*.backup.*
