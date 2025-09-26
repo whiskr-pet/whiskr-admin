@@ -56,12 +56,12 @@ dependencies:
     git:
       url: https://github.com/Pet-Pals/whiskr_mobile_modules.git
       path: packages/w_network_module
-      ref: ab7b1516f7c15aec28eb47b0bd351c676f7f056f
+      ref: 989ec41c18b3566d6fbaadb231754ea4f369b90b
   w_utils:
     git:
       url: https://github.com/Pet-Pals/whiskr_mobile_modules.git
       path: packages/w_utils
-      ref: ab7b1516f7c15aec28eb47b0bd351c676f7f056f
+      ref: 989ec41c18b3566d6fbaadb231754ea4f369b90b
 
 
 dev_dependencies:
