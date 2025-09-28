@@ -8,7 +8,9 @@
             "program": "lib/main_dev.dart",
             "args": [
                 "--dart-define=FLAVOR=dev",
-                "--dart-define=BASE_URL=https://dev.pet-pals-backend.onrender.com"
+                "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
+                "--dart-define=APP_NAME=Whiskr Admin (DEV)",
+                "--web-port=3000"
             ]
         },
         {
@@ -18,7 +20,9 @@
             "program": "lib/main_test.dart",
             "args": [
                 "--dart-define=FLAVOR=test",
-                "--dart-define=BASE_URL=https://test.pet-pals-backend.onrender.com"
+                "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
+                "--dart-define=APP_NAME=Whiskr Admin (TEST)",
+                "--web-port=3000"
             ]
         },
         {
@@ -28,7 +32,9 @@
             "program": "lib/main_prod.dart",
             "args": [
                 "--dart-define=FLAVOR=prod",
-                "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com"
+                "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
+                "--dart-define=APP_NAME=Whiskr Admin",
+                "--web-port=3000"
             ]
         }
     ]

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:w_utils/color_helper/color_helper.dart';
 import '../providers/product_provider.dart';
 import '../models/product.dart';
-import '../utils/app_theme.dart';
 
 class LowStockProductsWidget extends StatelessWidget {
   final void Function()? onViewAll;
@@ -102,7 +102,12 @@ class LowStockProductsWidget extends StatelessWidget {
           ),
           Text(
             'Stock: ${product.stockQuantity} units',
-            style: TextStyle(fontSize: 12, color: product.isOutOfStock ? AppTheme.errorColor : AppTheme.warningColor, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+            style: TextStyle(
+              fontSize: 12,
+              color: product.isOutOfStock ? ColorHelper.red500.color : ColorHelper.yellow500.color,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Poppins',
+            ),
           ),
         ],
       ),
@@ -116,10 +121,18 @@ class LowStockProductsWidget extends StatelessWidget {
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: product.isOutOfStock ? AppTheme.errorColor.withOpacity(0.1) : AppTheme.warningColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+              color: product.isOutOfStock ? ColorHelper.red500.color.withOpacity(0.1) : ColorHelper.yellow500.color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Text(
               product.isOutOfStock ? 'OUT OF STOCK' : 'LOW STOCK',
-              style: TextStyle(color: product.isOutOfStock ? AppTheme.errorColor : AppTheme.warningColor, fontSize: 10, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+              style: TextStyle(
+                color: product.isOutOfStock ? ColorHelper.red500.color : ColorHelper.yellow500.color,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Poppins',
+              ),
             ),
           ),
         ],

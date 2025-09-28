@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:w_utils/color_helper/color_helper.dart';
 import '../models/product.dart';
-import '../utils/app_theme.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -76,7 +76,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         Text(
                           '\$${product.price.toStringAsFixed(2)}',
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.primaryColor, fontFamily: 'Poppins'),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: ColorHelper.blue500.color, fontFamily: 'Poppins'),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
@@ -131,8 +131,8 @@ class ProductCard extends StatelessWidget {
                         onPressed: onDelete,
                         style: OutlinedButton.styleFrom(
                           padding: EdgeInsets.zero,
-                          foregroundColor: AppTheme.errorColor,
-                          side: const BorderSide(color: AppTheme.errorColor),
+                          foregroundColor: ColorHelper.red500.color,
+                          side: BorderSide(color: ColorHelper.red500.color),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                         ),
                         child: const Text('Del', style: TextStyle(fontSize: 10)),
@@ -150,21 +150,21 @@ class ProductCard extends StatelessWidget {
 
   Color _getStockColor() {
     if (product.isOutOfStock) {
-      return AppTheme.errorColor;
+      return ColorHelper.red500.color;
     } else if (product.isLowStock) {
-      return AppTheme.warningColor;
+      return ColorHelper.yellow500.color;
     } else {
-      return AppTheme.successColor;
+      return ColorHelper.green500.color;
     }
   }
 
   Color _getStatusColor() {
     if (product.isOutOfStock) {
-      return AppTheme.errorColor;
+      return ColorHelper.red500.color;
     } else if (product.isLowStock) {
-      return AppTheme.warningColor;
+      return ColorHelper.yellow500.color;
     } else {
-      return AppTheme.successColor;
+      return ColorHelper.green500.color;
     }
   }
 }

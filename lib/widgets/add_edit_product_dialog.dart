@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:w_utils/color_helper/color_helper.dart';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
-import '../utils/app_theme.dart';
 
 class AddEditProductDialog extends StatefulWidget {
   final Product? product;
@@ -173,7 +173,11 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
                       // Tags
                       TextFormField(
                         controller: _tagsController,
-                        decoration: const InputDecoration(labelText: 'Tags (comma separated)', border: OutlineInputBorder(), hintText: 'e.g., premium, organic, small dogs'),
+                        decoration: const InputDecoration(
+                          labelText: 'Tags (comma separated)',
+                          border: OutlineInputBorder(),
+                          hintText: 'e.g., premium, organic, small dogs',
+                        ),
                       ),
                       const SizedBox(height: 16),
 
@@ -233,9 +237,12 @@ class _AddEditProductDialogState extends State<AddEditProductDialog> {
 
       if (success && mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(widget.product == null ? 'Product added successfully' : 'Product updated successfully'), backgroundColor: AppTheme.successColor));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(widget.product == null ? 'Product added successfully' : 'Product updated successfully'),
+            backgroundColor: ColorHelper.green500.color,
+          ),
+        );
       }
     }
   }
