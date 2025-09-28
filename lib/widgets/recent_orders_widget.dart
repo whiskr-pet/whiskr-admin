@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:w_utils/color_helper/color_helper.dart';
 import '../providers/order_provider.dart';
 import '../models/order.dart';
-import '../utils/app_theme.dart';
 
 class RecentOrdersWidget extends StatelessWidget {
   final void Function()? onViewAll;
@@ -119,17 +119,17 @@ class RecentOrdersWidget extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
-        return AppTheme.warningColor;
+        return ColorHelper.yellow500.color;
       case 'confirmed':
-        return AppTheme.infoColor;
+        return ColorHelper.blue500.color;
       case 'processing':
-        return AppTheme.primaryColor;
+        return ColorHelper.blue500.color;
       case 'shipped':
-        return AppTheme.secondaryColor;
+        return ColorHelper.green500.color;
       case 'delivered':
-        return AppTheme.successColor;
+        return ColorHelper.green500.color;
       case 'cancelled':
-        return AppTheme.errorColor;
+        return ColorHelper.red500.color;
       default:
         return Colors.grey;
     }

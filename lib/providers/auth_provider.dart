@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 
+class SplashProvider extends ChangeNotifier {}
+
 class AuthProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
