@@ -172,7 +172,7 @@ class _LoginForgotPasswordButton extends StatelessWidget {
     final theme = Theme.of(context);
     return TextButton(
       onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Forgot password functionality coming soon!'))),
-      child: Text(AdminTextHelper.forgotPasswordButton, style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.blue300.color)),
+      child: Text(AdminTextHelper.forgotPasswordButton, style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.greenWeb.color)),
     );
   }
 }

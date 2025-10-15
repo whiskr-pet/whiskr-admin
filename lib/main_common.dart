@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
+import 'package:w_permissions_module/services/locator.dart';
+import 'package:w_utils/helper/util_constants.dart';
 import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
 import 'package:whiskr_admin_panel/app/utils/session_manager.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
+
 import 'config/flavor_config.dart';
 import 'providers/auth_provider.dart';
-import 'providers/product_provider.dart';
 import 'providers/order_provider.dart';
+import 'providers/product_provider.dart';
 import 'providers/service_provider.dart';
 
 Future<void> initializeApp({required Flavor flavor, required String appName, required String env}) async {
@@ -33,6 +36,8 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   );
 
   await storagePrefs.init();
+  storagePrefs.deleteAll();
+  setupLocator(methodChannel: AppConstants.methodChannel);
 
   try {
     NetworkManager.instance.initialize(
@@ -43,7 +48,6 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
       autoAttachAuthHeader: true,
       defaultAccessTtl: const Duration(minutes: 30),
       defaultRefreshTtl: const Duration(days: 7),
-
       onRefreshFailed: SessionManager.instance.createRefreshFailedCallback(),
     );
   } catch (e) {
@@ -68,12 +72,15 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<CustomThemeProvider>(create: (_) => CustomThemeProvider(), lazy: true),
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
       ],
-      child: MaterialApp.router(
-        title: config.values.appName,
-        debugShowCheckedModeBanner: !FlavorConfig.isProduction(),
-        routerConfig: routeGenerator.router,
-        theme: CustomWebThemes.lightTheme,
-        darkTheme: CustomWebThemes.darkTheme,
+      child: Consumer<CustomThemeProvider>(
+        builder: (context, customThemeProvider, child) {
+          return MaterialApp.router(
+            title: config.values.appName,
+            debugShowCheckedModeBanner: !FlavorConfig.isProduction(),
+            routerConfig: routeGenerator.router,
+            theme: CustomWebThemes.lightTheme,
+          );
+        },
       ),
     );
   }
