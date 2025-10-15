@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 
-class SplashProvider extends ChangeNotifier {}
-
 class AuthProvider extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
@@ -15,36 +13,6 @@ class AuthProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get isAuthenticated => _currentUser != null;
-
-  // Initialize auth state
-  Future<void> initializeAuth() async {
-    _setLoading(true);
-    try {
-      _currentUser = await _apiService.getCurrentUser();
-      _error = null;
-    } catch (e) {
-      _error = e.toString();
-      _currentUser = null;
-    } finally {
-      _setLoading(false);
-    }
-  }
-
-  // Login
-  Future<bool> login(String email, String password) async {
-    _setLoading(true);
-    _error = null;
-
-    try {
-      _currentUser = await _apiService.login(email, password);
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
-  }
 
   // Logout
   Future<void> logout() async {

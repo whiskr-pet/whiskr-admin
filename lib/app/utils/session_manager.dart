@@ -63,9 +63,7 @@ class SessionManager {
 
     try {
       // Clear authentication tokens
-      await storagePrefs.setAccessToken('', ttl: const Duration(seconds: 1));
-      await storagePrefs.setRefreshToken('', ttl: const Duration(seconds: 1));
-      await storagePrefs.seEmailToShared('');
+      await storagePrefs.deleteAll();
     } catch (e) {
       debugPrint('Error clearing tokens: $e');
     }
@@ -80,7 +78,7 @@ class SessionManager {
   Future<void> _navigateToLogin(BuildContext context) async {
     try {
       if (context.mounted) {
-        context.go(loginRoute);
+        context.go(loginRoute, extra: {'clearHistory': true});
       }
     } catch (e) {
       debugPrint('Navigation error: $e');
@@ -89,7 +87,6 @@ class SessionManager {
 
   BuildContext? _getCurrentContext() {
     // For GoRouter, we need to access the current context differently
-    // This is a simplified approach that should work with your setup
     try {
       // Try to get the current router delegate context
       final router = GoRouter.maybeOf(WidgetsBinding.instance.rootElement!);

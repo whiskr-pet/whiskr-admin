@@ -1,34 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:w_utils/providers/theme_provider/theme_provider.dart';
-import '../../providers/auth_provider.dart';
+import 'package:w_authentication/providers/authentication_provider.dart';
+import 'package:whiskr_admin_panel/routing/routes.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+class CustomSplashScreen extends StatefulWidget {
+  const CustomSplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  State<CustomSplashScreen> createState() => _CustomSplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _CustomSplashScreenState extends State<CustomSplashScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAuthStatus();
-    });
+    _checkAuthAndNavigate();
   }
 
-  Future<void> _checkAuthStatus() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await authProvider.initializeAuth();
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait a bit for splash effect
+    await Future.delayed(const Duration(seconds: 2));
 
-    if (mounted) {
-      if (authProvider.isAuthenticated) {
-        context.go('/dashboard');
+    if (!mounted) return;
+
+    try {
+      // Check if user is authenticated
+      final AuthenticationProvider auth = Provider.of<AuthenticationProvider>(context, listen: false);
+
+      // Check if user is authenticated (has valid email)
+      if (auth.userModel.email != null && auth.userModel.email!.isNotEmpty) {
+        // User is authenticated, go to dashboard
+        if (mounted) {
+          context.go(dashboardRoute);
+        }
       } else {
-        context.go('/login');
+        // User is NOT authenticated, go to login
+        if (mounted) {
+          context.go(loginRoute);
+        }
+      }
+    } catch (e) {
+      debugPrint('Auth check error: $e');
+      // On any error, go to login
+      if (mounted) {
+        context.go(loginRoute);
       }
     }
   }
@@ -36,11 +52,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo or Icon
+            // Logo
             Container(
               width: 120,
               height: 120,
@@ -54,14 +71,14 @@ class _SplashScreenState extends State<SplashScreen> {
             const SizedBox(height: 32),
 
             // App Name
-            const Text('Whiskr'),
+            const Text(
+              'Whiskr Admin',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
+            ),
             const SizedBox(height: 48),
 
             // Loading indicator
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(context.read<CustomThemeProvider>().isDarkTheme(context) ? Colors.white : Colors.black),
-              strokeWidth: 3,
-            ),
+            const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2196F3)), strokeWidth: 3),
           ],
         ),
       ),
