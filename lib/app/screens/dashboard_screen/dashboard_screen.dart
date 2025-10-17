@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
 import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:w_utils/models/response_model.dart';
-import 'package:w_utils/providers/theme_provider/theme_provider.dart';
-import 'package:whiskr_admin_panel/routing/routes.dart';
-
-import '../../../providers/auth_provider.dart';
-import '../analytics_screen.dart';
-import '../inventory_screen.dart';
-import '../orders_screen.dart';
-import '../services_screen.dart';
+import 'package:whiskr_admin_panel/providers/auth_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -34,18 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   bool _isPetShop(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    return auth.currentUser?.role == 'pet_shop';
-  }
-
-  List<BottomNavigationBarItem> _buildBottomNavItems(BuildContext context) {
-    final bool petShop = _isPetShop(context);
-    return [
-      const BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Dashboard'),
-      BottomNavigationBarItem(icon: Icon(petShop ? Icons.room_service : Icons.inventory), label: petShop ? 'Services' : 'Inventory'),
-      const BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Orders'),
-      const BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Analytics'),
-    ];
+    return true;
   }
 
   Future<void> _getInitialData() async {}
@@ -56,119 +36,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  void _showPlaceholderDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Close'))],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Whiskr Admin Dashboard'),
-        actions: [
-          // Theme Switch Button
-          Consumer<CustomThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return IconButton(
-                icon: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: Icon(
-                    themeProvider.themeMode == ThemeMode.dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-                    key: ValueKey(themeProvider.themeMode),
-                  ),
-                ),
-                tooltip: themeProvider.themeMode == ThemeMode.dark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
-                onPressed: () {
-                  themeProvider.setThemeMode(!themeProvider.isDarkTheme(context));
-                },
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              _showPlaceholderDialog('Notifications', 'Notifications functionality coming soon!');
-            },
-          ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'profile') {
-                _showPlaceholderDialog('Profile', 'Profile functionality coming soon!');
-              } else if (value == 'logout') {
-                _logout();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'profile',
-                child: Row(children: [Icon(Icons.person_outline), SizedBox(width: 8), Text('Profile')]),
-              ),
-              const PopupMenuItem(
-                value: 'logout',
-                child: Row(children: [Icon(Icons.logout), SizedBox(width: 8), Text('Logout')]),
-              ),
-            ],
-            child: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundColor: ColorHelper.blue500.color,
-                child: Icon(Icons.person, color: Colors.white),
-              ),
-            ),
-          ),
-        ],
-      ),
-      // drawer: WebDrawer(
-      //   selectedIndex: _selectedIndex,
-      //   onItemTapped: _onItemTapped,
-      //   onShowPlaceholderDialog: _showPlaceholderDialog,
-      //   isPetShop: _isPetShop(context),
-      // ),
-      body: _buildBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: ColorHelper.blue500.color,
-        unselectedItemColor: Colors.grey,
-        items: _buildBottomNavItems(context),
-      ),
+      body: _BuildDashboardWelcome(onItemTapped: _onItemTapped, isPetShop: _isPetShop(context)),
     );
-  }
-
-  Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return _BuildDashboardWelcome(onItemTapped: _onItemTapped, isPetShop: _isPetShop(context));
-      case 1:
-        return _isPetShop(context) ? const ServicesScreen() : const InventoryScreen();
-      case 2:
-        return const OrdersScreen();
-      case 3:
-        return const AnalyticsScreen();
-      default:
-        return _BuildDashboardWelcome(onItemTapped: _onItemTapped, isPetShop: _isPetShop(context));
-    }
-  }
-
-  Future<void> _logout() async {
-    final ResponseModel response = await context.read<AuthenticationProvider>().userLogout();
-    if (response.isSuccess) {
-      if (mounted) {
-        context.go(loginRoute, extra: {'clearHistory': true});
-      }
-    } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.error ?? ''), backgroundColor: ColorHelper.red500.color));
-      }
-    }
   }
 }
 
@@ -188,7 +60,7 @@ class _BuildDashboardWelcome extends StatelessWidget {
         children: [
           Consumer<AuthProvider>(
             builder: (context, authProvider, child) {
-              return Text('Welcome back, ${authProvider.currentUser?.name ?? 'Admin'}!', style: theme.textTheme.headlineMedium);
+              return Text('Welcome back, ${authProvider.currentUser?.name ?? 'Eric Cartman'}!', style: theme.textTheme.headlineMedium);
             },
           ),
           const SizedBox(height: 24),
