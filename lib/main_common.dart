@@ -76,7 +76,7 @@ class WhiskrAdminApp extends StatelessWidget {
         builder: (context, customThemeProvider, child) {
           return MaterialApp.router(
             title: config.values.appName,
-            debugShowCheckedModeBanner: !FlavorConfig.isProduction(),
+            debugShowCheckedModeBanner: false,
             routerConfig: routeGenerator.router,
             theme: CustomWebThemes.lightTheme,
           );

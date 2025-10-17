@@ -39,27 +39,27 @@ dependencies:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: 56de089cbc4ca92ccf42a989968e3de39295fd3e
+      ref: b8e9f9d26d14280886a576f59cfdce49bed6c16f
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: 56de089cbc4ca92ccf42a989968e3de39295fd3e
+      ref: b8e9f9d26d14280886a576f59cfdce49bed6c16f
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: 56de089cbc4ca92ccf42a989968e3de39295fd3e  
+      ref: b8e9f9d26d14280886a576f59cfdce49bed6c16f  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: 56de089cbc4ca92ccf42a989968e3de39295fd3e   
+      ref: b8e9f9d26d14280886a576f59cfdce49bed6c16f   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: 56de089cbc4ca92ccf42a989968e3de39295fd3e
+      ref: b8e9f9d26d14280886a576f59cfdce49bed6c16f
   data_table_2: ^2.6.0
   flutter_side_menu: ^0.5.41
 
