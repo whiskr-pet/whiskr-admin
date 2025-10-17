@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
+import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_utils/helper/util_constants.dart';
@@ -71,6 +72,7 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<ServiceProvider>(create: (_) => ServiceProvider(), lazy: true),
         ChangeNotifierProvider<CustomThemeProvider>(create: (_) => CustomThemeProvider(), lazy: true),
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
+        ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
       ],
       child: Consumer<CustomThemeProvider>(
         builder: (context, customThemeProvider, child) {
