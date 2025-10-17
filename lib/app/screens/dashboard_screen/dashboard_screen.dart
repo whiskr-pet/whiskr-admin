@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
+import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboard_appointments.dart';
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
 import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dart';
+import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:whiskr_admin_panel/providers/auth_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -68,11 +70,52 @@ class _BuildDashboardWelcome extends StatelessWidget {
           const SizedBox(height: 24),
           Text('Overview', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 24),
-          _BuildDashboardOverviewCards(),
-          const SizedBox(height: 24),
-          WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', orders: recentOrders),
+          if (Responsive.isTablet(context) || Responsive.isMobile(context)) ...[
+            _BuildDashboardOverviewCardsTabletLayout(),
+          ] else ...[
+            _BuildDashboardOverviewCards(),
+            const SizedBox(height: 24),
+          ],
+          if (!isPetShop)
+            WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders)
+          else
+            _BuildDashboardAppointments(),
           const SizedBox(height: 24),
           WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: lowStockProducts),
+        ],
+      ),
+    );
+  }
+}
+
+// Tablet layout
+class _BuildDashboardOverviewCardsTabletLayout extends StatelessWidget {
+  const _BuildDashboardOverviewCardsTabletLayout();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: Responsive.value<double>(context: context, mobile: 350, tablet: 350, desktop: 350, widescreen: 350),
+      width: double.infinity,
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 2,
+        childAspectRatio: Responsive.value<double>(
+          context: context,
+          mobile: 1.5,
+          tablet: context.select<DashboardProvider, double>((dashboardProvider) => dashboardProvider.isSideMenuOpen ? 1.5 : 2),
+          desktop: 1.5,
+          widescreen: 1.5,
+        ),
+        crossAxisSpacing: 1.2,
+        mainAxisSpacing: 16,
+        padding: const EdgeInsets.all(16),
+        children: [
+          WhiskrAdminOverviewCards(icon: Icons.inventory, title: 'Total Products', value: '123', iconBackgroundColor: ColorHelper.magenta300.color),
+          WhiskrAdminOverviewCards(icon: Icons.shopping_cart, title: 'Total Orders', value: '55', iconBackgroundColor: ColorHelper.yellow300.color),
+          WhiskrAdminOverviewCards(icon: Icons.payments, title: "Today's Revenue", value: 'KM 300', iconBackgroundColor: ColorHelper.green300.color),
+          WhiskrAdminOverviewCards(icon: Icons.payments, title: 'Total Revenue', value: 'KM 1302', iconBackgroundColor: ColorHelper.blue300.color),
         ],
       ),
     );
@@ -87,23 +130,17 @@ class _BuildDashboardOverviewCards extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        WhiskrAdminOverviewCards(icon: Icons.inventory, title: 'Total Products', value: '123', iconBackgroundColor: ColorHelper.magenta300.color),
-        WhiskrAdminOverviewCards(icon: Icons.shopping_cart, title: 'Total Orders', value: '55', iconBackgroundColor: ColorHelper.yellow300.color),
-        WhiskrAdminOverviewCards(
-          icon: Icons.payments,
-          title: "Today's Revenue",
-          value:
-              'KM '
-              '300',
-          iconBackgroundColor: ColorHelper.green300.color,
+        Expanded(
+          child: WhiskrAdminOverviewCards(icon: Icons.inventory, title: 'Total Products', value: '123', iconBackgroundColor: ColorHelper.magenta300.color),
         ),
-        WhiskrAdminOverviewCards(
-          icon: Icons.payments,
-          title: 'Total Revenue',
-          value:
-              'KM '
-              '1302',
-          iconBackgroundColor: ColorHelper.blue300.color,
+        Expanded(
+          child: WhiskrAdminOverviewCards(icon: Icons.shopping_cart, title: 'Total Orders', value: '55', iconBackgroundColor: ColorHelper.yellow300.color),
+        ),
+        Expanded(
+          child: WhiskrAdminOverviewCards(icon: Icons.payments, title: "Today's Revenue", value: 'KM 300', iconBackgroundColor: ColorHelper.green300.color),
+        ),
+        Expanded(
+          child: WhiskrAdminOverviewCards(icon: Icons.payments, title: 'Total Revenue', value: 'KM 132302', iconBackgroundColor: ColorHelper.blue300.color),
         ),
       ],
     );
@@ -148,6 +185,15 @@ class _BuildDashboardQuickActions extends StatelessWidget {
   }
 }
 
+class _BuildDashboardAppointments extends StatelessWidget {
+  const _BuildDashboardAppointments();
+
+  @override
+  Widget build(BuildContext context) {
+    return WhiskrAdminDashboardTableSegmentAppointments(segmentTitle: 'Recent Appointments', appointments: appointments, priceTag: 'KM ');
+  }
+}
+
 List<LowStockProductModel> lowStockProducts = [
   LowStockProductModel(
     image: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
@@ -187,4 +233,72 @@ List<RecentOrderModel> recentOrders = [
   RecentOrderModel(customerImg: '', name: 'Jane Doe', amount: 200, date: '2021-01-02', status: 'Delivered'),
   RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
   RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
+];
+
+List<AppointmentModel> appointments = [
+  AppointmentModel(
+    customerImg: '',
+    customer: 'John Doe',
+    petId: '123',
+    email: 'john@example.com',
+    phone: '1234567890',
+    address: '123 Main St, Anytown, USA',
+    items: [
+      AppointmentItemModel(name: 'Service 1', price: 100),
+      AppointmentItemModel(name: 'Service 22', price: 200),
+      AppointmentItemModel(name: 'Service 33', price: 300),
+      AppointmentItemModel(name: 'Service 44', price: 400),
+      AppointmentItemModel(name: 'Service 1', price: 100),
+      AppointmentItemModel(name: 'Service 22', price: 200),
+      AppointmentItemModel(name: 'Service 33', price: 300),
+      AppointmentItemModel(name: 'Service 44', price: 400),
+    ],
+    total: 1000,
+    date: DateTime.now(),
+    time: '10:00',
+    note: 'Note 1',
+    status: 'Confirmed',
+  ),
+  AppointmentModel(
+    customerImg: '',
+    customer: 'Jane Doe',
+    petId: '123',
+    email: 'jane@example.com',
+    phone: '1234567890',
+    address: '123 Main St, Anytown, USA',
+    items: [AppointmentItemModel(name: 'Service 2', price: 200)],
+    total: 200,
+    date: DateTime.now(),
+    time: '10:00',
+    note: 'Note 2',
+    status: 'Delivered',
+  ),
+  AppointmentModel(
+    customerImg: '',
+    customer: 'Jim Beam',
+    petId: '123',
+    email: 'jim@example.com',
+    phone: '1234567890',
+    address: '123 Main St, Anytown, USA',
+    items: [AppointmentItemModel(name: 'Service 3', price: 300)],
+    total: 300,
+    date: DateTime.now(),
+    time: '10:00',
+    note: 'Note 3',
+    status: 'Cancelled',
+  ),
+  AppointmentModel(
+    customerImg: '',
+    customer: 'Jim Beam',
+    petId: '123',
+    email: 'jim@example.com',
+    phone: '1234567890',
+    address: '123 Main St, Anytown, USA',
+    items: [AppointmentItemModel(name: 'Service 4', price: 400)],
+    total: 400,
+    date: DateTime.now(),
+    time: '10:00',
+    note: 'Note 4',
+    status: 'Cancelled',
+  ),
 ];

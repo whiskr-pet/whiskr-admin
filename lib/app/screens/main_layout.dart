@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:go_router/go_router.dart';
-import 'package:responsive_framework/responsive_framework.dart';
+import 'package:provider/provider.dart';
+import 'package:w_dashboard/helpers/main_layout_menu_item.dart';
+import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
@@ -15,9 +17,7 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _selectedIndex = 0;
   final SideMenuController _sideMenuController = SideMenuController();
-  bool _isSideMenuOpen = true; // Track menu state
 
   final List<MenuItem> _menuItems = [
     MenuItem(icon: Icons.dashboard, label: 'Dashboard', route: dashboardRoute),
@@ -28,14 +28,13 @@ class _MainLayoutState extends State<MainLayout> {
   ];
 
   void _toggleSideMenu() {
-    setState(() {
-      _isSideMenuOpen = !_isSideMenuOpen;
-      if (_isSideMenuOpen) {
-        _sideMenuController.open();
-      } else {
-        _sideMenuController.close();
-      }
-    });
+    context.read<DashboardProvider>().toggleSideMenu();
+    final bool isSideMenuOpen = context.read<DashboardProvider>().isSideMenuOpen;
+    if (isSideMenuOpen) {
+      _sideMenuController.open();
+    } else {
+      _sideMenuController.close();
+    }
   }
 
   @override
@@ -47,20 +46,19 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context, mounted, _toggleSideMenu, _isSideMenuOpen),
+      appBar: _buildAppBar(context, mounted, _toggleSideMenu),
       body: Row(
         children: [
           SideMenu(
             controller: _sideMenuController,
             mode: SideMenuMode.open,
             hasResizer: false,
-            hasResizerToggle: false, // Disable built-in toggle
+            hasResizerToggle: false,
             minWidth: 75,
             maxWidth: 250,
             backgroundColor: ColorHelper.white.color,
             builder: (data) => SideMenuData(items: _buildMenuItems()),
           ),
-          // Main Content Area
           Expanded(child: Container(child: widget.child)),
         ],
       ),
@@ -72,14 +70,12 @@ class _MainLayoutState extends State<MainLayout> {
       final index = entry.key;
       final item = entry.value;
       final String route = item.route;
-      final isSelected = _selectedIndex == index;
+      final isSelected = context.read<DashboardProvider>().isSelectedIndexEqualTo(index);
       final theme = Theme.of(context);
       return SideMenuItemDataTile(
         isSelected: isSelected,
         onTap: () {
-          setState(() {
-            _selectedIndex = index;
-          });
+          context.read<DashboardProvider>().setSelectedIndex(index);
           context.go(route);
         },
         title: item.label,
@@ -95,7 +91,7 @@ class _MainLayoutState extends State<MainLayout> {
   }
 }
 
-PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallback onMenuToggle, bool isSideMenuOpen) {
+PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallback onMenuToggle) {
   return AppBar(
     backgroundColor: ColorHelper.white.color,
     toolbarHeight: 60,
@@ -103,7 +99,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallbac
       children: [
         const SizedBox(width: 10),
         IconButton(
-          icon: Icon(isSideMenuOpen ? Icons.menu_open : Icons.menu, color: ColorHelper.greenWeb.color),
+          icon: Icon(context.watch<DashboardProvider>().isSideMenuOpen ? Icons.menu_open : Icons.menu, color: ColorHelper.greenWeb.color),
           onPressed: onMenuToggle,
           tooltip: 'Toggle Menu',
         ),
@@ -119,7 +115,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallbac
           child: Container(
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-            child: Image.asset('assets/images/WhiskrLogo.png', width: 100, height: 100),
+            child: Image.asset('assets/images/WhiskrLogo.png'),
           ),
         ),
       ],
@@ -151,12 +147,4 @@ class _BuildActionProfile extends StatelessWidget {
       ],
     );
   }
-}
-
-class MenuItem {
-  final IconData icon;
-  final String label;
-  final String route;
-
-  MenuItem({required this.icon, required this.label, this.route = ""});
 }
