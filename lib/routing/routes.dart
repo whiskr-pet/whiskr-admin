@@ -7,3 +7,5 @@ const String servicesRoute = '/services';
 const String analyticsRoute = '/analytics';
 const String usersRoute = '/users';
 const String settingsRoute = '/settings';
+const String onboardingIntroRoute = '/onboarding/intro';
+const String onboardingGeneralInfoRoute = '/onboarding/general-info';

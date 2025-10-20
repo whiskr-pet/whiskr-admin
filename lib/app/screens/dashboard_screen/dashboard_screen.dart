@@ -8,6 +8,7 @@ import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dar
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
 import 'package:whiskr_admin_panel/providers/auth_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -18,8 +19,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  int _selectedIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -32,24 +31,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _getInitialData() async {}
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _BuildDashboardWelcome(onItemTapped: _onItemTapped, isPetShop: _isPetShop(context)),
-    );
+    return Scaffold(body: _BuildDashboardWelcome(isPetShop: _isPetShop(context)));
   }
 }
 
 class _BuildDashboardWelcome extends StatelessWidget {
-  const _BuildDashboardWelcome({required this.onItemTapped, required this.isPetShop});
+  const _BuildDashboardWelcome({required this.isPetShop});
 
-  final void Function(int) onItemTapped;
   final bool isPetShop;
 
   @override
@@ -66,7 +56,7 @@ class _BuildDashboardWelcome extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-          _BuildDashboardQuickActions(onItemTapped: onItemTapped, isPetShop: isPetShop),
+          _BuildDashboardQuickActions(isPetShop: isPetShop),
           const SizedBox(height: 24),
           Text('Overview', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 24),
@@ -122,6 +112,7 @@ class _BuildDashboardOverviewCardsTabletLayout extends StatelessWidget {
   }
 }
 
+// todo when BE is ready, move to helper, create model, go over
 class _BuildDashboardOverviewCards extends StatelessWidget {
   const _BuildDashboardOverviewCards();
 
@@ -148,39 +139,24 @@ class _BuildDashboardOverviewCards extends StatelessWidget {
 }
 
 class _BuildDashboardQuickActions extends StatelessWidget {
-  const _BuildDashboardQuickActions({this.isPetShop = false, required this.onItemTapped});
+  _BuildDashboardQuickActions({this.isPetShop = false});
 
   final bool isPetShop;
-  final void Function(int) onItemTapped;
+  final DashboardViewHelper dashboardViewHelper = DashboardViewHelper();
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: [
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () => onItemTapped(1),
-            icon: const Icon(Icons.add, size: 16),
-            label: Text(isPetShop ? 'Add Service' : 'Add Product', style: const TextStyle(fontSize: 12)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () => onItemTapped(2),
-            icon: const Icon(Icons.shopping_cart, size: 16),
-            label: const Text('View Orders', style: TextStyle(fontSize: 12)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: ElevatedButton.icon(
-            onPressed: () => onItemTapped(3),
-            icon: const Icon(Icons.analytics, size: 16),
-            label: const Text('Analytics', style: TextStyle(fontSize: 12)),
-          ),
-        ),
-      ],
+      spacing: 8,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: dashboardViewHelper
+          .dashboardOverviewHelperModels(isPetShop)
+          .map(
+            (model) => Expanded(
+              child: ElevatedButton.icon(onPressed: model.onPressed, icon: Icon(model.icon), label: Text(model.title)),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -194,6 +170,7 @@ class _BuildDashboardAppointments extends StatelessWidget {
   }
 }
 
+// TODO: Remove this after BE connection
 List<LowStockProductModel> lowStockProducts = [
   LowStockProductModel(
     image: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',

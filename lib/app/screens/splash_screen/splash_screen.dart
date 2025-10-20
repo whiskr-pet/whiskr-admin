@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
+import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
+import 'package:whiskr_admin_panel/gen/assets.gen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
 class CustomSplashScreen extends StatefulWidget {
@@ -52,33 +55,23 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: ColorHelper.white.color,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
             Container(
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ColorHelper.white.color,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, 10))],
+                boxShadow: [BoxShadow(color: ColorHelper.black.color.withAlpha(10), blurRadius: 20, offset: const Offset(0, 10))],
               ),
-              child: Image.asset('assets/images/appicon.png'),
+              child: Image.asset(Assets.images.appicon.path),
             ),
             const SizedBox(height: 32),
-
-            // App Name
-            const Text(
-              'Whiskr Admin',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF333333)),
-            ),
-            const SizedBox(height: 48),
-
-            // Loading indicator
-            const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2196F3)), strokeWidth: 3),
+            LoadingAnimationHelper.loading,
           ],
         ),
       ),

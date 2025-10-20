@@ -3,11 +3,13 @@ import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
+import 'package:w_map_module/providers/map_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_utils/helper/util_constants.dart';
 import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
+import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/utils/session_manager.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
@@ -73,6 +75,7 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<CustomThemeProvider>(create: (_) => CustomThemeProvider(), lazy: true),
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
         ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
+        ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
       ],
       child: Consumer<CustomThemeProvider>(
         builder: (context, customThemeProvider, child) {
