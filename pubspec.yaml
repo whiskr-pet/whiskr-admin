@@ -35,38 +35,45 @@ dependencies:
   go_router: ^16.2.4
   data_table_2: ^2.6.0
   flutter_side_menu: ^0.5.41
+  lottie: ^3.3.1
 
   # network module
   w_network_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6  
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6   
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: 3d5a2f0af554b0773ad69dfa19cfc8df29c772b6
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d
+  wa_onboarding_module:
+    git:
+      url: https://github.com/whiskr-pet/whiskr_modules.git
+      path: packages/admin/wa_onboarding_module
+      ref: 84a32568a508f96484265af5cac05f7c03b6db3d    
+     
 
 
 
@@ -97,6 +104,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/animations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
