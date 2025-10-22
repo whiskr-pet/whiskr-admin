@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/wa_custom_stepper/wa_custom_stepper.dart';
@@ -7,6 +8,7 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_general_info_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_location_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_working_hours_step.dart';
+import 'package:whiskr_admin_panel/routing/routes.dart';
 
 class OnboardingStepper extends StatefulWidget {
   const OnboardingStepper({super.key});
@@ -69,7 +71,12 @@ class StepperContainer extends StatelessWidget {
             width: double.infinity,
             height: 45,
             child: CommonButton(
-              onPressed: onNextStep,
+              onPressed: currentStep < 2
+                  ? onNextStep
+                  : () {
+                      context.read<WAOnboardingProvider>().saveData();
+                      context.go(onboardingSummaryRoute);
+                    },
               buttonTitle: currentStep < 2 ? 'Next Step' : 'Complete',
               buttonType: PPButtonType.web,
               showBorder: false,

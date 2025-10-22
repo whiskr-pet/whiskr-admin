@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:w_components/text_fields/wa_custom_text_field.dart';
+import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 
 class OnboardingGeneralInfoStep extends StatelessWidget {
   const OnboardingGeneralInfoStep({super.key});
@@ -29,25 +31,51 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(label: 'Name', hint: "Enter your service's name", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().nameController,
+                label: 'Name',
+                hint: "Enter your service's name",
+                isRequired: true,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(label: 'Phone', hint: "Enter your service's phone number", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().phoneController,
+                label: 'Phone',
+                hint: "Enter your service's phone number",
+                isRequired: true,
+              ),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        WACustomTextField(label: 'Description', hint: "Enter your service's description", isRequired: true, maxLines: 4),
+        WACustomTextField(
+          controller: context.read<WAOnboardingProvider>().descriptionController,
+          label: 'Description',
+          hint: "Enter your service's description",
+          isRequired: true,
+          maxLines: 4,
+        ),
         const SizedBox(height: 24),
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(label: 'Contact Email', hint: "Enter your service's contact email", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().emailController,
+                label: 'Contact Email',
+                hint: "Enter your service's contact email",
+                isRequired: true,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(label: 'Website', hint: "Enter your service's website", isRequired: false),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().websiteController,
+                label: 'Website',
+                hint: "Enter your service's website",
+                isRequired: false,
+              ),
             ),
           ],
         ),
