@@ -9,6 +9,7 @@ import 'package:whiskr_admin_panel/app/screens/login_screen/login_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/main_layout.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_general_info_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_intro_screen/onboarding_intro_screen.dart';
+import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_summary_screen/onboarding_summary_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/services_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/splash_screen/splash_screen.dart';
@@ -106,6 +107,13 @@ class RouteGenerator {
         name: 'onboarding-general-info',
         builder: (BuildContext context, GoRouterState state) {
           return const OnboardingGeneralInfoScreen();
+        },
+      ),
+      GoRoute(
+        path: onboardingSummaryRoute,
+        name: 'onboarding-summary',
+        builder: (BuildContext context, GoRouterState state) {
+          return const OnboardingSummaryScreen();
         },
       ),
     ],

@@ -9,3 +9,4 @@ const String usersRoute = '/users';
 const String settingsRoute = '/settings';
 const String onboardingIntroRoute = '/onboarding/intro';
 const String onboardingGeneralInfoRoute = '/onboarding/general-info';
+const String onboardingSummaryRoute = '/onboarding/summary';
