@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
-import 'package:w_map_module/providers/map_provider.dart';
+import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_utils/helper/util_constants.dart';
@@ -25,17 +25,19 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   // Get environment variables from dart-define
   const String baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'DEVTEST');
   const String flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+  const String mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN', defaultValue: 'NOTOKEN');
 
   debugPrint('🔗 Environment Variables Loaded:');
   debugPrint('  BASE_URL: $baseUrl');
   debugPrint('  FLAVOR: $flavorString');
   debugPrint('  APP_NAME: $appName');
   debugPrint('  ENV: $env');
+  debugPrint('  MAPBOX_ACCESS_TOKEN: $mapboxAccessToken');
 
   // Initialize FlavorConfig
   FlavorConfig(
     flavor: flavor,
-    values: FlavorValues(baseUrl: baseUrl, appName: appName, env: env),
+    values: FlavorValues(baseUrl: baseUrl, appName: appName, env: env, mapboxAccessToken: mapboxAccessToken),
   );
 
   await storagePrefs.init();
@@ -76,15 +78,12 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
         ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
         ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
+        ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
+        // ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
       ],
       child: Consumer<CustomThemeProvider>(
         builder: (context, customThemeProvider, child) {
-          return MaterialApp.router(
-            title: config.values.appName,
-            debugShowCheckedModeBanner: false,
-            routerConfig: routeGenerator.router,
-            theme: CustomWebThemes.lightTheme,
-          );
+          return MaterialApp.router(title: config.values.appName, debugShowCheckedModeBanner: false, routerConfig: routeGenerator.router, theme: CustomWebThemes.lightTheme);
         },
       ),
     );

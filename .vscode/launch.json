@@ -10,6 +10,7 @@
                 "--dart-define=FLAVOR=dev",
                 "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
                 "--dart-define=APP_NAME=Whiskr Admin (DEV)",
+                "--dart-define=MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiZGFuaXM5NiIsImEiOiJjbTMzYmU3cDMxZ245MmtzaGRxczlwa2syIn0.QXGFcbCmIv0EKU5dsmDK5g",
                 "--web-port=3000"
             ]
         },
@@ -22,6 +23,7 @@
                 "--dart-define=FLAVOR=test",
                 "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
                 "--dart-define=APP_NAME=Whiskr Admin (TEST)",
+                "--dart-define=MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiZGFuaXM5NiIsImEiOiJjbTMzYmU3cDMxZ245MmtzaGRxczlwa2syIn0.QXGFcbCmIv0EKU5dsmDK5g",
                 "--web-port=3000"
             ]
         },
@@ -33,6 +35,7 @@
             "args": [
                 "--dart-define=FLAVOR=prod",
                 "--dart-define=BASE_URL=https://pet-pals-backend.onrender.com/",
+                "--dart-define=MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiZGFuaXM5NiIsImEiOiJjbTMzYmU3cDMxZ245MmtzaGRxczlwa2syIn0.QXGFcbCmIv0EKU5dsmDK5g",
                 "--dart-define=APP_NAME=Whiskr Admin",
                 "--web-port=3000"
             ]
