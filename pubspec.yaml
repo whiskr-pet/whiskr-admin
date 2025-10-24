@@ -19,7 +19,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   
   # HTTP and API communication
-  http: ^1.1.0
+  http: ^1.5.0
   dio: ^5.3.2
   provider: ^6.1.1  
   flutter_dotenv: ^5.1.0
@@ -36,43 +36,53 @@ dependencies:
   data_table_2: ^2.6.0
   flutter_side_menu: ^0.5.41
   lottie: ^3.3.1
+  flutter_map: ^8.2.2
+  universal_html: ^2.2.4
 
   # network module
   w_network_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5  
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5   
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5
   wa_onboarding_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_onboarding_module
-      ref: b618f6066e32a4267fbe2cee2e78ed2cbace1ea5    
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5    
+  w_image_module:
+    git:
+      url: https://github.com/whiskr-pet/whiskr_modules.git
+      path: packages/mobile/w_image_module
+      ref: 3fd523bb0ec55ed0a4b876b4778df6dcd81d12b5
+  latlong2: ^0.9.1
+  flutter_map_marker_popup: ^8.1.0
+  flutter_map_dragmarker: ^8.0.3
      
 
 

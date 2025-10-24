@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/w_components.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_picker.dart';
+import 'package:whiskr_admin_panel/config/flavor_config.dart';
 
 class OnboardingLocationStep extends StatelessWidget {
   const OnboardingLocationStep({super.key});
@@ -27,12 +29,7 @@ class OnboardingLocationStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(
-                controller: context.read<WAOnboardingProvider>().zipCodeController,
-                label: 'ZIP Code',
-                hint: 'Enter ZIP code',
-                isRequired: true,
-              ),
+              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().zipCodeController, label: 'ZIP Code', hint: 'Enter ZIP code', isRequired: true),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -41,6 +38,18 @@ class OnboardingLocationStep extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
+        Expanded(
+          child: SmoothDraggableMapPicker(
+            mapboxAccessToken: FlavorConfig.instance.values.mapboxAccessToken,
+            showAddress: true,
+            onConfirm: (pos) async {
+              context.read<WAOnboardingProvider>().zipCodeController.text = pos.address.zip ?? "";
+              context.read<WAOnboardingProvider>().stateController.text = pos.address.country ?? "";
+              context.read<WAOnboardingProvider>().cityController.text = pos.address.city ?? "";
+              context.read<WAOnboardingProvider>().addressController.text = pos.address.streetAddress ?? "";
+            },
+          ),
+        ),
       ],
     );
   }

@@ -28,6 +28,8 @@ env_test.sh
 *.js.deps
 *.js.map
 
+.vscode/launch.json
+
 .flutter-plugins
 .flutter-plugins-dependencies
 

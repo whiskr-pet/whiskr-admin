@@ -1,22 +1,24 @@
 enum Flavor { DEV, PRODUCTION, TEST }
 
 class FlavorValues {
-  FlavorValues({required this.baseUrl, required this.appName, required this.env});
+  FlavorValues({required this.baseUrl, required this.appName, required this.env, required this.mapboxAccessToken});
   final String baseUrl;
   final String appName;
   final String env;
+  final String mapboxAccessToken;
 }
 
 class FlavorConfig {
   factory FlavorConfig({required Flavor flavor, required FlavorValues values}) {
-    _instance ??= FlavorConfig._internal(flavor, flavor.toString(), values);
+    _instance ??= FlavorConfig._internal(flavor, flavor.toString(), values.mapboxAccessToken, values);
     return _instance!;
   }
 
-  FlavorConfig._internal(this.flavor, this.name, this.values);
+  FlavorConfig._internal(this.flavor, this.name, this.mapboxAccessToken, this.values);
 
   final Flavor flavor;
   final String name;
+  final String mapboxAccessToken;
   final FlavorValues values;
   static FlavorConfig? _instance;
 
