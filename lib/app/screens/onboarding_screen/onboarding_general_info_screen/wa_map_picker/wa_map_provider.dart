@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -108,12 +110,26 @@ class MapPickerProvider extends ChangeNotifier {
   }
 
   /// Update marker position
-  Future<void> updateMarkerPosition(LatLng newPosition) async {
+  Future<void> updateMarkerPosition(LatLng newPosition, {void Function(MapPickerResult result)? onDone}) async {
     _markerPosition = newPosition;
     notifyListeners();
 
     if (_showAddress) {
       await fetchAddress(newPosition);
+      // if address found successfully → clear any error
+      if (_addressDetails != null && _addressDetails?.fullAddress != null) {
+        _locationError = null;
+        notifyListeners();
+
+        if (_mapController != null) {
+          animateToLocation(newPosition);
+        }
+
+        // now callback with latest result
+        if (onDone != null) {
+          onDone(getResult());
+        }
+      }
     }
   }
 
@@ -123,25 +139,58 @@ class MapPickerProvider extends ChangeNotifier {
   }
 
   /// Request location again (retry)
-  Future<void> requestLocationAgain() async {
+  Future<void> requestLocationAgain({void Function(MapPickerResult result)? onDone}) async {
     _isLoading = true;
     _locationError = null;
     notifyListeners();
     await _getUserLocation();
+    if (_currentPosition != null) {
+      animateToLocation(_currentPosition!);
+      if (onDone != null) {
+        onDone(getResult());
+      }
+    }
   }
 
   /// Zoom in
   void zoomIn() {
     if (_mapController == null) return;
     final currentZoom = _mapController!.camera.zoom;
-    _mapController!.move(_mapController!.camera.center, currentZoom + 1);
+    smoothZoom(currentZoom + 1);
   }
 
   /// Zoom out
   void zoomOut() {
     if (_mapController == null) return;
     final currentZoom = _mapController!.camera.zoom;
-    _mapController!.move(_mapController!.camera.center, currentZoom - 1);
+    smoothZoom(currentZoom - 1);
+  }
+
+  void smoothZoom(double targetZoom, {int steps = 20, Duration totalDuration = const Duration(milliseconds: 400)}) {
+    if (_mapController == null) return;
+
+    final currentZoom = _mapController!.camera.zoom;
+    final zoomDiff = targetZoom - currentZoom;
+    final stepDuration = totalDuration ~/ steps;
+    int step = 0;
+
+    // Cubic ease-in-out curve
+    double easeInOut(double t) => t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2;
+
+    Timer.periodic(stepDuration, (timer) {
+      if (step >= steps) {
+        timer.cancel();
+        _mapController!.move(_mapController!.camera.center, targetZoom);
+        return;
+      }
+
+      final t = (step + 1) / steps;
+      final easedT = easeInOut(t);
+      final newZoom = currentZoom + zoomDiff * easedT;
+
+      _mapController!.move(_mapController!.camera.center, newZoom);
+      step++;
+    });
   }
 
   /// Fetch address from coordinates using Mapbox Geocoding API
@@ -225,9 +274,56 @@ class MapPickerProvider extends ChangeNotifier {
     return MapPickerResult(location: _markerPosition!, address: _addressDetails ?? CustomAddressDetails());
   }
 
+  Future<LatLng?> getCoordinatesFromAddress(String address) async {
+    if (address.isEmpty) return null;
+
+    final encodedAddress = Uri.encodeComponent(address);
+    final url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/$encodedAddress.json?access_token=$_mapboxAccessToken&limit=1';
+
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['features'] != null && data['features'].isNotEmpty) {
+        final coords = data['features'][0]['geometry']['coordinates'];
+        final lng = coords[0];
+        final lat = coords[1];
+        return LatLng(lat, lng);
+      }
+    }
+
+    return null;
+  }
+
+  Timer? _debounce;
+
+  Future<void> onSearchTextChanged(String value, {void Function(MapPickerResult result)? onDone}) async {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 800), () async {
+      if (value.isNotEmpty) {
+        final coords = await getCoordinatesFromAddress(value);
+        if (coords != null) {
+          _markerPosition = coords;
+          notifyListeners();
+
+          // move camera to searched location
+          _mapController?.move(coords, _initialZoom ?? 13.0);
+
+          // also update address details
+          await fetchAddress(coords);
+
+          if (onDone != null) {
+            onDone(getResult());
+          }
+        }
+      }
+    });
+  }
+
   @override
   void dispose() {
     _mapController?.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 }
