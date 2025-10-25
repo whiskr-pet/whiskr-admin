@@ -7,12 +7,21 @@ import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_provider.dart';
 
 class SmoothDraggableMapPicker extends StatefulWidget {
-  const SmoothDraggableMapPicker({super.key, required this.mapboxAccessToken, this.initialLocation = const LatLng(44.77, 17.19), this.zoom = 13.0, this.showAddress = true, this.onConfirm});
+  const SmoothDraggableMapPicker({
+    super.key,
+    required this.mapboxAccessToken,
+    this.initialLocation = const LatLng(41.89660066501317, 12.479782718685195),
+    this.zoom = 13.0,
+    this.showAddress = true,
+    this.onConfirm,
+    this.showMyLocationButton = false,
+  });
 
   final String mapboxAccessToken;
   final LatLng initialLocation;
   final double zoom;
   final bool showAddress;
+  final bool showMyLocationButton;
   final void Function(MapPickerResult result)? onConfirm;
 
   @override
@@ -26,13 +35,15 @@ class _SmoothDraggableMapPickerState extends State<SmoothDraggableMapPicker> {
   void initState() {
     super.initState();
     _provider = MapPickerProvider();
-
-    // Setup provider with configuration
     _provider.setup(mapboxAccessToken: widget.mapboxAccessToken, initialLocation: widget.initialLocation, initialZoom: widget.zoom, showAddress: widget.showAddress);
 
-    // Initialize and get location after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _provider.initialize();
+    _getInitialData();
+  }
+
+  Future<void> _getInitialData() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _provider.initialize();
+      widget.onConfirm?.call(_provider.getResult());
     });
   }
 
@@ -49,16 +60,23 @@ class _SmoothDraggableMapPickerState extends State<SmoothDraggableMapPicker> {
       child: Consumer<MapPickerProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(
-              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [CircularProgressIndicator(), SizedBox(height: 16), Text('Getting your location...')]),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(color: ColorHelper.orange500.color),
+                  SizedBox(height: 16),
+                  Text('Getting your location...'),
+                ],
+              ),
             );
           }
-
           return Stack(
             children: [
-              _MapView(mapboxAccessToken: widget.mapboxAccessToken),
-              if (provider.locationError != null) const _ErrorBanner(),
-              const _MapControls(),
+              _MapView(mapboxAccessToken: widget.mapboxAccessToken, onConfirm: widget.onConfirm),
+              Positioned(top: 10, left: 10, right: 10, child: _MapSearchBar(widget.onConfirm)),
+              if (provider.locationError != null) _ErrorBanner(widget.onConfirm),
+              _MapControls(showMyLocationButton: widget.showMyLocationButton),
               _ConfirmButton(onConfirm: widget.onConfirm),
             ],
           );
@@ -70,51 +88,64 @@ class _SmoothDraggableMapPickerState extends State<SmoothDraggableMapPicker> {
 
 /// Map view widget
 class _MapView extends StatelessWidget {
-  const _MapView({required this.mapboxAccessToken});
+  const _MapView({required this.mapboxAccessToken, required this.onConfirm});
 
   final String mapboxAccessToken;
+  final void Function(MapPickerResult result)? onConfirm;
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<MapPickerProvider>();
 
-    return FlutterMap(
-      mapController: provider.mapController,
-      options: MapOptions(
-        initialCenter: provider.markerPosition,
-        initialZoom: provider.initialZoom,
-        onTap: (tapPosition, latLng) async {
-          await provider.updateMarkerPosition(latLng);
-        },
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token={access_token}',
-          additionalOptions: {'access_token': mapboxAccessToken},
-          userAgentPackageName: 'com.whiskr.admin',
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: ColorHelper.grey300.color, width: 1),
+          boxShadow: [BoxShadow(color: ColorHelper.darkThemeBackground.color.withAlpha(100), blurRadius: 6, offset: const Offset(0, 2))],
         ),
-        DragMarkers(
-          markers: [
-            DragMarker(
-              key: GlobalKey<DragMarkerWidgetState>(),
-              point: provider.markerPosition,
-              size: const Size(60, 60),
-              builder: (ctx, point, isDragging) => Icon(Icons.location_pin, size: 48, color: ColorHelper.red500.color),
-              onDragEnd: (details, point) async {
-                await provider.updateMarkerPosition(point);
-              },
-              scrollMapNearEdge: true,
+        child: FlutterMap(
+          mapController: provider.mapController,
+          options: MapOptions(
+            initialCenter: provider.markerPosition,
+            initialZoom: provider.initialZoom,
+            onTap: (tapPosition, latLng) async {
+              await provider.updateMarkerPosition(latLng, onDone: onConfirm);
+            },
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/512/{z}/{x}/{y}@2x?access_token={access_token}',
+              additionalOptions: {'access_token': mapboxAccessToken},
+              userAgentPackageName: 'com.whiskr.admin',
+            ),
+            DragMarkers(
+              markers: [
+                DragMarker(
+                  key: GlobalKey<DragMarkerWidgetState>(),
+                  point: provider.markerPosition,
+                  size: const Size(60, 60),
+                  builder: (ctx, point, isDragging) => Icon(Icons.location_pin, size: 48, color: ColorHelper.red500.color),
+                  onDragEnd: (details, point) async {
+                    await provider.updateMarkerPosition(point, onDone: onConfirm);
+                  },
+                  scrollMapNearEdge: true,
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }
 
 /// Error banner widget
 class _ErrorBanner extends StatelessWidget {
-  const _ErrorBanner();
+  const _ErrorBanner(this.onConfirm);
+
+  final void Function(MapPickerResult result)? onConfirm;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +164,13 @@ class _ErrorBanner extends StatelessWidget {
               Icon(Icons.warning, color: ColorHelper.orange500.color),
               const SizedBox(width: 8),
               Expanded(child: Text(provider.locationError ?? '')),
-              IconButton(icon: const Icon(Icons.refresh), onPressed: provider.requestLocationAgain, tooltip: 'Try again'),
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () async {
+                  await provider.requestLocationAgain(onDone: onConfirm);
+                },
+                tooltip: 'Try again',
+              ),
             ],
           ),
         ),
@@ -144,7 +181,9 @@ class _ErrorBanner extends StatelessWidget {
 
 /// Map controls (zoom, location) widget
 class _MapControls extends StatelessWidget {
-  const _MapControls();
+  const _MapControls({this.showMyLocationButton = false});
+
+  final bool showMyLocationButton;
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +196,7 @@ class _MapControls extends StatelessWidget {
       child: Column(
         children: [
           // My location button
-          if (provider.currentPosition != null)
+          if (provider.currentPosition != null && showMyLocationButton)
             FloatingActionButton(
               mini: true,
               backgroundColor: ColorHelper.white.color,
@@ -168,7 +207,9 @@ class _MapControls extends StatelessWidget {
               },
               tooltip: 'My Location',
               child: const Icon(Icons.my_location),
-            ),
+            )
+          else
+            const SizedBox(height: 50),
           const SizedBox(height: 8),
           // Zoom in button
           FloatingActionButton(
@@ -221,6 +262,28 @@ class _ConfirmButton extends StatelessWidget {
         tooltip: 'Confirm Location',
         hoverColor: ColorHelper.greenWeb.color.withAlpha(100),
         child: const Icon(Icons.check, color: Colors.white),
+      ),
+    );
+  }
+}
+
+class _MapSearchBar extends StatelessWidget {
+  const _MapSearchBar(this.onConfirm);
+
+  final void Function(MapPickerResult result)? onConfirm;
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = context.read<MapPickerProvider>();
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: TextField(
+        decoration: const InputDecoration(hintText: 'Search address...', prefixIcon: Icon(Icons.search), border: InputBorder.none, contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12)),
+        onChanged: (String address) async {
+          await provider.onSearchTextChanged(address, onDone: onConfirm);
+        },
       ),
     );
   }

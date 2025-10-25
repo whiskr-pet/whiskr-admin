@@ -79,7 +79,6 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
         ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
         ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
-        // ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
       ],
       child: Consumer<CustomThemeProvider>(
         builder: (context, customThemeProvider, child) {

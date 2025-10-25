@@ -3,15 +3,42 @@ import 'package:provider/provider.dart';
 import 'package:w_components/w_components.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_picker.dart';
+import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_provider.dart';
 import 'package:whiskr_admin_panel/config/flavor_config.dart';
 
-class OnboardingLocationStep extends StatelessWidget {
+class OnboardingLocationStep extends StatefulWidget {
   const OnboardingLocationStep({super.key});
+
+  @override
+  State<OnboardingLocationStep> createState() => _OnboardingLocationStepState();
+}
+
+class _OnboardingLocationStepState extends State<OnboardingLocationStep> {
+  late MapPickerProvider _provider;
+
+  @override
+  void initState() {
+    super.initState();
+    _provider = MapPickerProvider();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Expanded(
+          child: SmoothDraggableMapPicker(
+            mapboxAccessToken: FlavorConfig.instance.values.mapboxAccessToken,
+            showAddress: true,
+            onConfirm: (pos) async {
+              context.read<WAOnboardingProvider>().zipCodeController.text = pos.address.zip ?? "";
+              context.read<WAOnboardingProvider>().stateController.text = pos.address.country ?? "";
+              context.read<WAOnboardingProvider>().cityController.text = pos.address.city ?? "";
+              context.read<WAOnboardingProvider>().addressController.text = pos.address.streetAddress ?? "";
+            },
+          ),
+        ),
+        const SizedBox(height: 24),
         WACustomTextField(controller: context.read<WAOnboardingProvider>().addressController, label: 'Address', hint: 'Enter your address', isRequired: true),
         const SizedBox(height: 24),
         Row(
@@ -38,18 +65,6 @@ class OnboardingLocationStep extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 24),
-        Expanded(
-          child: SmoothDraggableMapPicker(
-            mapboxAccessToken: FlavorConfig.instance.values.mapboxAccessToken,
-            showAddress: true,
-            onConfirm: (pos) async {
-              context.read<WAOnboardingProvider>().zipCodeController.text = pos.address.zip ?? "";
-              context.read<WAOnboardingProvider>().stateController.text = pos.address.country ?? "";
-              context.read<WAOnboardingProvider>().cityController.text = pos.address.city ?? "";
-              context.read<WAOnboardingProvider>().addressController.text = pos.address.streetAddress ?? "";
-            },
-          ),
-        ),
       ],
     );
   }
