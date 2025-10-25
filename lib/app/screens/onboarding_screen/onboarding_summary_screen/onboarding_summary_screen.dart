@@ -5,6 +5,15 @@ class OnboardingSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(body: _BuildSummaryBody());
+  }
+}
+
+class _BuildSummaryBody extends StatelessWidget {
+  const _BuildSummaryBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return const Placeholder();
   }
 }

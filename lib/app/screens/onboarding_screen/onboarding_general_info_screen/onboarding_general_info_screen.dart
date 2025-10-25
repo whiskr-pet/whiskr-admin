@@ -16,10 +16,7 @@ class OnboardingGeneralInfoScreen extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 0,
-              horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 60.0, desktop: 120.0, widescreen: 200.0),
-            ),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 60.0, desktop: 120.0, widescreen: 200.0)),
             child: const _BuildOnboardingGeneralInfoBody(),
           ),
         ),
@@ -77,10 +74,6 @@ class _BuildGeneralInfoForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double maxWidth = Responsive.value(context: context, mobile: 600.0, tablet: 800.0, desktop: 1000.0, widescreen: 1200.0);
-
-    final double height = Responsive.value(context: context, mobile: 700.0, tablet: 800.0, desktop: 850.0, widescreen: 900.0);
-
     return Center(child: OnboardingStepper());
   }
 }

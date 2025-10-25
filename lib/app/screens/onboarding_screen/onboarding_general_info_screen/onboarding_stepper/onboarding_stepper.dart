@@ -25,10 +25,7 @@ class _OnboardingStepperState extends State<OnboardingStepper> {
         physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(0),
-          child: StepperContainer(
-            currentStep: context.select<WAOnboardingProvider, int>((provider) => provider.currentStep),
-            onNextStep: context.read<WAOnboardingProvider>().nextStep,
-          ),
+          child: StepperContainer(currentStep: context.select<WAOnboardingProvider, int>((provider) => provider.currentStep), onNextStep: context.read<WAOnboardingProvider>().nextStep),
         ),
       ),
     );
@@ -54,7 +51,12 @@ class StepperContainer extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          WACustomStepper(activeColor: ColorHelper.greenWeb.color, currentStep: currentStep, steps: context.read<WAOnboardingProvider>().steps),
+          WACustomStepper(
+            activeColor: ColorHelper.greenWeb.color,
+            currentStep: currentStep,
+            steps: context.read<WAOnboardingProvider>().steps,
+            onStepPress: (int i) => context.read<WAOnboardingProvider>().setCurrentStep(i),
+          ),
           const SizedBox(height: 18),
           AnimatedSwitcher(
             transitionBuilder: (child, animation) {
