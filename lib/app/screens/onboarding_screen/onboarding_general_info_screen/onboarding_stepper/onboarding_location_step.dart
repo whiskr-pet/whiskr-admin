@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/w_components.dart';
+import 'package:w_components/wa_map_picker/wa_map_picker.dart';
+import 'package:wa_map_module/wa_map_module.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
-import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_picker.dart';
-import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/wa_map_picker/wa_map_provider.dart';
 import 'package:whiskr_admin_panel/config/flavor_config.dart';
 
-class OnboardingLocationStep extends StatefulWidget {
+class OnboardingLocationStep extends StatelessWidget {
   const OnboardingLocationStep({super.key});
-
-  @override
-  State<OnboardingLocationStep> createState() => _OnboardingLocationStepState();
-}
-
-class _OnboardingLocationStepState extends State<OnboardingLocationStep> {
-  late MapPickerProvider _provider;
-
-  @override
-  void initState() {
-    super.initState();
-    _provider = MapPickerProvider();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Expanded(
-          child: SmoothDraggableMapPicker(
+          child: WAMapPicker(
             mapboxAccessToken: FlavorConfig.instance.values.mapboxAccessToken,
             showAddress: true,
+            mapType: MapBoxType.outdoors,
             onConfirm: (pos) async {
               context.read<WAOnboardingProvider>().zipCodeController.text = pos.address.zip ?? "";
               context.read<WAOnboardingProvider>().stateController.text = pos.address.country ?? "";
