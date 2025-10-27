@@ -23,21 +23,47 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().phoneController, label: 'Phone', hint: "Enter your service's phone number", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().phoneController,
+                label: 'Phone',
+                hint: "Enter your service's phone number",
+                isRequired: true,
+                type: WATextFieldType.phone,
+                phoneFormat: '+XXX XX XXX-XXX',
+              ),
             ),
           ],
         ),
         const SizedBox(height: 24),
-        WACustomTextField(controller: context.read<WAOnboardingProvider>().descriptionController, label: 'Description', hint: "Enter your service's description", isRequired: true, maxLines: 4),
+        WACustomTextField(
+          controller: context.read<WAOnboardingProvider>().descriptionController,
+          label: 'Description',
+          hint: "Enter your service's description",
+          isRequired: true,
+          maxLines: 4,
+          maxLength: 600,
+        ),
         const SizedBox(height: 24),
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().emailController, label: 'Contact Email', hint: "Enter your service's contact email", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().emailController,
+                label: 'Contact Email',
+                hint: "Enter your service's contact email",
+                isRequired: true,
+                type: WATextFieldType.email,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().websiteController, label: 'Website', hint: "Enter your service's website", isRequired: false),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().websiteController,
+                label: 'Website',
+                hint: "Enter your service's website",
+                isRequired: false,
+                type: WATextFieldType.url,
+              ),
             ),
           ],
         ),
