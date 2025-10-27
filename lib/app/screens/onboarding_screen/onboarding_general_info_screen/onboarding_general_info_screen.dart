@@ -82,4 +82,5 @@ Map<int, Map<String, String>> onboardingSteps = {
   0: {'title': 'Introduce Your Business', 'description': 'Start by filling in your core details - this is what users will see when they visit your page'},
   1: {'title': 'Pin Your Location', 'description': 'Specify your location and make it visible on the map to appear in local searches and navigation'},
   2: {'title': 'Set Your Working Hours', 'description': 'Set your weekly schedule so clients can reach you during your operating hours'},
+  3: {'title': 'Summary', 'description': 'Check if all the data is correct and proceed to your Dashboard'},
 };

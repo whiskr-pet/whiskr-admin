@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/wa_custom_stepper/wa_custom_stepper.dart';
@@ -8,7 +7,7 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_general_info_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_location_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_working_hours_step.dart';
-import 'package:whiskr_admin_panel/routing/routes.dart';
+import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_summary_screen/onboarding_summary_screen.dart';
 
 class OnboardingStepper extends StatefulWidget {
   const OnboardingStepper({super.key});
@@ -20,13 +19,12 @@ class OnboardingStepper extends StatefulWidget {
 class _OnboardingStepperState extends State<OnboardingStepper> {
   @override
   Widget build(BuildContext context) {
+    final currentStep = context.select<WAOnboardingProvider, int>((p) => p.currentStep);
+
     return Center(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(0),
-          child: StepperContainer(currentStep: context.select<WAOnboardingProvider, int>((provider) => provider.currentStep), onNextStep: context.read<WAOnboardingProvider>().nextStep),
-        ),
+        child: StepperContainer(currentStep: currentStep, onNextStep: context.read<WAOnboardingProvider>().nextStep, showSummary: currentStep == 3),
       ),
     );
   }
@@ -35,8 +33,9 @@ class _OnboardingStepperState extends State<OnboardingStepper> {
 class StepperContainer extends StatelessWidget {
   final int currentStep;
   final VoidCallback onNextStep;
+  final bool showSummary;
 
-  const StepperContainer({super.key, required this.currentStep, required this.onNextStep});
+  const StepperContainer({super.key, required this.currentStep, required this.onNextStep, this.showSummary = false});
 
   @override
   Widget build(BuildContext context) {
@@ -59,31 +58,42 @@ class StepperContainer extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           AnimatedSwitcher(
+            duration: const Duration(milliseconds: 450),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
             transitionBuilder: (child, animation) {
-              return SlideTransition(
-                position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(animation),
-                child: FadeTransition(opacity: animation, child: child),
+              final fadeIn = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+              final slideIn = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero).animate(fadeIn);
+
+              final scale = Tween<double>(begin: 0.98, end: 1.0).animate(fadeIn);
+
+              return FadeTransition(
+                opacity: fadeIn,
+                child: SlideTransition(
+                  position: slideIn,
+                  child: ScaleTransition(scale: scale, child: child),
+                ),
               );
             },
-            duration: const Duration(milliseconds: 300),
-            child: SizedBox(key: ValueKey(currentStep), height: 550, child: _buildStepContent()),
+            child: SizedBox(key: ValueKey(showSummary ? 'summary' : currentStep), height: showSummary ? 1000 : 550, child: showSummary ? const OnboardingSummaryScreen() : _buildStepContent()),
           ),
           const SizedBox(height: 22),
-          SizedBox(
-            width: double.infinity,
-            height: 45,
-            child: CommonButton(
-              onPressed: currentStep < 2
-                  ? onNextStep
-                  : () {
-                      context.read<WAOnboardingProvider>().saveData();
-                      context.go(onboardingSummaryRoute);
-                    },
-              buttonTitle: currentStep < 2 ? 'Next Step' : 'Complete',
-              buttonType: PPButtonType.web,
-              showBorder: false,
+          if (!showSummary)
+            SizedBox(
+              width: double.infinity,
+              height: 45,
+              child: CommonButton(
+                onPressed: currentStep < 2
+                    ? onNextStep
+                    : () {
+                        context.read<WAOnboardingProvider>().saveData();
+                        context.read<WAOnboardingProvider>().setCurrentStep(3);
+                      },
+                buttonTitle: currentStep < 2 ? 'Next Step' : 'Complete',
+                buttonType: PPButtonType.web,
+                showBorder: false,
+              ),
             ),
-          ),
         ],
       ),
     );
