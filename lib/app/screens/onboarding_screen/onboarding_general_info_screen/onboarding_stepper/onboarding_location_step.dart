@@ -48,7 +48,7 @@ class OnboardingLocationStep extends StatelessWidget {
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().noteController, label: 'Note', hint: 'Enter notes', isRequired: true),
+              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().noteController, label: 'Note', hint: 'Enter notes', isRequired: false),
             ),
           ],
         ),
