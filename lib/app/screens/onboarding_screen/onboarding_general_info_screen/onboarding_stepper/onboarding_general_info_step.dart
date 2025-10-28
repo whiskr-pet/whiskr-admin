@@ -26,7 +26,7 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().phoneController,
                 label: 'Phone',
-                hint: "Enter your service's phone number",
+                hint: "XXX XX XXX-XXX",
                 isRequired: true,
                 type: WATextFieldType.phone,
                 phoneFormat: '+XXX XX XXX-XXX',
