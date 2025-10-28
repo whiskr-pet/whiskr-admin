@@ -7,26 +7,9 @@ import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_map_module/wa_map_module.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/ui_organization_helper/onboarding_organization_helper.dart';
 
 import '../../../../config/flavor_config.dart';
-
-List<_TitleValue> generalInfoRow(WAOnboardingProvider provider) => [
-  _TitleValue('Phone', provider.phoneController.text),
-  _TitleValue('Email', provider.emailController.text),
-  _TitleValue('Website', provider.websiteController.text),
-  _TitleValue('Description', provider.descriptionController.text),
-];
-
-List<_TitleValue> locationInfoRow(WAOnboardingProvider provider) => [
-  _TitleValue('Address', provider.addressController.text),
-  _TitleValue('City', provider.cityController.text),
-  _TitleValue('State', provider.stateController.text),
-  _TitleValue('Zip Code', provider.zipCodeController.text),
-  _TitleValue('Note', provider.noteController.text),
-];
-
-List<_TitleValue> hoursInfoRow(WAOnboardingProvider provider, BuildContext context) =>
-    provider.workingDays.map((day) => _TitleValue(day.name, day.isOpen ? '${day.openingTime.format(context)} - ${day.closingTime.format(context)}' : 'Closed')).toList();
 
 class OnboardingSummaryScreen extends StatelessWidget {
   const OnboardingSummaryScreen({super.key});
@@ -43,6 +26,7 @@ class _BuildSummaryBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.read<WAOnboardingProvider>();
+    final OnboardingHelper helper = OnboardingHelper();
 
     return Container(
       color: ColorHelper.white.color,
@@ -56,23 +40,23 @@ class _BuildSummaryBody extends StatelessWidget {
           _BuildSummaryHeader(),
           FadingDivider(color: ColorHelper.greenWeb.color),
           SizedBox(height: Responsive.value(context: context, mobile: 16, desktop: 20)),
-          _BuildSegment(title: 'General Information', infoRows: generalInfoRow(provider), widthOfSegment: double.infinity),
+          _BuildSegment(title: 'General Information', infoRows: helper.generalInfoRow(provider), widthOfSegment: double.infinity),
           SizedBox(height: Responsive.value(context: context, mobile: 16, desktop: 20)),
           ResponsiveBuilder(
             mobile: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _BuildSegment(title: 'Location', infoRows: locationInfoRow(provider), widthOfSegment: double.infinity),
+                _BuildSegment(title: 'Location', infoRows: helper.locationInfoRow(provider), widthOfSegment: double.infinity),
                 const SizedBox(height: 20),
-                _BuildSegment(title: 'Working Hours', infoRows: hoursInfoRow(provider, context), widthOfSegment: double.infinity),
+                _BuildSegment(title: 'Working Hours', infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: double.infinity),
               ],
             ),
             desktop: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _BuildSegment(title: 'Location', infoRows: locationInfoRow(provider), widthOfSegment: 300),
-                _BuildSegment(title: 'Working Hours', infoRows: hoursInfoRow(provider, context), widthOfSegment: 300),
+                _BuildSegment(title: 'Location', infoRows: helper.locationInfoRow(provider), widthOfSegment: 300),
+                _BuildSegment(title: 'Working Hours', infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: 300),
               ],
             ),
           ),
@@ -178,7 +162,7 @@ class _BuildSegment extends StatelessWidget {
   const _BuildSegment({super.key, this.title = 'TITLE', required this.infoRows, this.widthOfSegment = 200});
 
   final String title;
-  final List<_TitleValue> infoRows;
+  final List<TitleSummaryValue> infoRows;
   final double widthOfSegment;
 
   @override
@@ -232,8 +216,8 @@ class _BuildInfoRow extends StatelessWidget {
   }
 }
 
-class _TitleValue {
-  _TitleValue(this.title, this.value);
+class TitleSummaryValue {
+  TitleSummaryValue(this.title, this.value);
 
   final String title;
   final String value;

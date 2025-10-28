@@ -5,7 +5,7 @@ import 'package:w_permissions_module/services/navigation_service.dart';
 import 'package:whiskr_admin_panel/app/screens/analytics_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/main_layout.dart';
-import 'package:whiskr_admin_panel/app/screens/inventory_screen.dart';
+import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/inventory_services_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/login_screen/login_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_general_info_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_intro_screen/onboarding_intro_screen.dart';
@@ -18,8 +18,8 @@ class RouteGenerator {
   GoRouter get router => _router;
 
   final GoRouter _router = GoRouter(
-    // initialLocation: splashRoute,
-    initialLocation: onboardingIntroRoute,
+    initialLocation: splashRoute,
+    // initialLocation: onboardingIntroRoute,
     navigatorKey: locator<NavigationService>().navigationKey,
     routes: <RouteBase>[
       // Shell route wraps all authenticated admin routes with MainLayout
@@ -39,7 +39,7 @@ class RouteGenerator {
             path: inventoryRoute,
             name: 'inventory',
             builder: (BuildContext context, GoRouterState state) {
-              return const InventoryScreen();
+              return const InventoryServicesScreen();
             },
           ),
           GoRoute(
