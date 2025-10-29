@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboard_appointments.dart';
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
 import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dart';
+import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
@@ -60,16 +60,8 @@ class _BuildDashboardWelcome extends StatelessWidget {
           const SizedBox(height: 24),
           Text('Overview', style: theme.textTheme.headlineMedium),
           const SizedBox(height: 24),
-          if (Responsive.isTablet(context) || Responsive.isMobile(context)) ...[
-            _BuildDashboardOverviewCardsTabletLayout(),
-          ] else ...[
-            _BuildDashboardOverviewCards(),
-            const SizedBox(height: 24),
-          ],
-          if (!isPetShop)
-            WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders)
-          else
-            _BuildDashboardAppointments(),
+          if (Responsive.isTablet(context) || Responsive.isMobile(context)) ...[_BuildDashboardOverviewCardsTabletLayout()] else ...[_BuildDashboardOverviewCards(), const SizedBox(height: 24)],
+          if (!isPetShop) WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders) else _BuildDashboardAppointments(),
           const SizedBox(height: 24),
           WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: lowStockProducts),
         ],
@@ -180,24 +172,21 @@ List<LowStockProductModel> lowStockProducts = [
     status: LowStockProductStatus.outOfStock.title,
   ),
   LowStockProductModel(
-    image:
-        'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
+    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
     name: 'Dog Food',
     stock: 10,
     category: 'Food',
     status: LowStockProductStatus.lowStock.title,
   ),
   LowStockProductModel(
-    image:
-        'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
+    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
     name: 'Dog Food',
     stock: 10,
     category: 'Food',
     status: LowStockProductStatus.lowStock.title,
   ),
   LowStockProductModel(
-    image:
-        'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
+    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
     name: 'Dog Food',
     stock: 10,
     category: 'Food',

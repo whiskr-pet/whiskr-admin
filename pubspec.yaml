@@ -41,49 +41,47 @@ dependencies:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2  
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2   
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
   wa_onboarding_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_onboarding_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2    
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0    
   w_image_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_image_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
   wa_map_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_map_module
-      ref: eb950f03d97702dd776e4baa57fbb8f334fd37b2
-
-
+      ref: 4ce156c20bd31641b2be9e90e6b5e6f547d7f3f0
 
 
 dev_dependencies:
