@@ -42125,6 +42125,7 @@ UNAUTHORIZED USE OF THIS SOFTWARE IS STRICTLY PROHIBITED.
 --------------------------------------------------------------------------------
 w_dashboard
 w_pet_service_module
+wa_inventory_services_module
 wa_map_module
 wa_onboarding_module
 
