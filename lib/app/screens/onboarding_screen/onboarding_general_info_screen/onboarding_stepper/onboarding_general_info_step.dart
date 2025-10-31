@@ -19,9 +19,14 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().nameController, label: 'Name', hint: "Enter your service's name", isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().nameController,
+                label: 'Name',
+                hint: "Enter your service's name",
+                isRequired: true,
+              ),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: 16),
             Expanded(
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().phoneController,
@@ -87,7 +92,9 @@ class _BuildImagePicker extends StatelessWidget {
                       width: 75,
                       height: 75,
                       color: ColorHelper.grey150.color,
-                      child: imageProvider.imageBytes != null ? Image.memory(imageProvider.imageBytes!, fit: BoxFit.cover) : const Icon(Icons.person, size: 40, color: Colors.grey),
+                      child: imageProvider.imageBytes != null
+                          ? Image.memory(imageProvider.imageBytes!, fit: BoxFit.cover)
+                          : const Icon(Icons.person, size: 40, color: Colors.grey),
                     ),
                   )
                 : Container(
@@ -134,6 +141,7 @@ class _BuildTextImagePicker extends StatelessWidget {
         // } else {
         //   _showSnack(context, uploadResult.error!);
         // }
+        //
       },
       child: Text(
         context.select<ImageHandleProvider, bool>((provider) => provider.imageBytes != null) ? 'Change Photo' : 'Upload Photo',
