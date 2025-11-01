@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/text_fields/wa_custom_search_text.dart';
 import 'package:w_components/wa_custom_inventory_data_widget/wa_custom_inventory_data_widget.dart';
 import 'package:w_components/wa_inventory_table/wa_inventory_table.dart';
-import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_stats_model.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/inventory_services_screen_helper.dart';
+
+import 'add_new_inventory_modal.dart';
 
 class InventoryServicesScreen extends StatelessWidget {
   const InventoryServicesScreen({super.key});
@@ -34,7 +36,7 @@ class _BuildBody extends StatelessWidget {
         children: [
           _BuildHeader(),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
-          const _BuildInventoryTable(),
+          _BuildInventoryTable(),
           const SizedBox(height: 40),
         ],
       ),
@@ -154,174 +156,39 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
     return SizedBox(
       width: isTablet ? null : Responsive.value(context: context, mobile: 500.0, tablet: null, desktop: 500.0, widescreen: 550.0),
       height: buttonHeight,
-      child: CommonButton(onPressed: () {}, buttonTitle: '+ Add Inventory', buttonType: PPButtonType.web, showBorder: false),
+      child: CommonButton(
+        onPressed: () => AddInventoryModal.show(
+          context,
+          onSave: () {
+            // todo return Response model, and in success close modal
+            context.read<WAInventoryServicesProvider>().addProduct();
+          },
+        ),
+        buttonTitle: '+ Add Inventory',
+        buttonType: PPButtonType.web,
+        showBorder: false,
+      ),
     );
   }
 }
 
 class _BuildInventoryTable extends StatelessWidget {
-  const _BuildInventoryTable({super.key});
+  _BuildInventoryTable();
+  final InventoryServicesHelper helper = InventoryServicesHelper();
 
   @override
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
 
     return WAInventoryTable(
-      orders: products,
+      orders: context.watch<WAInventoryServicesProvider>().products,
       height: tableHeight,
-      onDelete: () {
-        debugPrint("DELETE from above");
+      onDelete: (String id, String inventoryName) {
+        helper.showDeleteDialog(context, id, inventoryName);
       },
-      onEdit: () {
+      onEdit: (String id) {
         debugPrint("edit FROM ABOVE");
       },
     );
   }
 }
-
-final List<WAProduct> products = [
-  WAProduct(
-    id: '123',
-    name: "Dog Food Premium",
-    description: "High-quality dry food for adult dogs.",
-    brandName: "HappyPaws",
-    category: "Food",
-    tags: ["dog", "food", "dry"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 50,
-    price: 29.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.lowStock.title,
-  ),
-  WAProduct(
-    id: '123wew',
-    name: "Cat Food Deluxe",
-    description: "Nutritious wet food for cats with chicken flavor.",
-    brandName: "MeowMix",
-    category: "Food",
-    tags: ["cat", "food", "wet"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 80,
-    price: 19.49,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.inStock.title,
-  ),
-  WAProduct(
-    id: '12e2w23',
-    name: "Dog Collar Leather",
-    description: "Adjustable leather collar for medium dogs.",
-    brandName: "PetStyle",
-    category: "Accessories",
-    tags: ["dog", "collar", "leather"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 120,
-    price: 14.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.inStock.title,
-  ),
-  WAProduct(
-    id: '112w23',
-    name: "Cat Toy Ball Set",
-    description: "Set of 5 colorful play balls for cats.",
-    brandName: "FurFun",
-    category: "Toys",
-    tags: ["cat", "toy", "play"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 200,
-    price: 9.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.inStock.title,
-  ),
-  WAProduct(
-    id: '12asdsa3',
-    name: "Dog Bed Cozy",
-    description: "Comfortable round dog bed with removable cover.",
-    brandName: "SleepyPets",
-    category: "Beds",
-    tags: ["dog", "bed", "comfort"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 35,
-    price: 49.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.lowStock.title,
-  ),
-  WAProduct(
-    id: '21312',
-    name: "Cat Scratching Post",
-    description: "Durable scratching post for cats with base support.",
-    brandName: "Purrfect",
-    category: "Furniture",
-    tags: ["cat", "scratching", "furniture"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 0,
-    price: 39.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.outOfStock.title,
-  ),
-  WAProduct(
-    id: 'dfld',
-    name: "Dog Shampoo Gentle",
-    description: "Hypoallergenic dog shampoo with aloe vera.",
-    brandName: "CleanTail",
-    category: "Grooming",
-    tags: ["dog", "shampoo", "care"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 75,
-    price: 17.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.inStock.title,
-  ),
-  WAProduct(
-    id: 'dfvsdvds',
-    name: "Cat Litter Clumping",
-    description: "Natural clay clumping litter with lavender scent.",
-    brandName: "FreshPaw",
-    category: "Hygiene",
-    tags: ["cat", "litter", "hygiene"],
-    image: ImageModel(
-      url: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      thumbnail: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-      imageId: "img_001",
-    ),
-    stockQuantity: 90,
-    price: 24.99,
-    currency: "BAM",
-    active: true,
-    status: LowStockProductStatus.inStock.title,
-  ),
-];
