@@ -141,7 +141,6 @@ class _BuildTextImagePicker extends StatelessWidget {
         // } else {
         //   _showSnack(context, uploadResult.error!);
         // }
-        //
       },
       child: Text(
         context.select<ImageHandleProvider, bool>((provider) => provider.imageBytes != null) ? 'Change Photo' : 'Upload Photo',
