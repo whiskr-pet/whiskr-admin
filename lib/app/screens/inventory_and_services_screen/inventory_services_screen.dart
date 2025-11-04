@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/text_fields/wa_custom_search_text.dart';
 import 'package:w_components/wa_custom_inventory_data_widget/wa_custom_inventory_data_widget.dart';
+import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_components/wa_inventory_table/wa_inventory_table.dart';
+import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/models/image_model.dart';
+import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_stats_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/inventory_services_screen_helper.dart';
+import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/wa_services_model.dart';
+import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/wa_services_table.dart';
 
 import 'add_new_inventory_modal.dart';
 
@@ -36,7 +43,9 @@ class _BuildBody extends StatelessWidget {
         children: [
           _BuildHeader(),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
-          _BuildInventoryTable(),
+          // _BuildInventoryTable(),
+          // todo when BE is ready
+          // _BuildServicesTable(),
           const SizedBox(height: 40),
         ],
       ),
@@ -79,21 +88,29 @@ class _BuildHeader extends StatelessWidget {
             children: [
               const Expanded(child: _BuildAddInventoryOrServiceButton()),
               const SizedBox(width: 12),
-              const Expanded(
+              Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: 0),
-                  child: WASearchTextField(onChanged: _handleSearch),
+                  child: WASearchTextField(
+                    onChanged: (String value) {
+                      _handleSearch(value, context);
+                    },
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: InventorySummaryWidget(
-              stats: InventoryStats(total: 123, lowStock: 12, outOfStock: 7),
-              onTotalTap: () => debugPrint('Total tapped'),
-              onLowStockTap: () => debugPrint('Low stock tapped'),
-              onOutOfStockTap: () => debugPrint('Out of stock tapped'),
+            child: Consumer(
+              builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
+                return InventorySummaryWidget(
+                  stats: InventoryStats(total: provider.productsValueList.length, lowStock: provider.lowStockProducts.length, outOfStock: provider.outOfStockProducts.length),
+                  onTotalTap: () => provider.clearStatusFilter(),
+                  onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
+                  onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
+                );
+              },
             ),
           ),
         ],
@@ -111,11 +128,15 @@ class _BuildHeader extends StatelessWidget {
         Expanded(
           child: SizedBox(
             width: summaryWidth,
-            child: InventorySummaryWidget(
-              stats: InventoryStats(total: 123, lowStock: 12, outOfStock: 7),
-              onTotalTap: () => print('Total tapped'),
-              onLowStockTap: () => print('Low stock tapped'),
-              onOutOfStockTap: () => print('Out of stock tapped'),
+            child: Consumer(
+              builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
+                return InventorySummaryWidget(
+                  stats: InventoryStats(total: provider.productsValueList.length, lowStock: provider.lowStockProducts.length, outOfStock: provider.outOfStockProducts.length),
+                  onTotalTap: () => provider.clearStatusFilter(),
+                  onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
+                  onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
+                );
+              },
             ),
           ),
         ),
@@ -130,7 +151,11 @@ class _BuildHeader extends StatelessWidget {
                 const _BuildAddInventoryOrServiceButton(),
                 SizedBox(
                   width: controlsWidth,
-                  child: const WASearchTextField(onChanged: _handleSearch),
+                  child: WASearchTextField(
+                    onChanged: (String value) {
+                      _handleSearch(value, context);
+                    },
+                  ),
                 ),
               ],
             ),
@@ -140,8 +165,8 @@ class _BuildHeader extends StatelessWidget {
     );
   }
 
-  static void _handleSearch(String value) {
-    debugPrint("Searching for: $value");
+  static void _handleSearch(String value, BuildContext context) {
+    context.read<WAInventoryServicesProvider>().updateSearchQuery(value);
   }
 }
 
@@ -160,8 +185,12 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
         onPressed: () => AddInventoryModal.show(
           context,
           onSave: () {
-            // todo return Response model, and in success close modal
-            context.read<WAInventoryServicesProvider>().addProduct();
+            final ResponseModel response = context.read<WAInventoryServicesProvider>().addProduct();
+            if (response.isSuccess) {
+              WACustomSnackbar.instance.showSnack(context, 'Successfully added new item to your inventory');
+              context.read<WAInventoryServicesProvider>().resetControllers();
+            }
+            context.pop();
           },
         ),
         buttonTitle: '+ Add Inventory',
@@ -192,3 +221,107 @@ class _BuildInventoryTable extends StatelessWidget {
     );
   }
 }
+
+class _BuildServicesTable extends StatelessWidget {
+  _BuildServicesTable();
+  final InventoryServicesHelper helper = InventoryServicesHelper();
+
+  @override
+  Widget build(BuildContext context) {
+    final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
+
+    return WaServicesTable(
+      services: _localServices,
+      height: tableHeight,
+      onDelete: (String id, String serviceName) {
+        // helper.showDeleteDialog(context, id, serviceName);
+      },
+      onEdit: (String id) {
+        debugPrint("edit FROM ABOVE");
+      },
+    );
+  }
+}
+
+final List<WAServiceModel> _localServices = [
+  WAServiceModel(
+    id: '1',
+    name: 'Basic Bath & Brush',
+    description: 'Includes bath, blow dry, brushing, and light trimming. Perfect for quick clean-ups.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/bath_brush.jpg', thumbnail: 'https://example.com/thumbs/bath_brush.jpg'),
+    price: 25.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '2',
+    name: 'Full Grooming Package',
+    description: 'Complete grooming with bath, haircut, nail trim, ear cleaning, and paw care.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/full_grooming.jpg', thumbnail: 'https://example.com/thumbs/full_grooming.jpg'),
+    price: 45.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '3',
+    name: 'Puppy Intro Grooming',
+    description: 'Gentle introduction to grooming for puppies. Includes light wash, brushing, and nail trimming.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/puppy_groom.jpg', thumbnail: 'https://example.com/thumbs/puppy_groom.jpg'),
+    price: 20.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '4',
+    name: 'De-Shedding Treatment',
+    description: 'Reduces shedding with deep conditioning, brushing, and blowout using special tools.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/deshedding.jpg', thumbnail: 'https://example.com/thumbs/deshedding.jpg'),
+    price: 35.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '5',
+    name: 'Nail Clipping & Paw Care',
+    description: 'Quick nail trim, paw pad cleaning, and moisturizing treatment.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/nail_care.jpg', thumbnail: 'https://example.com/thumbs/nail_care.jpg'),
+    price: 15.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '6',
+    name: 'Ear Cleaning & Hygiene',
+    description: 'Safe and gentle ear cleaning to remove dirt and reduce odor or infection risk.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/ear_clean.jpg', thumbnail: 'https://example.com/thumbs/ear_clean.jpg'),
+    price: 10.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '7',
+    name: 'Teeth Brushing & Breath Freshener',
+    description: 'Brushing with pet-safe toothpaste and finishing spray for fresh breath.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/teeth_clean.jpg', thumbnail: 'https://example.com/thumbs/teeth_clean.jpg'),
+    price: 12.0,
+    currency: 'BAM',
+    active: true,
+  ),
+  WAServiceModel(
+    id: '8',
+    name: 'Spa & Aromatherapy Bath',
+    description: 'Relaxing spa bath with natural oils and aromatherapy massage for pets.',
+    category: 'Grooming',
+    image: ImageModel(url: 'https://example.com/images/spa_bath.jpg', thumbnail: 'https://example.com/thumbs/spa_bath.jpg'),
+    price: 50.0,
+    currency: 'BAM',
+    active: true,
+  ),
+];

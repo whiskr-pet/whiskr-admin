@@ -196,7 +196,7 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                             onRemoveTag: context.read<WAInventoryServicesProvider>().removeTag,
                           ),
                           const SizedBox(height: 24),
-                          ActiveStatusSwitch(active: context.read<WAInventoryServicesProvider>().active, onChanged: (v) => context.read<WAInventoryServicesProvider>().setIsActive(v)),
+                          ActiveStatusSwitch(active: context.watch<WAInventoryServicesProvider>().active, onChanged: (v) => context.read<WAInventoryServicesProvider>().setIsActive(v)),
                         ],
                       ),
                     ),
