@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_permissions_module/services/navigation_service.dart';
-import 'package:whiskr_admin_panel/app/screens/analytics_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/main_layout.dart';
 import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/inventory_services_screen.dart';
@@ -13,6 +12,8 @@ import 'package:whiskr_admin_panel/app/screens/orders_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/services_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/splash_screen/splash_screen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
+
+import '../app/screens/analytics_screen/analytics_screen.dart';
 
 class RouteGenerator {
   GoRouter get router => _router;

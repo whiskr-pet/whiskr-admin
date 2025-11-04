@@ -6,16 +6,16 @@ import 'package:w_components/text_fields/wa_custom_search_text.dart';
 import 'package:w_components/wa_custom_inventory_data_widget/wa_custom_inventory_data_widget.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_components/wa_inventory_table/wa_inventory_table.dart';
+import 'package:w_components/wa_services_table/wa_services_table.dart';
 import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_stats_model.dart';
+import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/inventory_services_screen_helper.dart';
-import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/wa_services_model.dart';
-import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/wa_services_table.dart';
 
 import 'add_new_inventory_modal.dart';
 
@@ -43,7 +43,7 @@ class _BuildBody extends StatelessWidget {
         children: [
           _BuildHeader(),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
-          // _BuildInventoryTable(),
+          _BuildInventoryTable(),
           // todo when BE is ready
           // _BuildServicesTable(),
           const SizedBox(height: 40),
