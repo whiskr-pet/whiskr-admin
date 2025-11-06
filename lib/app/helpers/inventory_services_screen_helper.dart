@@ -66,7 +66,7 @@ class InventoryServicesHelper {
                             Navigator.pop(context);
                             provider.deleteProduct(productID);
                           },
-                          buttonTitle: 'Logout',
+                          buttonTitle: 'Delete',
                           buttonType: PPButtonType.web,
                           style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(ColorHelper.red500.color)),
                           showBorder: false,
