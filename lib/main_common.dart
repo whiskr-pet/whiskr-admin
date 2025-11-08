@@ -16,10 +16,6 @@ import 'package:whiskr_admin_panel/app/utils/session_manager.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
 import 'config/flavor_config.dart';
-import 'providers/auth_provider.dart';
-import 'providers/order_provider.dart';
-import 'providers/product_provider.dart';
-import 'providers/service_provider.dart';
 
 Future<void> initializeApp({required Flavor flavor, required String appName, required String env}) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,10 +68,6 @@ class WhiskrAdminApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AuthProvider>(create: (_) => AuthProvider(), lazy: true),
-        ChangeNotifierProvider<ProductProvider>(create: (_) => ProductProvider(), lazy: true),
-        ChangeNotifierProvider<OrderProvider>(create: (_) => OrderProvider(), lazy: true),
-        ChangeNotifierProvider<ServiceProvider>(create: (_) => ServiceProvider(), lazy: true),
         ChangeNotifierProvider<CustomThemeProvider>(create: (_) => CustomThemeProvider(), lazy: true),
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
         ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),

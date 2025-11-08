@@ -33,9 +33,8 @@ class _BuildBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final horizontalPadding = Responsive.value(context: context, mobile: 24.0, tablet: 16.0, desktop: 24.0, widescreen: 32.0);
-
-    final verticalPadding = Responsive.value(context: context, mobile: 16.0, tablet: 12.0, desktop: 16.0, widescreen: 20.0);
+    final horizontalPadding = Responsive.value(context: context, mobile: 24.0, tablet: 32.0, desktop: 40.0, widescreen: 48.0);
+    final verticalPadding = Responsive.value(context: context, mobile: 16.0, tablet: 24.0, desktop: 32.0, widescreen: 40.0);
 
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
@@ -59,7 +58,7 @@ class _BuildHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 22.0, desktop: 24.0, widescreen: 28.0);
+    final double titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 28.0, desktop: 32.0, widescreen: 36.0);
     final isTablet = Responsive.isTablet(context);
 
     return Column(
