@@ -335,7 +335,7 @@ class DateRangeSelector extends StatelessWidget {
   Widget _buildCustomDateOption(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final picked = await showDateRangePicker(
+        final DateTimeRange<DateTime>? picked = await showDateRangePicker(
           context: context,
           firstDate: DateTime(2020),
           lastDate: DateTime.now().add(const Duration(days: 365)),
