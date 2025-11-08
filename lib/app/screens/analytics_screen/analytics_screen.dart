@@ -406,31 +406,90 @@ class _TimePeriodDropdown extends StatelessWidget {
     final provider = context.watch<WAAnalyticsProvider>();
 
     return PopupMenuButton<TimePeriod>(
+      color: Colors.white,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      offset: const Offset(0, 8),
       onSelected: (TimePeriod period) {
         provider.setSelectedTimePeriod(period);
       },
       itemBuilder: (BuildContext context) {
         return TimePeriod.values.map((TimePeriod period) {
-          return PopupMenuItem<TimePeriod>(value: period, child: Text(period.displayName));
+          final isSelected = provider.selectedPeriod == period;
+          return PopupMenuItem<TimePeriod>(
+            value: period,
+            padding: EdgeInsets.zero,
+            child: _HoverMenuItem(
+              isSelected: isSelected,
+              isFirst: period == TimePeriod.values.first,
+              isLast: period == TimePeriod.values.last,
+              child: Text(
+                period.displayName,
+                style: TextStyle(color: const Color(0xFF374151), fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400),
+              ),
+            ),
+          );
         }).toList();
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFF0F766E)),
+          border: Border.all(color: const Color(0xFF0F766E), width: 1.5),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               provider.selectedPeriod.displayName,
-              style: const TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.w500),
+              style: const TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.w600, fontSize: 16),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_drop_down, color: Color(0xFF0F766E)),
+            const Icon(Icons.arrow_drop_down, color: Color(0xFF0F766E), size: 24),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HoverMenuItem extends StatefulWidget {
+  final Widget child;
+  final bool isSelected;
+  final bool isFirst;
+  final bool isLast;
+
+  const _HoverMenuItem({required this.child, required this.isSelected, required this.isFirst, required this.isLast});
+
+  @override
+  State<_HoverMenuItem> createState() => _HoverMenuItemState();
+}
+
+class _HoverMenuItemState extends State<_HoverMenuItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        decoration: BoxDecoration(
+          color: widget.isSelected
+              ? const Color(0xFFD4E7D7)
+              : _isHovered
+              ? const Color(0xFFF3F4F6)
+              : Colors.white,
+          borderRadius: widget.isFirst
+              ? const BorderRadius.vertical(top: Radius.circular(12))
+              : widget.isLast
+              ? const BorderRadius.vertical(bottom: Radius.circular(12))
+              : BorderRadius.zero,
+        ),
+        child: widget.child,
       ),
     );
   }
