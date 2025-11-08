@@ -8,8 +8,7 @@ import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/inv
 import 'package:whiskr_admin_panel/app/screens/login_screen/login_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_general_info_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_intro_screen/onboarding_intro_screen.dart';
-import 'package:whiskr_admin_panel/app/screens/orders_screen.dart';
-import 'package:whiskr_admin_panel/app/screens/services_screen.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/orders_and_appointments_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/splash_screen/splash_screen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
@@ -47,14 +46,7 @@ class RouteGenerator {
             path: ordersRoute,
             name: 'orders',
             builder: (BuildContext context, GoRouterState state) {
-              return const OrdersScreen();
-            },
-          ),
-          GoRoute(
-            path: servicesRoute,
-            name: 'services',
-            builder: (BuildContext context, GoRouterState state) {
-              return const ServicesScreen();
+              return const OrdersAndAppointmentsScreen();
             },
           ),
           GoRoute(

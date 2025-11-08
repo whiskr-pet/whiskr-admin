@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboard_appointments.dart';
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
@@ -9,7 +10,6 @@ import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
-import 'package:whiskr_admin_panel/providers/auth_provider.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -50,9 +50,9 @@ class _BuildDashboardWelcome extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Consumer<AuthProvider>(
+          Consumer<AuthenticationProvider>(
             builder: (context, authProvider, child) {
-              return Text('Welcome back, ${authProvider.currentUser?.name ?? 'Eric Cartman'}!', style: theme.textTheme.headlineMedium);
+              return Text('Welcome back, ${authProvider.userModel.firstName ?? 'Eric Cartman'}!', style: theme.textTheme.headlineMedium);
             },
           ),
           const SizedBox(height: 24),
