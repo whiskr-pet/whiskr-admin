@@ -69,7 +69,15 @@ class StepperContainer extends StatelessWidget {
                 ),
               );
             },
-            child: SizedBox(key: ValueKey(showSummary ? 'summary' : currentStep), height: showSummary ? 1150 : 550, child: showSummary ? const OnboardingSummaryScreen() : _buildStepContent()),
+            child: SizedBox(
+              key: ValueKey(showSummary ? 'summary' : currentStep),
+              height: showSummary
+                  ? 1150
+                  : currentStep == 0
+                  ? 700
+                  : 550,
+              child: showSummary ? const OnboardingSummaryScreen() : _buildStepContent(),
+            ),
           ),
           const SizedBox(height: 22),
           if (!showSummary) _buildNavigationButtons(context),
