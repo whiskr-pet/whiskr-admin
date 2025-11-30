@@ -39,7 +39,6 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   );
 
   await storagePrefs.init();
-  storagePrefs.deleteAll();
   setupLocator(methodChannel: AppConstants.methodChannel);
 
   try {

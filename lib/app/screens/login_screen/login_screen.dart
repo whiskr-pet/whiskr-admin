@@ -29,10 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [const _LoginHeader(), const SizedBox(height: 48), _LoginForm(), const SizedBox(height: 32), _LoginFooter()],
-            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const _LoginHeader(), const SizedBox(height: 48), _LoginForm(), const SizedBox(height: 32), _LoginFooter()]),
           ),
         ),
       ),
@@ -84,15 +81,7 @@ class _LoginForm extends StatelessWidget {
             key: context.read<AuthenticationProvider>().formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _LoginEmailField(),
-                const SizedBox(height: 24),
-                _LoginPasswordField(),
-                const SizedBox(height: 32),
-                _LoginButton(),
-                const SizedBox(height: 24),
-                _LoginForgotPasswordButton(),
-              ],
+              children: [_LoginEmailField(), const SizedBox(height: 24), _LoginPasswordField(), const SizedBox(height: 32), _LoginButton(), const SizedBox(height: 24), _LoginForgotPasswordButton()],
             ),
           ),
         ),
@@ -126,9 +115,7 @@ class _LoginPasswordField extends StatelessWidget {
         labelText: AdminTextHelper.passwordLabel,
         prefixIcon: const Icon(Icons.lock_outlined),
         suffixIcon: IconButton(
-          icon: Icon(
-            context.select<AuthenticationProvider, IconData>((authProvider) => authProvider.obscurePassword ? Icons.visibility : Icons.visibility_off),
-          ),
+          icon: Icon(context.select<AuthenticationProvider, IconData>((authProvider) => authProvider.obscurePassword ? Icons.visibility : Icons.visibility_off)),
           onPressed: context.read<AuthenticationProvider>().togglePasswordVisibility,
         ),
         border: const OutlineInputBorder(),
@@ -145,22 +132,30 @@ class _LoginButton extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ElevatedButton(
-      onPressed: () async {
-        if (!context.mounted) return;
-        context.read<AuthenticationProvider>().setLoading(true);
-        final ResponseModel response = await context.read<AuthenticationProvider>().loginUser();
-        if (!context.mounted) return;
-        context.read<AuthenticationProvider>().setLoading(false);
-        if (response.isSuccess) {
-          context.go(dashboardRoute);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.error ?? ''), backgroundColor: ColorHelper.red500.color));
-        }
-      },
+      onPressed: () => _onSignIn(context),
       child: context.select<AuthenticationProvider, bool>((authProvider) => authProvider.isLoading)
           ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
           : Text(AdminTextHelper.signInButton, style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
     );
+  }
+
+  void _onSignIn(BuildContext context) async {
+    final AuthenticationProvider provider = context.read<AuthenticationProvider>();
+    provider.setLoading(true);
+    final ResponseModel response = await provider.loginUser();
+    final bool isFinishedOnboarding = provider.userModel.finishedOnboarding ?? false;
+
+    if (!context.mounted) return;
+    provider.setLoading(false);
+    if (response.isSuccess) {
+      if (isFinishedOnboarding) {
+        context.go(dashboardRoute);
+      } else {
+        context.go(onboardingGeneralInfoRoute);
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.error ?? ''), backgroundColor: ColorHelper.red500.color));
+    }
   }
 }
 
