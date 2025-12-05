@@ -4,6 +4,10 @@ import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/models/working_day_helper_model.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
+
+import '../../../../../l10n/models/screen_texts/onboarding_texts.dart';
+import '../../../../providers/texts_provider.dart';
 
 class OnboardingWorkingHoursStep extends StatefulWidget {
   const OnboardingWorkingHoursStep({super.key});
@@ -18,12 +22,12 @@ class _OnboardingWorkingHoursStepState extends State<OnboardingWorkingHoursStep>
     final theme = Theme.of(context);
     final provider = context.watch<WAOnboardingProvider>();
     final workingDays = provider.workingDays;
-
     final double headerFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0);
 
     final double verticalSpacing = Responsive.value(context: context, mobile: 16.0, tablet: 20.0, desktop: 18.0, widescreen: 20.0);
 
     final double horizontalPadding = Responsive.value(context: context, mobile: 16.0, tablet: 24.0, desktop: 32.0, widescreen: 40.0);
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
@@ -31,7 +35,7 @@ class _OnboardingWorkingHoursStepState extends State<OnboardingWorkingHoursStep>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Select the days when your service is open and then the opening and closing hours',
+            texts.whHeader,
             style: theme.textTheme.bodyMedium?.copyWith(fontSize: headerFontSize, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
           ),
           SizedBox(height: verticalSpacing),
@@ -105,11 +109,7 @@ class WorkingDayItem extends StatelessWidget {
           Expanded(
             child: Text(
               day.name,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontSize: labelFontSize,
-                fontWeight: FontWeight.w500,
-                color: day.isOpen ? ColorHelper.grey700.color : ColorHelper.grey300.color,
-              ),
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: labelFontSize, fontWeight: FontWeight.w500, color: day.isOpen ? ColorHelper.grey700.color : ColorHelper.grey300.color),
             ),
           ),
           TimePickerButton(time: day.openingTime, enabled: day.isOpen, onTimeSelected: onOpeningTimeChanged),
@@ -128,18 +128,6 @@ class TimePickerButton extends StatelessWidget {
 
   const TimePickerButton({super.key, required this.time, required this.enabled, required this.onTimeSelected});
 
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour : $minute';
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    if (!enabled) return;
-    final TimeOfDay? picked = await showTimePicker(context: context, initialTime: time, builder: (context, child) => timePickerTheme(child!));
-    if (picked != null) onTimeSelected(picked);
-  }
-
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -151,85 +139,19 @@ class TimePickerButton extends StatelessWidget {
     final double timeFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 17.0);
 
     return GestureDetector(
-      onTap: () => _selectTime(context),
+      onTap: () => OnboardingActionUtils.selectTime(context, time, onTimeSelected, enabled: enabled),
       child: Container(
         width: buttonWidth,
         height: buttonHeight,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: enabled ? ColorHelper.greenWeb.color.withAlpha(180) : ColorHelper.grey150.color,
-          borderRadius: BorderRadius.circular(8),
-        ),
+        decoration: BoxDecoration(color: enabled ? ColorHelper.greenWeb.color.withAlpha(180) : ColorHelper.grey150.color, borderRadius: BorderRadius.circular(8)),
         child: Center(
           child: Text(
-            enabled ? _formatTime(time) : '00 : 00',
-            style: theme.textTheme.bodyMedium!.copyWith(
-              fontSize: timeFontSize,
-              fontWeight: FontWeight.w600,
-              color: enabled ? ColorHelper.white.color : ColorHelper.grey300.color,
-              letterSpacing: 1.0,
-            ),
+            enabled ? OnboardingActionUtils.formatTime(time) : '00 : 00',
+            style: theme.textTheme.bodyMedium!.copyWith(fontSize: timeFontSize, fontWeight: FontWeight.w600, color: enabled ? ColorHelper.white.color : ColorHelper.grey300.color, letterSpacing: 1.0),
           ),
         ),
       ),
     );
   }
-}
-
-Theme timePickerTheme(Widget child) {
-  return Theme(
-    data: ThemeData(
-      colorScheme: ColorScheme.light(
-        primary: ColorHelper.greenWeb.color,
-        onSurface: ColorHelper.grey700.color,
-        surface: ColorHelper.white.color,
-        secondary: ColorHelper.greenWeb.color,
-      ),
-      timePickerTheme: TimePickerThemeData(
-        dayPeriodColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
-          if (states.contains(WidgetState.selected)) {
-            return ColorHelper.greenWeb.color;
-          }
-          return ColorHelper.white.color;
-        }),
-        dayPeriodTextColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
-          if (states.contains(WidgetState.selected)) {
-            return ColorHelper.white.color;
-          }
-          return ColorHelper.grey700.color;
-        }),
-        dialBackgroundColor: ColorHelper.white.color,
-        dialHandColor: ColorHelper.greenWeb.color,
-        backgroundColor: ColorHelper.grey150.color,
-        hourMinuteColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
-          if (states.contains(WidgetState.selected)) {
-            return ColorHelper.white.color;
-          }
-          if (states.contains(WidgetState.focused)) {
-            return ColorHelper.greenWeb.color;
-          }
-          return ColorHelper.white.color;
-        }),
-        hourMinuteShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(color: ColorHelper.greenWeb.color, width: 1),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 1)),
-          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: ColorHelper.grey300.color, width: 1)),
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2)),
-        ),
-        hourMinuteTextColor: ColorHelper.grey700.color,
-        cancelButtonStyle: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(ColorHelper.grey150.color),
-          foregroundColor: WidgetStateProperty.all(ColorHelper.grey700.color),
-        ),
-        confirmButtonStyle: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(ColorHelper.greenWeb.color),
-          foregroundColor: WidgetStateProperty.all(ColorHelper.white.color),
-        ),
-      ),
-    ),
-    child: child,
-  );
 }

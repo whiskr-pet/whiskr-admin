@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_permissions_module/services/navigation_service.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/router_utils/router_utils.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/main_layout.dart';
 import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/inventory_services_screen.dart';
@@ -17,10 +18,10 @@ import '../app/screens/analytics_screen/analytics_screen.dart';
 class RouteGenerator {
   GoRouter get router => _router;
 
-  final GoRouter _router = GoRouter(
+  late final GoRouter _router = GoRouter(
     initialLocation: splashRoute,
-    // initialLocation: onboardingIntroRoute,
     navigatorKey: locator<NavigationService>().navigationKey,
+    redirect: (BuildContext context, GoRouterState state) async => RouterUtils.redirect(context, state),
     routes: <RouteBase>[
       // Shell route wraps all authenticated admin routes with MainLayout
       ShellRoute(

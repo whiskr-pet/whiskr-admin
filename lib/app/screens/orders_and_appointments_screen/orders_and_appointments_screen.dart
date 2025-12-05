@@ -1,7 +1,12 @@
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_dashboard/helpers/status_chip_type.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order_and_appointments_filter.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order_item.dart';
 
 class OrdersAndAppointmentsScreen extends StatelessWidget {
   const OrdersAndAppointmentsScreen({super.key});
@@ -13,7 +18,7 @@ class OrdersAndAppointmentsScreen extends StatelessWidget {
 }
 
 class _BuildBody extends StatefulWidget {
-  _BuildBody({super.key});
+  const _BuildBody({super.key});
 
   @override
   State<_BuildBody> createState() => _BuildBodyState();
@@ -93,6 +98,7 @@ class _BuildBodyState extends State<_BuildBody> {
               }
             },
           ),
+          WAOrdersTable(orders: _listOrders),
         ],
       ),
     );
@@ -114,471 +120,160 @@ class _BuildHeader extends StatelessWidget {
   }
 }
 
-enum OrderType { delivery, pickup }
+class WAOrdersTable extends StatelessWidget {
+  const WAOrdersTable({super.key, required this.orders, this.height = 430, this.onDelete, this.onEdit});
 
-/// A reusable filter widget for orders and appointments
-/// Provides filtering by Date, Order Type, and Order Status with a reset option
-class WAOrdersAppointmentFilter extends StatelessWidget {
-  final String? selectedDate;
-  final String? selectedOrderType;
-  final String? selectedOrderStatus;
-  final VoidCallback onResetFilter;
-  final VoidCallback onDateTap;
-  final VoidCallback onOrderTypeTap;
-  final VoidCallback onOrderStatusTap;
-
-  const WAOrdersAppointmentFilter({
-    super.key,
-    this.selectedDate,
-    this.selectedOrderType,
-    this.selectedOrderStatus,
-    required this.onResetFilter,
-    required this.onDateTap,
-    required this.onOrderTypeTap,
-    required this.onOrderStatusTap,
-  });
+  final double height;
+  final List<WAOrder> orders;
+  final Function(String, String)? onDelete;
+  final Function(String)? onEdit;
 
   @override
   Widget build(BuildContext context) {
+    final cardHeight = Responsive.value(context: context, mobile: 400.0, tablet: height + 20.0, desktop: height + 100.0, widescreen: height + 50.0);
+
     return Container(
-      height: 72,
+      width: double.infinity,
+      height: cardHeight,
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: ColorHelper.grey200.color),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        children: [
-          _buildFilterIcon(),
-          _buildDivider(),
-          _buildFilterOption(label: 'Date', value: selectedDate, onTap: onDateTap),
-          _buildDivider(),
-          _buildFilterOption(label: 'Order Type', value: selectedOrderType, onTap: onOrderTypeTap),
-          _buildDivider(),
-          _buildFilterOption(label: 'Order Status', value: selectedOrderStatus, onTap: onOrderStatusTap),
-          _buildDivider(),
-          _buildResetButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterIcon() {
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.filter_list, size: 24, color: Colors.grey[800]),
-          const SizedBox(width: 8),
-          Text(
-            'Filter By',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey[800]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Container(height: 40, width: 1, color: const Color(0xFFE5E7EB));
-  }
-
-  Widget _buildFilterOption({required String label, String? value, required VoidCallback onTap}) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  value ?? label,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: value != null ? Colors.grey[800] : Colors.grey[600]),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              Icon(Icons.keyboard_arrow_down, size: 20, color: Colors.grey[600]),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResetButton() {
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        onTap: onResetFilter,
-        borderRadius: BorderRadius.circular(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.refresh, size: 20, color: Colors.orange[700]),
-            const SizedBox(width: 6),
-            Text(
-              'Reset Filter',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.orange[700]),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Date Range Selector Bottom Sheet
-class DateRangeSelector extends StatelessWidget {
-  final DateTimeRange? selectedRange;
-  final Function(DateTimeRange?) onSelected;
-
-  const DateRangeSelector({super.key, this.selectedRange, required this.onSelected});
-
-  static Future<DateTimeRange?> show(BuildContext context, {DateTimeRange? currentSelection}) async {
-    return await showModalBottomSheet<DateTimeRange?>(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) => DateRangeSelector(selectedRange: currentSelection, onSelected: (range) => Navigator.pop(context, range)),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      padding: const EdgeInsets.all(20),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Select Date Range',
-                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18, fontWeight: FontWeight.w600, color: ColorHelper.white.color),
-              ),
-              if (selectedRange != null)
-                TextButton(
-                  onPressed: () => onSelected(null),
-                  child: Text('Clear', style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color)),
-                ),
-            ],
+          Expanded(
+            child: _WATable(columns: columns(context), rows: rows(context, orders, onDelete, onEdit)),
           ),
-          const SizedBox(height: 16),
-          _buildPresetOption('Today', Icons.today, () {
-            final now = DateTime.now();
-            onSelected(DateTimeRange(start: DateTime(now.year, now.month, now.day), end: DateTime(now.year, now.month, now.day, 23, 59, 59)));
-          }),
-          const SizedBox(height: 12),
-          _buildPresetOption('Last 7 Days', Icons.date_range, () {
-            final now = DateTime.now();
-            onSelected(DateTimeRange(start: DateTime(now.year, now.month, now.day).subtract(const Duration(days: 6)), end: DateTime(now.year, now.month, now.day, 23, 59, 59)));
-          }),
-          const SizedBox(height: 12),
-          _buildPresetOption('Last 30 Days', Icons.calendar_month, () {
-            final now = DateTime.now();
-            onSelected(DateTimeRange(start: DateTime(now.year, now.month, now.day).subtract(const Duration(days: 29)), end: DateTime(now.year, now.month, now.day, 23, 59, 59)));
-          }),
-          const SizedBox(height: 12),
-          _buildPresetOption('This Month', Icons.calendar_today, () {
-            final now = DateTime.now();
-            onSelected(DateTimeRange(start: DateTime(now.year, now.month, 1), end: DateTime(now.year, now.month, now.day, 23, 59, 59)));
-          }),
-          const SizedBox(height: 12),
-          _buildCustomDateOption(context),
-          const SizedBox(height: 20),
         ],
       ),
     );
   }
-
-  Widget _buildPresetOption(String label, IconData icon, VoidCallback onTap) {
-    final isSelected = _isPresetSelected(label);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: isSelected ? ColorHelper.orange500.color : const Color(0xFFE5E7EB), width: isSelected ? 2 : 1),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected ? ColorHelper.orange500.color.withOpacity(0.05) : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: isSelected ? ColorHelper.orange700.color : Colors.grey[600], size: 24),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: TextStyle(fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? ColorHelper.orange700.color : Colors.grey[800]),
-            ),
-            const Spacer(),
-            if (isSelected) Icon(Icons.check_circle, color: ColorHelper.orange700.color, size: 24),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCustomDateOption(BuildContext context) {
-    return InkWell(
-      onTap: () async {
-        final DateTimeRange<DateTime>? picked = await showDateRangePicker(
-          context: context,
-          firstDate: DateTime(2020),
-          lastDate: DateTime.now().add(const Duration(days: 365)),
-          initialDateRange: selectedRange,
-          builder: (context, child) {
-            return Theme(
-              data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
-                  primary: ColorHelper.orange500.color,
-                  onPrimary: Colors.white,
-                  surface: Colors.white,
-                  onSurface: Colors.grey[800]!,
-                  primaryContainer: ColorHelper.greenWeb.color,
-                  onPrimaryContainer: Colors.white,
-                  secondary: ColorHelper.orange300.color,
-                ),
-              ),
-              child: child!,
-            );
-          },
-        );
-        if (picked != null) {
-          onSelected(picked);
-        }
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: selectedRange != null && !_isPresetSelected('') ? ColorHelper.orange500.color : const Color(0xFFE5E7EB),
-            width: selectedRange != null && !_isPresetSelected('') ? 2 : 1,
-          ),
-          borderRadius: BorderRadius.circular(12),
-          color: selectedRange != null && !_isPresetSelected('') ? Colors.orange.withOpacity(0.05) : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.edit_calendar, color: selectedRange != null && !_isPresetSelected('') ? ColorHelper.orange700.color : Colors.grey[600], size: 24),
-            const SizedBox(width: 12),
-            Text(
-              'Custom Range',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: selectedRange != null && !_isPresetSelected('') ? FontWeight.w600 : FontWeight.w500,
-                color: selectedRange != null && !_isPresetSelected('') ? ColorHelper.orange700.color : Colors.grey[800],
-              ),
-            ),
-            const Spacer(),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[600]),
-          ],
-        ),
-      ),
-    );
-  }
-
-  bool _isPresetSelected(String preset) {
-    if (selectedRange == null) return false;
-
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-
-    switch (preset) {
-      case 'Today':
-        return selectedRange!.start.isAtSameMomentAs(today) && selectedRange!.end.day == today.day;
-      case 'Last 7 Days':
-        return selectedRange!.start.isAtSameMomentAs(today.subtract(const Duration(days: 6)));
-      case 'Last 30 Days':
-        return selectedRange!.start.isAtSameMomentAs(today.subtract(const Duration(days: 29)));
-      case 'This Month':
-        return selectedRange!.start.isAtSameMomentAs(DateTime(now.year, now.month, 1));
-      default:
-        return false;
-    }
-  }
 }
 
-/// Order Type Selector Bottom Sheet
-class OrderTypeSelector extends StatelessWidget {
-  final OrderType? selectedType;
-  final Function(OrderType?) onSelected;
+class _WATable extends StatelessWidget {
+  const _WATable({required this.columns, required this.rows});
 
-  const OrderTypeSelector({super.key, this.selectedType, required this.onSelected});
-
-  static Future<OrderType?> show(BuildContext context, {OrderType? currentSelection}) async {
-    return await showModalBottomSheet<OrderType?>(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) => OrderTypeSelector(selectedType: currentSelection, onSelected: (type) => Navigator.pop(context, type)),
-    );
-  }
+  final List<DataColumn> columns;
+  final List<DataRow> rows;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Select Order Type',
-                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18, fontWeight: FontWeight.w600, color: ColorHelper.white.color),
-              ),
-              if (selectedType != null)
-                TextButton(
-                  onPressed: () => onSelected(null),
-                  child: Text('Clear', style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color)),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildOrderTypeOption(OrderType.delivery, 'Delivery', Icons.local_shipping_outlined),
-          const SizedBox(height: 12),
-          _buildOrderTypeOption(OrderType.pickup, 'Pickup', Icons.store_outlined),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
+    final theme = Theme.of(context);
 
-  Widget _buildOrderTypeOption(OrderType type, String label, IconData icon) {
-    final isSelected = selectedType == type;
-    return InkWell(
-      onTap: () => onSelected(type),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: isSelected ? Colors.orange : const Color(0xFFE5E7EB), width: isSelected ? 2 : 1),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected ? Colors.orange.withOpacity(0.05) : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: isSelected ? Colors.orange[700] : Colors.grey[600], size: 24),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: TextStyle(fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? Colors.orange[700] : Colors.grey[800]),
-            ),
-            const Spacer(),
-            if (isSelected) Icon(Icons.check_circle, color: Colors.orange[700], size: 24),
-          ],
-        ),
+    final columnSpacing = Responsive.value(context: context, mobile: 12.0, tablet: 24.0, desktop: 32.0, widescreen: 40.0);
+
+    final horizontalMargin = Responsive.value(context: context, mobile: 8.0, tablet: 12.0, desktop: 16.0, widescreen: 20.0);
+
+    final dataRowHeight = Responsive.value(context: context, mobile: 60.0, tablet: 70.0, desktop: 80.0, widescreen: 90.0);
+
+    final minWidth = Responsive.value(context: context, mobile: 500.0, tablet: 600.0, desktop: 800.0, widescreen: 1000.0);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: DataTable2(
+        headingTextStyle: theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+        headingRowDecoration: BoxDecoration(color: ColorHelper.white.color),
+        decoration: BoxDecoration(color: ColorHelper.white.color),
+        columnSpacing: columnSpacing,
+        horizontalMargin: horizontalMargin,
+        minWidth: minWidth,
+        dataRowHeight: dataRowHeight,
+        scrollController: ScrollController(),
+        fixedTopRows: 1,
+        columns: columns,
+        rows: rows,
+        empty: const Center(child: Text('No orders')),
       ),
     );
   }
 }
 
-/// Order Status Selector Bottom Sheet
-class OrderStatusSelector extends StatelessWidget {
-  final StatusChipType? selectedStatus;
-  final Function(StatusChipType?) onSelected;
+List<DataColumn> columns(BuildContext context) {
+  return [
+    DataColumn2(label: Text('ID'), size: ColumnSize.S),
+    DataColumn2(label: Text('Name'), size: ColumnSize.M),
+    DataColumn2(label: Text('Address'), size: ColumnSize.M),
+    DataColumn2(label: Text('Date'), size: ColumnSize.S),
+    DataColumn2(label: Text('Time'), size: ColumnSize.S),
+    DataColumn2(label: Text('Status'), size: ColumnSize.S),
+  ];
+}
 
-  const OrderStatusSelector({super.key, this.selectedStatus, required this.onSelected});
+List<DataRow> rows(BuildContext context, List<WAOrder> orders, Function? onDelete, Function? onEdit) {
+  final theme = Theme.of(context);
+  final avatarRadius = Responsive.value(context: context, mobile: 14.0, tablet: 20.0, desktop: 22.0, widescreen: 26.0);
 
-  static Future<StatusChipType?> show(BuildContext context, {StatusChipType? currentSelection}) async {
-    return await showModalBottomSheet<StatusChipType?>(
-      context: context,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      builder: (context) => OrderStatusSelector(selectedStatus: currentSelection, onSelected: (status) => Navigator.pop(context, status)),
-    );
-  }
+  final nameFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 17.0);
 
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
+  final amountFontSize = Responsive.value(context: context, mobile: 13.0, tablet: 14.0, desktop: 15.0, widescreen: 16.0);
+
+  final dateFontSize = Responsive.value(context: context, mobile: 12.0, tablet: 13.0, desktop: 14.0, widescreen: 15.0);
+  return orders
+      .map(
+        (WAOrder order) => DataRow(
+          cells: [
+            // ID
+            DataCell(
               Text(
-                'Select Order Status',
-                style: theme.textTheme.bodyMedium!.copyWith(fontSize: 18, fontWeight: FontWeight.w600, color: ColorHelper.white.color),
+                order.id,
+                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: nameFontSize),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
-              if (selectedStatus != null)
-                TextButton(
-                  onPressed: () => onSelected(null),
-                  child: Text('Clear', style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color)),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          _buildStatusOption(StatusChipType.pending, 'Pending', Icons.schedule, const Color(0xFFFFA500)),
-          const SizedBox(height: 12),
-          _buildStatusOption(StatusChipType.confirmed, 'Confirmed', Icons.check_circle, const Color(0xFF3B82F6)),
-          const SizedBox(height: 12),
-          _buildStatusOption(StatusChipType.processing, 'Processing', Icons.build, const Color(0xFF9333EA)),
-          const SizedBox(height: 12),
-          _buildStatusOption(StatusChipType.shipped, 'Shipped', Icons.local_shipping, const Color(0xFFEC4899)),
-          const SizedBox(height: 12),
-          _buildStatusOption(StatusChipType.delivered, 'Delivered', Icons.done_all, const Color(0xFF10B981)),
-          const SizedBox(height: 12),
-          _buildStatusOption(StatusChipType.cancelled, 'Cancelled', Icons.cancel, const Color(0xFFEF4444)),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusOption(StatusChipType status, String label, IconData icon, Color color) {
-    final isSelected = selectedStatus == status;
-    return InkWell(
-      onTap: () => onSelected(status),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          border: Border.all(color: isSelected ? color : const Color(0xFFE5E7EB), width: isSelected ? 2 : 1),
-          borderRadius: BorderRadius.circular(12),
-          color: isSelected ? color.withOpacity(0.05) : Colors.white,
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: isSelected ? color : Colors.grey[600], size: 24),
-            const SizedBox(width: 12),
-            Text(
-              label,
-              style: TextStyle(fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500, color: isSelected ? color : Colors.grey[800]),
             ),
-            const Spacer(),
-            if (isSelected) Icon(Icons.check_circle, color: color, size: 24),
+            // Name
+            DataCell(
+              Text(
+                order.customer,
+                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+            // Address
+            DataCell(
+              Text(
+                order.address,
+                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
+              ),
+            ),
+            // Date
+            DataCell(
+              Text(
+                order.date.toIso8601String(),
+                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
+              ),
+            ),
+            // Date
+            DataCell(
+              Text(
+                order.date.toIso8601String(),
+                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
+              ),
+            ),
+            // Status
+            DataCell(StatusChip.orderStatus(order.status.name)),
           ],
         ),
-      ),
-    );
-  }
+      )
+      .toList();
 }
+
+List<WAOrder> _listOrders = [
+  WAOrder(
+    id: '1232312',
+    customer: 'Danis',
+    email: 'danis.preldzic@gmail.com',
+    phone: '062748065',
+    status: StatusChipType.pending,
+    address: 'Behdzeta Mutevelica 115',
+    items: [
+      OrderItem(name: 'Crvi', price: 45, quantity: 23),
+      OrderItem(name: 'Hrana za macke', price: 25, quantity: 10),
+      OrderItem(name: 'Voda za macke', price: 2, quantity: 1),
+    ],
+    total: 72,
+    date: DateTime.now(),
+  ),
+];

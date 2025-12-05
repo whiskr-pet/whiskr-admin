@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_utils/w_utils.dart';
-import 'package:whiskr_admin_panel/app/utils/admin_text_helper.dart';
-import 'package:whiskr_admin_panel/routing/routes.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/login_utils/login_action_utils.dart';
+
+import '../../providers/texts_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,10 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [const _LoginHeader(), const SizedBox(height: 48), _LoginForm(), const SizedBox(height: 32), _LoginFooter()],
-            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [const _LoginHeader(), const SizedBox(height: 48), _LoginForm(), const SizedBox(height: 32), _LoginFooter()]),
           ),
         ),
       ),
@@ -46,6 +43,7 @@ class _LoginHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final texts = TextsProvider.of(context)!.loginTexts;
     return Column(
       children: [
         // Logo
@@ -60,9 +58,9 @@ class _LoginHeader extends StatelessWidget {
           child: Image.asset('assets/images/appicon.png'),
         ),
         const SizedBox(height: 24),
-        Text(AdminTextHelper.loginWelcomeTitle, style: theme.textTheme.displayLarge),
+        Text(texts.welcomeTitle, style: theme.textTheme.displayLarge),
         const SizedBox(height: 8),
-        Text(AdminTextHelper.loginSubtitle, style: theme.textTheme.bodyMedium),
+        Text(texts.subtitle, style: theme.textTheme.bodyMedium),
       ],
     );
   }
@@ -84,15 +82,7 @@ class _LoginForm extends StatelessWidget {
             key: context.read<AuthenticationProvider>().formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _LoginEmailField(),
-                const SizedBox(height: 24),
-                _LoginPasswordField(),
-                const SizedBox(height: 32),
-                _LoginButton(),
-                const SizedBox(height: 24),
-                _LoginForgotPasswordButton(),
-              ],
+              children: [_LoginEmailField(), const SizedBox(height: 24), _LoginPasswordField(), const SizedBox(height: 32), _LoginButton(), const SizedBox(height: 24), _LoginForgotPasswordButton()],
             ),
           ),
         ),
@@ -106,10 +96,11 @@ class _LoginEmailField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = TextsProvider.of(context)!.loginTexts;
     return TextFormField(
       controller: context.read<AuthenticationProvider>().loginEmailController,
       keyboardType: TextInputType.emailAddress,
-      decoration: InputDecoration(labelText: AdminTextHelper.emailLabel, prefixIcon: Icon(Icons.email_outlined), border: OutlineInputBorder()),
+      decoration: InputDecoration(labelText: texts.emailLabel, prefixIcon: Icon(Icons.email_outlined), border: OutlineInputBorder()),
     );
   }
 }
@@ -119,16 +110,15 @@ class _LoginPasswordField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = TextsProvider.of(context)!.loginTexts;
     return TextFormField(
       controller: context.read<AuthenticationProvider>().loginPasswordController,
       obscureText: context.select<AuthenticationProvider, bool>((authProvider) => authProvider.obscurePassword),
       decoration: InputDecoration(
-        labelText: AdminTextHelper.passwordLabel,
+        labelText: texts.passwordLabel,
         prefixIcon: const Icon(Icons.lock_outlined),
         suffixIcon: IconButton(
-          icon: Icon(
-            context.select<AuthenticationProvider, IconData>((authProvider) => authProvider.obscurePassword ? Icons.visibility : Icons.visibility_off),
-          ),
+          icon: Icon(context.select<AuthenticationProvider, IconData>((authProvider) => authProvider.obscurePassword ? Icons.visibility : Icons.visibility_off)),
           onPressed: context.read<AuthenticationProvider>().togglePasswordVisibility,
         ),
         border: const OutlineInputBorder(),
@@ -143,23 +133,13 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final texts = TextsProvider.of(context)!.loginTexts;
 
     return ElevatedButton(
-      onPressed: () async {
-        if (!context.mounted) return;
-        context.read<AuthenticationProvider>().setLoading(true);
-        final ResponseModel response = await context.read<AuthenticationProvider>().loginUser();
-        if (!context.mounted) return;
-        context.read<AuthenticationProvider>().setLoading(false);
-        if (response.isSuccess) {
-          context.go(dashboardRoute);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.error ?? ''), backgroundColor: ColorHelper.red500.color));
-        }
-      },
+      onPressed: () => LoginActionUtils.onSignIn(context),
       child: context.select<AuthenticationProvider, bool>((authProvider) => authProvider.isLoading)
           ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
-          : Text(AdminTextHelper.signInButton, style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
+          : Text(texts.signInButton, style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
     );
   }
 }
@@ -170,9 +150,10 @@ class _LoginForgotPasswordButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final texts = TextsProvider.of(context)!.loginTexts;
     return TextButton(
       onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Forgot password functionality coming soon!'))),
-      child: Text(AdminTextHelper.forgotPasswordButton, style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.greenWeb.color)),
+      child: Text(texts.forgotPasswordButton, style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.greenWeb.color)),
     );
   }
 }
@@ -182,6 +163,7 @@ class _LoginFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(AdminTextHelper.copyrightFooter);
+    final texts = TextsProvider.of(context)!.loginTexts;
+    return Text(texts.copyrightFooter);
   }
 }

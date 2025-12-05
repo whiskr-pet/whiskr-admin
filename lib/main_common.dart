@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
@@ -6,16 +7,21 @@ import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
+import 'package:w_user_module/providers/user_management_provider.dart';
 import 'package:w_utils/helper/util_constants.dart';
 import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
 import 'package:wa_analytics_module/providers/wa_analytics_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
-import 'package:whiskr_admin_panel/app/utils/session_manager.dart';
+import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
+import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
+import 'package:whiskr_admin_panel/app/providers/texts_provider.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
 import 'config/flavor_config.dart';
+import 'l10n/app_localizations.dart';
+import 'l10n/models/localized_texts.dart';
 
 Future<void> initializeApp({required Flavor flavor, required String appName, required String env}) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +45,6 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   );
 
   await storagePrefs.init();
-  storagePrefs.deleteAll();
   setupLocator(methodChannel: AppConstants.methodChannel);
 
   try {
@@ -75,10 +80,23 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
         ChangeNotifierProvider<WAInventoryServicesProvider>(create: (_) => WAInventoryServicesProvider(), lazy: true),
         ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
+        ChangeNotifierProvider<UserManagementProvider>(create: (_) => UserManagementProvider(), lazy: true),
+        ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
       ],
-      child: Consumer<CustomThemeProvider>(
-        builder: (context, customThemeProvider, child) {
-          return MaterialApp.router(title: config.values.appName, debugShowCheckedModeBanner: false, routerConfig: routeGenerator.router, theme: CustomWebThemes.lightTheme);
+      child: Consumer2<CustomThemeProvider, LocaleProvider>(
+        builder: (context, customThemeProvider, localeProvider, child) {
+          return TextsProvider(
+            loginTexts: LoginTexts(context),
+            onboardingTexts: OnboardingTexts(context),
+            child: MaterialApp.router(
+              title: config.values.appName,
+              debugShowCheckedModeBanner: false,
+              routerConfig: routeGenerator.router,
+              theme: CustomWebThemes.lightTheme,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+            ),
+          );
         },
       ),
     );
