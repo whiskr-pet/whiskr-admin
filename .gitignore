@@ -17,6 +17,9 @@ env_dev.sh
 env_prod.sh
 env_test.sh
 
+# Localization files
+lib/l10n/
+
 # Avoid committing generated Javascript files:
 *.dart.js
 # Produced by the --dump-info flag.
@@ -48,3 +51,15 @@ env_test.sh
 
 # Backup files
 *.backup.*
+
+# Additional Flutter/Dart artifacts
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+.metadata
+
+# Coverage
+coverage/
+
+# DevTools
+devtools_options.yaml

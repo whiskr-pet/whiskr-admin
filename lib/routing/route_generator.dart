@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_permissions_module/services/navigation_service.dart';
-import 'package:w_utils/storage_manager/storage_prefs_manager.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/router_utils/router_utils.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/dashboard_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/dashboard_screen/main_layout.dart';
 import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/inventory_services_screen.dart';
@@ -19,66 +18,10 @@ import '../app/screens/analytics_screen/analytics_screen.dart';
 class RouteGenerator {
   GoRouter get router => _router;
 
-  // Helper method to check if user is authenticated (WEB ONLY)
-  Future<bool> _isAuthenticated() async {
-    try {
-      final String userData = await storagePrefs.getValue(StoragePrefsManager.USER_DATA_KEY);
-      final String accessToken = await storagePrefs.getAccessTokenValue();
-      final String refreshToken = await storagePrefs.getRefreshTokenValue();
-
-      final bool accessExpired = await storagePrefs.isAccessTokenExpired();
-      final bool refreshExpired = await storagePrefs.isRefreshTokenExpired();
-
-      debugPrint('🔒 [WEB] Auth Check:');
-      debugPrint('   User data: ${userData.isNotEmpty}');
-      debugPrint('   Access token: ${accessToken.isNotEmpty} (expired: $accessExpired)');
-      debugPrint('   Refresh token: ${refreshToken.isNotEmpty} (expired: $refreshExpired)');
-
-      // User is authenticated if they have user data and at least one valid token
-      final bool isAuth = userData.isNotEmpty && ((accessToken.isNotEmpty && !accessExpired) || (refreshToken.isNotEmpty && !refreshExpired));
-
-      debugPrint('   Result: ${isAuth ? "✅ Authenticated" : "❌ Not authenticated"}');
-      return isAuth;
-    } catch (e) {
-      debugPrint('❌ Auth check error: $e');
-      return false;
-    }
-  }
-
   late final GoRouter _router = GoRouter(
     initialLocation: splashRoute,
-    // initialLocation: onboardingIntroRoute,
     navigatorKey: locator<NavigationService>().navigationKey,
-    // Global redirect - ONLY RUNS ON WEB for page refresh handling
-    redirect: (BuildContext context, GoRouterState state) async {
-      if (!kIsWeb) {
-        return null;
-      }
-
-      final String currentPath = state.matchedLocation;
-      debugPrint('[WEB] Navigation to: $currentPath');
-
-      // Public routes that don't need authentication
-      final List<String> publicRoutes = [splashRoute, loginRoute];
-
-      // If going to a public route, allow it
-      if (publicRoutes.contains(currentPath)) {
-        debugPrint('   → Public route, allowing access');
-        return null;
-      }
-
-      // For all other routes, check authentication
-      final bool isAuth = await _isAuthenticated();
-
-      if (!isAuth) {
-        debugPrint('   → Not authenticated, redirecting to login');
-        return loginRoute;
-      }
-
-      // User is authenticated, allow access
-      debugPrint('   → Authenticated, allowing access');
-      return null;
-    },
+    redirect: (BuildContext context, GoRouterState state) async => RouterUtils.redirect(context, state),
     routes: <RouteBase>[
       // Shell route wraps all authenticated admin routes with MainLayout
       ShellRoute(

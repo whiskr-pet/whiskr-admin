@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
-import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_components/wa_custom_stepper/wa_custom_stepper.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_general_info_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_location_step.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_working_hours_step.dart';
@@ -50,7 +50,12 @@ class StepperContainer extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          WACustomStepper(activeColor: ColorHelper.greenWeb.color, currentStep: currentStep, steps: context.read<WAOnboardingProvider>().steps, onStepPress: (int i) => _handleStepPress(context, i)),
+          WACustomStepper(
+            activeColor: ColorHelper.greenWeb.color,
+            currentStep: currentStep,
+            steps: context.read<WAOnboardingProvider>().steps,
+            onStepPress: (int i) => OnboardingActionUtils.handleStepPress(context, i, currentStep),
+          ),
           const SizedBox(height: 18),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 450),
@@ -103,117 +108,12 @@ class StepperContainer extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 45,
-      child: CommonButton(onPressed: () => _handleButtonPress(context), buttonTitle: _getButtonTitle(), buttonType: PPButtonType.web, showBorder: false),
+      child: CommonButton(
+        onPressed: () => OnboardingActionUtils.handleButtonPress(context, currentStep),
+        buttonTitle: OnboardingActionUtils.getButtonTitle(currentStep),
+        buttonType: PPButtonType.web,
+        showBorder: false,
+      ),
     );
-  }
-
-  String _getButtonTitle() {
-    if (currentStep < 2) return 'Next Step';
-    return 'Complete';
-  }
-
-  void _handleStepPress(BuildContext context, int targetStep) {
-    final provider = context.read<WAOnboardingProvider>();
-
-    // Allow going back without validation
-    if (targetStep < currentStep) {
-      provider.setCurrentStep(targetStep);
-      return;
-    }
-
-    // Validate before moving forward
-    if (targetStep > currentStep) {
-      final canProceed = _validateStepsUpTo(context, targetStep - 1);
-      if (canProceed) {
-        provider.setCurrentStep(targetStep);
-      }
-    }
-  }
-
-  void _handleButtonPress(BuildContext context) {
-    if (currentStep < 2) {
-      _handleNext(context);
-    } else {
-      _handleComplete(context);
-    }
-  }
-
-  void _handleNext(BuildContext context) {
-    final provider = context.read<WAOnboardingProvider>();
-    final error = _getCurrentStepError(provider);
-
-    if (error != null) {
-      _showError(context, error);
-      return;
-    }
-
-    provider.nextStep();
-  }
-
-  void _handleComplete(BuildContext context) {
-    final provider = context.read<WAOnboardingProvider>();
-    final error = provider.validateStep3();
-
-    if (error != null) {
-      _showError(context, error);
-      return;
-    }
-
-    if (!provider.canSaveData()) {
-      _showError(context, 'Please complete all required fields');
-      return;
-    }
-
-    provider.saveData();
-    provider.setCurrentStep(3);
-
-    _showSuccess(context, 'Service saved successfully!');
-  }
-
-  String? _getCurrentStepError(WAOnboardingProvider provider) {
-    switch (currentStep) {
-      case 0:
-        return provider.validateStep1();
-      case 1:
-        return provider.validateStep2();
-      case 2:
-        return provider.validateStep3();
-      default:
-        return null;
-    }
-  }
-
-  bool _validateStepsUpTo(BuildContext context, int targetStep) {
-    final provider = context.read<WAOnboardingProvider>();
-
-    for (int step = 0; step <= targetStep; step++) {
-      String? error;
-      switch (step) {
-        case 0:
-          error = provider.validateStep1();
-          break;
-        case 1:
-          error = provider.validateStep2();
-          break;
-        case 2:
-          error = provider.validateStep3();
-          break;
-      }
-
-      if (error != null) {
-        _showError(context, error);
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  void _showError(BuildContext context, String message) {
-    WACustomSnackbar.instance.showSnack(context, message, type: WACustomSnackbarType.error);
-  }
-
-  void _showSuccess(BuildContext context, String message) {
-    WACustomSnackbar.instance.showSnack(context, message, type: WACustomSnackbarType.success);
   }
 }

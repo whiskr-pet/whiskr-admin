@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/models/response_model.dart';
 
 /// A modern multiple image picker widget that allows selecting up to 5 images
 /// with the ability to remove individual images.
@@ -20,7 +21,7 @@ class WAMultipleImagePicker extends StatefulWidget {
 }
 
 class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
-  final List<Uint8List> _images = [];
+  List<Uint8List> _images = [];
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
     }
 
     final imageProvider = context.read<ImageHandleProvider>();
-    final imageResult = await imageProvider.pickImageForWeb();
+    final ResponseModel<List<Uint8List>?> imageResult = await imageProvider.pickMultipleImagesForWeb();
 
     if (!mounted) return;
 
@@ -47,9 +48,11 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
       return;
     }
 
-    setState(() {
-      _images.add(imageResult.data!);
-    });
+    if (imageResult.data != null) {
+      setState(() {
+        _images = imageResult.data!;
+      });
+    }
 
     widget.onImagesChanged(_images);
 
@@ -124,7 +127,7 @@ class _ImageTileState extends State<_ImageTile> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: ColorHelper.grey300.color, width: 2),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 2))],
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 2))],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),

@@ -5,6 +5,9 @@ import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_stepper.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
+import 'package:whiskr_admin_panel/l10n/models/localized_texts.dart';
+
+import '../../../providers/texts_provider.dart';
 
 class OnboardingGeneralInfoScreen extends StatelessWidget {
   const OnboardingGeneralInfoScreen({super.key});
@@ -48,19 +51,20 @@ class _BuildGeneralInfoHeader extends StatelessWidget {
 
     final double logoSizeWidth = Responsive.value(context: context, mobile: 100.0, tablet: 120.0, desktop: 140.0, widescreen: 160.0);
     final double logoSizeHeight = Responsive.value(context: context, mobile: 100.0, tablet: 100.0, desktop: 100.0, widescreen: 100.0);
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Image.asset(Assets.images.whiskrLogo.path, width: logoSizeWidth, height: logoSizeHeight),
         Text(
-          onboardingSteps[currentStep]!['title']!,
+          texts.getStepTitle(currentStep),
           textAlign: TextAlign.center,
           style: theme.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900, fontSize: titleFontSize, color: ColorHelper.greenWeb.color),
         ),
         const SizedBox(height: 12),
         Text(
-          onboardingSteps[currentStep]!['description']!,
+          texts.getStepDescription(currentStep),
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(fontSize: descriptionFontSize, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
         ),
@@ -77,10 +81,3 @@ class _BuildGeneralInfoForm extends StatelessWidget {
     return Center(child: OnboardingStepper());
   }
 }
-
-Map<int, Map<String, String>> onboardingSteps = {
-  0: {'title': 'Introduce Your Business', 'description': 'Start by filling in your core details - this is what users will see when they visit your page'},
-  1: {'title': 'Pin Your Location', 'description': 'Specify your location and make it visible on the map to appear in local searches and navigation'},
-  2: {'title': 'Set Your Working Hours', 'description': 'Set your weekly schedule so clients can reach you during your operating hours'},
-  3: {'title': 'Summary', 'description': 'Check if all the data is correct and proceed to your Dashboard'},
-};

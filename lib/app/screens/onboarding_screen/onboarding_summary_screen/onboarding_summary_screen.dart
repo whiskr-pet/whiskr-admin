@@ -8,8 +8,10 @@ import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_map_module/wa_map_module.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/ui_organization_helper/onboarding_organization_helper.dart';
+import 'package:whiskr_admin_panel/l10n/models/localized_texts.dart';
 
 import '../../../../config/flavor_config.dart';
+import '../../../providers/texts_provider.dart';
 
 class OnboardingSummaryScreen extends StatelessWidget {
   const OnboardingSummaryScreen({super.key});
@@ -21,12 +23,13 @@ class OnboardingSummaryScreen extends StatelessWidget {
 }
 
 class _BuildSummaryBody extends StatelessWidget {
-  const _BuildSummaryBody({super.key});
+  const _BuildSummaryBody();
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<WAOnboardingProvider>();
+    final WAOnboardingProvider provider = context.read<WAOnboardingProvider>();
     final OnboardingHelper helper = OnboardingHelper();
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
 
     return Container(
       color: ColorHelper.white.color,
@@ -40,23 +43,23 @@ class _BuildSummaryBody extends StatelessWidget {
           _BuildSummaryHeader(),
           FadingDivider(color: ColorHelper.greenWeb.color),
           SizedBox(height: Responsive.value(context: context, mobile: 16, desktop: 20)),
-          _BuildSegment(title: 'General Information', infoRows: helper.generalInfoRow(provider), widthOfSegment: double.infinity),
+          _BuildSegment(title: texts.summaryTitleGeneralInfo, infoRows: helper.generalInfoRow(provider), widthOfSegment: double.infinity),
           SizedBox(height: Responsive.value(context: context, mobile: 16, desktop: 20)),
           ResponsiveBuilder(
             mobile: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _BuildSegment(title: 'Location', infoRows: helper.locationInfoRow(provider), widthOfSegment: double.infinity),
+                _BuildSegment(title: texts.summaryTitleLocation, infoRows: helper.locationInfoRow(provider), widthOfSegment: double.infinity),
                 const SizedBox(height: 20),
-                _BuildSegment(title: 'Working Hours', infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: double.infinity),
+                _BuildSegment(title: texts.summaryTitleWorkingHours, infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: double.infinity),
               ],
             ),
             desktop: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _BuildSegment(title: 'Location', infoRows: helper.locationInfoRow(provider), widthOfSegment: 300),
-                _BuildSegment(title: 'Working Hours', infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: 300),
+                _BuildSegment(title: texts.summaryTitleLocation, infoRows: helper.locationInfoRow(provider), widthOfSegment: 300),
+                _BuildSegment(title: texts.summaryTitleWorkingHours, infoRows: helper.hoursInfoRow(provider, context), widthOfSegment: 300),
               ],
             ),
           ),
@@ -69,7 +72,7 @@ class _BuildSummaryBody extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             height: 45,
-            child: CommonButton(onPressed: () {}, buttonTitle: 'Save', buttonType: PPButtonType.web, showBorder: false),
+            child: CommonButton(onPressed: () {}, buttonTitle: texts.summaryTitleSave, buttonType: PPButtonType.web, showBorder: false),
           ),
           const SizedBox(height: 20),
         ],
@@ -79,12 +82,12 @@ class _BuildSummaryBody extends StatelessWidget {
 }
 
 class _BuildSummaryHeader extends StatelessWidget {
-  const _BuildSummaryHeader({super.key});
+  const _BuildSummaryHeader();
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final isMobile = Responsive.isMobile(context);
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
 
     return ResponsiveBuilder(
       mobile: Column(
@@ -95,12 +98,12 @@ class _BuildSummaryHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                'Happy Shop',
+                texts.summaryHeaderBusinessName,
                 style: theme.textTheme.bodyLarge!.copyWith(fontSize: 20, fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 4),
-              Text('Pet Shop | Sarajevo, Bosnia and Herzegovina', textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
+              Text(texts.summaryHeaderBusinessTypeLocation, textAlign: TextAlign.center, style: theme.textTheme.bodyMedium),
             ],
           ),
         ],
@@ -113,8 +116,8 @@ class _BuildSummaryHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Happy Shop', style: theme.textTheme.bodyLarge!.copyWith(fontSize: 22, fontWeight: FontWeight.w700)),
-              Text('Pet Shop | Sarajevo, Bosnia and Herzegovina'),
+              Text(texts.summaryHeaderBusinessName, style: theme.textTheme.bodyLarge!.copyWith(fontSize: 22, fontWeight: FontWeight.w700)),
+              Text(texts.summaryHeaderBusinessTypeLocation),
             ],
           ),
         ],
@@ -159,7 +162,7 @@ class _BuildImageSummary extends StatelessWidget {
 }
 
 class _BuildSegment extends StatelessWidget {
-  const _BuildSegment({super.key, this.title = 'TITLE', required this.infoRows, this.widthOfSegment = 200});
+  const _BuildSegment({this.title = 'TITLE', required this.infoRows, this.widthOfSegment = 200});
 
   final String title;
   final List<TitleSummaryValue> infoRows;

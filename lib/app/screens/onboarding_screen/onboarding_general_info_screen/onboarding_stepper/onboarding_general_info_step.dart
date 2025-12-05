@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/text_fields/wa_custom_text_field.dart';
 import 'package:w_components/w_components.dart';
-import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/wa_multiple_images.dart';
+
+import '../../../../providers/texts_provider.dart';
 
 class OnboardingGeneralInfoStep extends StatelessWidget {
   const OnboardingGeneralInfoStep({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final texts = TextsProvider.of(context)!.onboardingTexts;
     return Column(
       children: [
         const _BuildImagePicker(),
@@ -20,17 +23,17 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().nameController, label: 'Name', hint: "Enter your service's name", isRequired: true),
+              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().nameController, label: texts.generalInfoNameLabel, hint: texts.generalInfoNameHint, isRequired: true),
             ),
             SizedBox(width: 16),
             Expanded(
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().phoneController,
-                label: 'Phone',
-                hint: "XXX XX XXX-XXX",
+                label: texts.generalInfoPhoneLabel,
+                hint: texts.generalInfoPhoneHint,
                 isRequired: true,
                 type: WATextFieldType.phone,
-                phoneFormat: '+XXX XX XXX-XXX',
+                phoneFormat: texts.generalInfoPhoneFormat,
               ),
             ),
           ],
@@ -38,8 +41,8 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
         const SizedBox(height: 24),
         WACustomTextField(
           controller: context.read<WAOnboardingProvider>().descriptionController,
-          label: 'Description',
-          hint: "Enter your service's description",
+          label: texts.generalInfoDescriptionLabel,
+          hint: texts.generalInfoDescriptionHint,
           isRequired: true,
           maxLines: 4,
           maxLength: 600,
@@ -50,8 +53,8 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
             Expanded(
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().emailController,
-                label: 'Contact Email',
-                hint: "Enter your service's contact email",
+                label: texts.generalInfoDescriptionLabel,
+                hint: texts.generalInfoDescriptionHint,
                 isRequired: true,
                 type: WATextFieldType.email,
               ),
@@ -60,8 +63,8 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
             Expanded(
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().websiteController,
-                label: 'Website',
-                hint: "Enter your service's website",
+                label: texts.generalInfoWebsiteLabel,
+                hint: texts.generalInfoWebsiteHint,
                 isRequired: false,
                 type: WATextFieldType.url,
               ),
@@ -104,10 +107,10 @@ class _BuildImagePicker extends StatelessWidget {
           WAMultipleImagePicker(
             maxImages: 5,
             onImagesChanged: (images) {
-              debugPrint(images.toString());
-              // context.read<WAOnboardingProvider>().setShopImages(images);
+              context.read<WAOnboardingProvider>().setImageBytesListForServiceUpload(images);
+              debugPrint(images.length.toString());
             },
-            // initialImages: context.read<WAOnboardingProvider>().shopImages,
+            initialImages: context.read<WAOnboardingProvider>().imageBytesListForServiceUpload,
           ),
         ],
       ),
@@ -120,33 +123,11 @@ class _BuildTextImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = TextsProvider.of(context)!.onboardingTexts;
     return TextButton(
-      onPressed: () async {
-        final imageProvider = context.read<ImageHandleProvider>();
-        final onboardingProvider = context.read<WAOnboardingProvider>();
-        final imageResult = await imageProvider.pickImageForWeb();
-        if (!context.mounted) return;
-
-        if (!imageResult.isSuccess) {
-          onboardingProvider.setServiceImage(imageResult.data.toString());
-          WACustomSnackbar.instance.showSnack(context, imageResult.error!, type: WACustomSnackbarType.error);
-        } else {
-          WACustomSnackbar.instance.showSnack(context, 'Image uploaded successfully: ${imageResult.data!.length}', type: WACustomSnackbarType.success);
-        }
-
-        // final uploadResult = await imageProvider.uploadImage(imageResult.data!.path);
-        // if (!context.mounted) return;
-
-        // todo add backend api and add storage path it need to call only once to server
-        // if (uploadResult.isSuccess) {
-        //   imageProvider.imageUrl = uploadResult.data!.url!;
-        //   _showSnack(context, 'Image uploaded successfully: ${uploadResult.data!.url}');
-        // } else {
-        //   _showSnack(context, uploadResult.error!);
-        // }
-      },
+      onPressed: () async => await OnboardingActionUtils.uploadUserProviderImage(context),
       child: Text(
-        context.select<ImageHandleProvider, bool>((provider) => provider.imageBytes != null) ? 'Change Photo' : 'Upload Photo',
+        context.select<ImageHandleProvider, bool>((provider) => provider.imageBytes != null) ? texts.generalInfoChangePhoto : texts.generalInfoUploadPhoto,
         style: TextStyle(color: ColorHelper.blue500.color, fontSize: 14),
       ),
     );

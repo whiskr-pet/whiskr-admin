@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/w_components.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
-import 'package:w_components/buttons/common_button.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
+
+import '../../../../l10n/models/screen_texts/onboarding_texts.dart';
+import '../../../providers/texts_provider.dart';
 
 class OnboardingIntroScreen extends StatelessWidget {
   const OnboardingIntroScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _BuildOnboardingintroBody(), bottomNavigationBar: _BuildGetStartedButton());
+    return Scaffold(body: _BuildOnboardingIntroBody(), bottomNavigationBar: _BuildGetStartedButton());
   }
 }
 
-class _BuildOnboardingintroBody extends StatelessWidget {
-  const _BuildOnboardingintroBody();
+class _BuildOnboardingIntroBody extends StatelessWidget {
+  const _BuildOnboardingIntroBody();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class _BuildOnboardingintroBody extends StatelessWidget {
     final onboardingImageWidth = Responsive.value<double>(context: context, mobile: 200, tablet: 350, desktop: 400, widescreen: 500);
 
     final onboardingImageHeight = Responsive.value<double>(context: context, mobile: 200, tablet: 350, desktop: 400, widescreen: 500);
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
 
     return SingleChildScrollView(
       child: Column(
@@ -48,19 +52,14 @@ class _BuildOnboardingintroBody extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Welcome to',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  fontSize: headlineFontSize,
-                  color: ColorHelper.greenWeb.color,
-                  fontFamily: 'NunitoSans',
-                ),
+                texts.introWelcome,
+                style: theme.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900, fontSize: headlineFontSize, color: ColorHelper.greenWeb.color, fontFamily: 'NunitoSans'),
               ),
               Image.asset(Assets.images.whiskrLogo.path, width: logoWidth, height: 155),
             ],
           ),
           Text(
-            "Before you get started, let's set up your business profile",
+            texts.introSetup,
             style: theme.textTheme.bodyMedium?.copyWith(fontSize: bodyFontSize, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
           ),
           const SizedBox(height: 30),
@@ -76,6 +75,7 @@ class _BuildGetStartedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final OnboardingTexts texts = TextsProvider.of(context)!.onboardingTexts;
     return SizedBox(
       height: 80,
       child: Column(
@@ -85,7 +85,7 @@ class _BuildGetStartedButton extends StatelessWidget {
               context.read<WAOnboardingProvider>().setCurrentStep(0);
               context.go(onboardingGeneralInfoRoute);
             },
-            buttonTitle: 'Get Started',
+            buttonTitle: texts.getStarted,
             buttonType: PPButtonType.web,
             showBorder: false,
           ),
