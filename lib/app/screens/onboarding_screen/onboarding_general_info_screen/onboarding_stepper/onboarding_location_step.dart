@@ -4,6 +4,7 @@ import 'package:w_components/w_components.dart';
 import 'package:w_components/wa_map_picker/wa_map_picker.dart';
 import 'package:wa_map_module/wa_map_module.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/config/flavor_config.dart';
 
 import '../../../../../l10n/models/screen_texts/onboarding_texts.dart';
@@ -18,22 +19,18 @@ class OnboardingLocationStep extends StatelessWidget {
 
     return Column(
       children: [
-        Expanded(
+        SizedBox(
+          height: 250,
           child: WAMapPicker(
             mapboxAccessToken: FlavorConfig.instance.values.mapboxAccessToken,
             showAddress: true,
             mapType: MapBoxType.outdoors,
-            onConfirm: (pos) async {
-              context.read<WAOnboardingProvider>().zipCodeController.text = pos.address.zip ?? "";
-              context.read<WAOnboardingProvider>().stateController.text = pos.address.country ?? "";
-              context.read<WAOnboardingProvider>().cityController.text = pos.address.city ?? "";
-              context.read<WAOnboardingProvider>().addressController.text = pos.address.streetAddress ?? "";
-            },
+            onConfirm: (MapPickerResult pos) => OnboardingActionUtils.collectLocationMapData(context, pos),
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         WACustomTextField(controller: context.read<WAOnboardingProvider>().addressController, label: texts.locationAddressLabel, hint: texts.locationAddressHint, isRequired: true),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
@@ -45,7 +42,7 @@ class OnboardingLocationStep extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(

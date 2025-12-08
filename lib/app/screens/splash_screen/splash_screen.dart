@@ -20,7 +20,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
     SplashProvider(
       defaultRoute: loginRoute,
       homeRoute: dashboardRoute,
-      onboardingRoute: onboardingIntroRoute,
+      onboardingRoute: onboardingGeneralInfoRoute,
       onNavigate: (String route) {
         if (mounted) {
           debugPrint('[WEB] Splash navigating to: $route');
