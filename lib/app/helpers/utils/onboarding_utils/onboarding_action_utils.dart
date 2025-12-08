@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_image_module/helpers/image_constants.dart';
 import 'package:w_image_module/providers/image_provider.dart';
-import 'package:w_user_module/providers/user_management_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
+import 'package:wa_map_module/models/map_picker_result_model.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 
 import '../../../../routing/routes.dart';
@@ -19,26 +19,19 @@ class OnboardingActionUtils {
 
   static Future<void> uploadUserProviderImage(BuildContext context) async {
     final imageProvider = context.read<ImageHandleProvider>();
-    final userProvider = context.read<UserManagementProvider>();
+    final onboardingProvider = context.read<WAOnboardingProvider>();
     final imageResult = await imageProvider.pickImageForWeb();
     if (!context.mounted) return;
 
     if (imageResult.isSuccess) {
-      final ResponseModel<ImageModel> uploadResult = await imageProvider.uploadImage(ProviderImageConstants.userProviderImages);
-      if (uploadResult.isSuccess) {
-        // todo(danispreldzic):: update user image and edit user data api (wait for cahta with roles check)
-        userProvider.setUserServerImage(uploadResult.data ?? ImageModel());
-        final ResponseModel<String> userImageUpdateResponse = await userProvider.updateUserImage();
-        if (userImageUpdateResponse.isSuccess) {
-          if (context.mounted) WACustomSnackbar.instance.showSnack(context, 'Image uploaded successfully: ${uploadResult.data!.url}', type: WACustomSnackbarType.success);
-        } else {
-          if (context.mounted) WACustomSnackbar.instance.showSnack(context, userImageUpdateResponse.error!, type: WACustomSnackbarType.error);
-        }
+      final ResponseModel<ImageModel> uploadResult = await imageProvider.uploadWebSingleImage(ProviderImageConstants.userProviderImages);
+      if (uploadResult.isSuccess && uploadResult.data != null) {
+        onboardingProvider.setServiceProfileImage(uploadResult.data!);
       } else {
         if (context.mounted) WACustomSnackbar.instance.showSnack(context, uploadResult.error!, type: WACustomSnackbarType.error);
       }
     } else {
-      WACustomSnackbar.instance.showSnack(context, 'Image uploaded ERROR: ${imageResult.error}', type: WACustomSnackbarType.error);
+      WACustomSnackbar.instance.showSnack(context, 'Image uploaded issue: ${imageResult.error}', type: WACustomSnackbarType.error);
     }
   }
 
@@ -125,17 +118,37 @@ class OnboardingActionUtils {
       return;
     }
 
-    // first upload images to image kit
-    await _uploadServiceImagesToImageKit(context, provider);
+    context.go(onboardingSummaryRoute);
+  }
 
-    final ResponseModel<String> response = await provider.onboardUserAdmin();
-    if (response.isSuccess) {
-      if (context.mounted) {
+  static Future<void> handleSummaryConfirm(BuildContext context) async {
+    final provider = context.read<WAOnboardingProvider>();
+    provider.setIsLoading(true);
+
+    try {
+      // Upload images first
+      await _uploadServiceImagesToImageKit(context, provider);
+
+      final ResponseModel<String> response = await provider.onboardUserAdmin();
+
+      if (!context.mounted) return;
+
+      if (response.isSuccess) {
         OnboardingActionUtils.showSuccess(context, 'Service saved successfully!');
-        context.pushReplacementNamed(dashboardRoute);
+
+        context.go(dashboardRoute);
+        provider.clearData();
+        context.read<ImageHandleProvider>().clearImageData();
+      } else {
+        OnboardingActionUtils.showError(context, response.error.toString());
       }
-    } else {
-      if (context.mounted) OnboardingActionUtils.showError(context, response.error.toString());
+    } catch (e, s) {
+      debugPrint('Onboarding failed: $e\n$s');
+      if (context.mounted) {
+        OnboardingActionUtils.showError(context, 'Something went wrong. Please try again.');
+      }
+    } finally {
+      provider.setIsLoading(false);
     }
   }
 
@@ -143,9 +156,11 @@ class OnboardingActionUtils {
     final ImageHandleProvider imageHandleProvider = context.read<ImageHandleProvider>();
 
     try {
-      final ResponseModel<List<ImageModel>> response = await imageHandleProvider.uploadMultipleImages(onboardingProvider.imageBytesListForServiceUpload, ProviderImageConstants.userProviderImages);
-      if (response.isSuccess) {
-        response.data!.map((ImageModel image) => onboardingProvider.addOrRemoveImage(image));
+      final ResponseModel<List<ImageModel>> response = await imageHandleProvider.uploadMultipleImages(ProviderImageConstants.userProviderImages);
+      if (response.isSuccess && response.data != null) {
+        for (var image in response.data!) {
+          onboardingProvider.addOrRemoveImage(image);
+        }
         debugPrint("WAOnboardingProvider service images length: ${onboardingProvider.images.length}");
       } else {
         debugPrint("Error image service upload: ${response.error}");
@@ -153,6 +168,17 @@ class OnboardingActionUtils {
     } catch (e) {
       debugPrint("Image upload failed: $e");
     }
+  }
+
+  static void collectLocationMapData(BuildContext context, MapPickerResult pos) {
+    final WAOnboardingProvider onboardingProvider = context.read<WAOnboardingProvider>();
+    onboardingProvider.setLatitude(pos.location.latitude);
+    onboardingProvider.setLongitude(pos.location.longitude);
+    onboardingProvider.zipCodeController.text = pos.address.zip ?? "";
+    onboardingProvider.stateController.text = pos.address.country ?? "";
+    onboardingProvider.cityController.text = pos.address.city ?? "";
+    onboardingProvider.addressController.text = pos.address.streetAddress ?? "";
+    onboardingProvider.setIsLocationSelected(true);
   }
 
   static String? _getCurrentStepError(WAOnboardingProvider provider, int currentStep) {

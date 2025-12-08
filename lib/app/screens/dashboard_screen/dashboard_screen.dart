@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboard_appointments.dart';
@@ -10,6 +11,7 @@ import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
+import 'package:whiskr_admin_panel/routing/routes.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -56,6 +58,14 @@ class _BuildDashboardWelcome extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
+          TextButton(
+            onPressed: () async {
+              await context.read<AuthenticationProvider>().userLogout().then((value) {
+                if (context.mounted) context.go(loginRoute);
+              });
+            },
+            child: Text('logout'),
+          ),
           _BuildDashboardQuickActions(isPetShop: isPetShop),
           const SizedBox(height: 24),
           Text('Overview', style: theme.textTheme.headlineMedium),

@@ -7,7 +7,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.8.1
+  sdk: ">=3.10.0 <4.0.0"
 
 
 dependencies:
@@ -38,68 +38,69 @@ dependencies:
   flutter_side_menu: ^0.5.41
   lottie: ^3.3.1
   fl_chart: ^0.69.2
+  latlong2: ^0.9.1
 
   # network module
   w_network_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: 56963ffff0712155493a86935dfedfecb44169d8  
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: 56963ffff0712155493a86935dfedfecb44169d8   
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   wa_onboarding_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_onboarding_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8    
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348    
   w_image_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_image_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   wa_map_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_map_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   wa_inventory_services_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_inventory_services_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   wa_analytics_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_analytics_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
   w_user_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_user_module
-      ref: 56963ffff0712155493a86935dfedfecb44169d8
+      ref: a952302f35c80ef4dee464ca3c7cc83dd2aaa348
 
 
 dev_dependencies:

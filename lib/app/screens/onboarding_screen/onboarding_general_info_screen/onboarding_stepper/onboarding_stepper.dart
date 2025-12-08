@@ -46,7 +46,7 @@ class StepperContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [BoxShadow(color: ColorHelper.black.color.withAlpha(8), blurRadius: 20, offset: const Offset(0, 4))],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -79,7 +79,7 @@ class StepperContainer extends StatelessWidget {
               height: showSummary
                   ? 1150
                   : currentStep == 0
-                  ? 700
+                  ? 800
                   : 550,
               child: showSummary ? const OnboardingSummaryScreen() : _buildStepContent(),
             ),
@@ -105,6 +105,8 @@ class StepperContainer extends StatelessWidget {
   }
 
   Widget _buildNavigationButtons(BuildContext context) {
+    final bool isLocationSelected = context.select<WAOnboardingProvider, bool>((provider) => provider.isLocationSelected);
+
     return SizedBox(
       width: double.infinity,
       height: 45,
@@ -112,6 +114,7 @@ class StepperContainer extends StatelessWidget {
         onPressed: () => OnboardingActionUtils.handleButtonPress(context, currentStep),
         buttonTitle: OnboardingActionUtils.getButtonTitle(currentStep),
         buttonType: PPButtonType.web,
+        disabled: (currentStep == 1 && !isLocationSelected) ? true : false,
         showBorder: false,
       ),
     );

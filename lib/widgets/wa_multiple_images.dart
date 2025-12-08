@@ -14,7 +14,24 @@ class WAMultipleImagePicker extends StatefulWidget {
   final Function(List<Uint8List>) onImagesChanged;
   final List<Uint8List>? initialImages;
 
-  const WAMultipleImagePicker({super.key, this.maxImages = 5, required this.onImagesChanged, this.initialImages});
+  // Localized text parameters
+  final String? title;
+  final String? maxReachedMessage;
+  final String? imageAddedMessage;
+  final String? imageRemovedMessage;
+  final String? addImageLabel;
+
+  const WAMultipleImagePicker({
+    super.key,
+    this.maxImages = 5,
+    required this.onImagesChanged,
+    this.initialImages,
+    this.title = '',
+    this.addImageLabel = '',
+    this.imageAddedMessage = '',
+    this.imageRemovedMessage = '',
+    this.maxReachedMessage = '',
+  });
 
   @override
   State<WAMultipleImagePicker> createState() => _WAMultipleImagePickerState();
@@ -34,7 +51,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
   Future<void> _pickImage() async {
     if (_images.length >= widget.maxImages) {
       if (!mounted) return;
-      WACustomSnackbar.instance.showSnack(context, 'Maximum ${widget.maxImages} images allowed', type: WACustomSnackbarType.error);
+      WACustomSnackbar.instance.showSnack(context, widget.maxReachedMessage ?? '', type: WACustomSnackbarType.error);
       return;
     }
 
@@ -56,7 +73,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
 
     widget.onImagesChanged(_images);
 
-    WACustomSnackbar.instance.showSnack(context, 'Image added successfully (${_images.length}/${widget.maxImages})', type: WACustomSnackbarType.success);
+    WACustomSnackbar.instance.showSnack(context, '${widget.imageAddedMessage} (${_images.length}/${widget.maxImages})', type: WACustomSnackbarType.success);
   }
 
   void _removeImage(int index) {
@@ -65,7 +82,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
     });
     widget.onImagesChanged(_images);
 
-    WACustomSnackbar.instance.showSnack(context, 'Image removed', type: WACustomSnackbarType.info);
+    WACustomSnackbar.instance.showSnack(context, widget.imageRemovedMessage ?? '', type: WACustomSnackbarType.info);
   }
 
   @override
@@ -77,7 +94,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Shop Images',
+              widget.title ?? '',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: ColorHelper.grey900.color),
             ),
             Text('${_images.length}/${widget.maxImages}', style: TextStyle(fontSize: 14, color: ColorHelper.grey600.color)),
@@ -97,7 +114,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
         ..._images.asMap().entries.map((entry) {
           return _ImageTile(imageBytes: entry.value, onRemove: () => _removeImage(entry.key));
         }),
-        if (_images.length < widget.maxImages) _AddImageTile(onTap: _pickImage),
+        if (_images.length < widget.maxImages) _AddImageTile(onTap: _pickImage, addImageLabel: widget.addImageLabel),
       ],
     );
   }
@@ -159,8 +176,9 @@ class _ImageTileState extends State<_ImageTile> {
 
 class _AddImageTile extends StatefulWidget {
   final VoidCallback onTap;
+  final String? addImageLabel;
 
-  const _AddImageTile({required this.onTap});
+  const _AddImageTile({required this.onTap, this.addImageLabel = ''});
 
   @override
   State<_AddImageTile> createState() => _AddImageTileState();
@@ -191,7 +209,7 @@ class _AddImageTileState extends State<_AddImageTile> {
               Icon(Icons.add_photo_alternate_outlined, size: 32, color: _isHovered ? ColorHelper.white.color : ColorHelper.grey500.color),
               const SizedBox(height: 8),
               Text(
-                'Add Image',
+                widget.addImageLabel ?? '',
                 style: TextStyle(fontSize: 12, color: _isHovered ? ColorHelper.white.color : ColorHelper.grey600.color, fontWeight: FontWeight.w500),
               ),
             ],
