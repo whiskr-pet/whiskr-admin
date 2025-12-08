@@ -7,7 +7,6 @@ import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
-import 'package:w_user_module/providers/user_management_provider.dart';
 import 'package:w_utils/helper/util_constants.dart';
 import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
@@ -80,22 +79,22 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
         ChangeNotifierProvider<WAInventoryServicesProvider>(create: (_) => WAInventoryServicesProvider(), lazy: true),
         ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
-        ChangeNotifierProvider<UserManagementProvider>(create: (_) => UserManagementProvider(), lazy: true),
         ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
       ],
       child: Consumer2<CustomThemeProvider, LocaleProvider>(
         builder: (context, customThemeProvider, localeProvider, child) {
-          return TextsProvider(
-            loginTexts: LoginTexts(context),
-            onboardingTexts: OnboardingTexts(context),
-            child: MaterialApp.router(
-              title: config.values.appName,
-              debugShowCheckedModeBanner: false,
-              routerConfig: routeGenerator.router,
-              theme: CustomWebThemes.lightTheme,
-              supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
-            ),
+          return MaterialApp.router(
+            title: config.values.appName,
+            debugShowCheckedModeBanner: false,
+            routerConfig: routeGenerator.router,
+            theme: CustomWebThemes.lightTheme,
+            locale: localeProvider.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
+
+            builder: (context, child) {
+              return TextsProvider(loginTexts: LoginTexts(context), onboardingTexts: OnboardingTexts(context), child: child!);
+            },
           );
         },
       ),

@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/text_fields/wa_custom_text_field.dart';
-import 'package:w_components/w_components.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
-import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
-import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/wa_multiple_images.dart';
+import 'package:whiskr_admin_panel/widgets/wa_multiple_images.dart';
 
+import '../../../../helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import '../../../../providers/texts_provider.dart';
 
 class OnboardingGeneralInfoStep extends StatelessWidget {
@@ -53,8 +54,8 @@ class OnboardingGeneralInfoStep extends StatelessWidget {
             Expanded(
               child: WACustomTextField(
                 controller: context.read<WAOnboardingProvider>().emailController,
-                label: texts.generalInfoDescriptionLabel,
-                hint: texts.generalInfoDescriptionHint,
+                label: texts.generalInfoEmailLabel,
+                hint: texts.generalInfoEmailHint,
                 isRequired: true,
                 type: WATextFieldType.email,
               ),
@@ -81,28 +82,12 @@ class _BuildImagePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final texts = TextsProvider.of(context)!.onboardingTexts;
     return Center(
       child: Column(
         children: [
-          Consumer<ImageHandleProvider>(
-            builder: (context, imageProvider, child) => imageProvider.imageBytes != null
-                ? ClipOval(
-                    child: Container(
-                      width: 75,
-                      height: 75,
-                      color: ColorHelper.grey150.color,
-                      child: imageProvider.imageBytes != null ? Image.memory(imageProvider.imageBytes!, fit: BoxFit.cover) : const Icon(Icons.person, size: 40, color: Colors.grey),
-                    ),
-                  )
-                : Container(
-                    width: 75,
-                    height: 75,
-                    decoration: BoxDecoration(color: ColorHelper.grey150.color, shape: BoxShape.circle),
-                    child: const Icon(Icons.camera_alt, size: 32),
-                  ),
-          ),
-          const SizedBox(height: 12),
-          const _BuildTextImagePicker(),
+          const SizedBox(height: 10),
+          const ProfileImagePicker(),
           const SizedBox(height: 30),
           WAMultipleImagePicker(
             maxImages: 5,
@@ -111,6 +96,11 @@ class _BuildImagePicker extends StatelessWidget {
               debugPrint(images.length.toString());
             },
             initialImages: context.read<WAOnboardingProvider>().imageBytesListForServiceUpload,
+            addImageLabel: texts.onboardingWAMultipleImagePickerAddImage,
+            imageAddedMessage: texts.onboardingWAMultipleImagePickerImageAdded,
+            imageRemovedMessage: texts.onboardingWAMultipleImagePickerImageRemoved,
+            maxReachedMessage: texts.onboardingWAMultipleImagePickerMaxReached,
+            title: texts.onboardingWAMultipleImagePickerTitle,
           ),
         ],
       ),
@@ -118,18 +108,72 @@ class _BuildImagePicker extends StatelessWidget {
   }
 }
 
-class _BuildTextImagePicker extends StatelessWidget {
-  const _BuildTextImagePicker();
+class ProfileImagePicker extends StatefulWidget {
+  const ProfileImagePicker({super.key});
+
+  @override
+  State<ProfileImagePicker> createState() => _ProfileImagePickerState();
+}
+
+class _ProfileImagePickerState extends State<ProfileImagePicker> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final texts = TextsProvider.of(context)!.onboardingTexts;
-    return TextButton(
-      onPressed: () async => await OnboardingActionUtils.uploadUserProviderImage(context),
-      child: Text(
-        context.select<ImageHandleProvider, bool>((provider) => provider.imageBytes != null) ? texts.generalInfoChangePhoto : texts.generalInfoUploadPhoto,
-        style: TextStyle(color: ColorHelper.blue500.color, fontSize: 14),
-      ),
+
+    return Consumer<ImageHandleProvider>(
+      builder: (context, imageProvider, child) {
+        final imageBytes = imageProvider.imageBytes?.fileBytes;
+
+        return Column(
+          spacing: 20,
+          children: [
+            MouseRegion(
+              onEnter: (_) => setState(() => _isHovered = true),
+              onExit: (_) => setState(() => _isHovered = false),
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () async => await OnboardingActionUtils.uploadUserProviderImage(context),
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: _isHovered ? ColorHelper.greenWeb.color.withValues(alpha: 40) : ColorHelper.grey100.color,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: _isHovered ? ColorHelper.white.color : ColorHelper.grey300.color, width: 2),
+                  ),
+                  child: imageBytes != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.memory(base64Decode(imageBytes), fit: BoxFit.cover),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.add_photo_alternate_outlined, size: 32, color: _isHovered ? ColorHelper.white.color : ColorHelper.grey500.color),
+                            const SizedBox(height: 8),
+                            Text(
+                              texts.onboardingWAMultipleImagePickerAddImage,
+                              style: TextStyle(fontSize: 12, color: _isHovered ? ColorHelper.white.color : ColorHelper.grey600.color, fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+
+            SizedBox(
+              width: 250,
+              child: Text(
+                'Upload your business profile image. Choose a logo or photo that best represents your service.',
+                style: TextStyle(fontSize: 14, color: ColorHelper.grey600.color, height: 1.4),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
