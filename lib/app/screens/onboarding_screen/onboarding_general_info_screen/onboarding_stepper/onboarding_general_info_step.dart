@@ -166,7 +166,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
             SizedBox(
               width: 250,
               child: Text(
-                'Upload your business profile image. Choose a logo or photo that best represents your service.',
+                texts.generalInfoServiceProfilePhoto,
                 style: TextStyle(fontSize: 14, color: ColorHelper.grey600.color, height: 1.4),
                 textAlign: TextAlign.center,
               ),
