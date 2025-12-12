@@ -9,6 +9,7 @@ import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dar
 import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
@@ -34,15 +35,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _getInitialData() async {
     final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
     dashboardProvider.setLoading(true);
-    if (mounted) await context.read<WAOnboardingProvider>().getServiceAdmin();
-    // todo handle errors and loading states
     if (mounted) {
-      final bool isPetShop = context.read<WAOnboardingProvider>().serviceAdminData.type == 'SHOP';
-      setState(() {
-        this.isPetShop = isPetShop;
-      });
+      final ResponseModel<String> dataResponse = await context.read<WAOnboardingProvider>().getServiceAdmin();
+      if (dataResponse.isSuccess) {
+        if (mounted) {
+          final bool isPetShop = context.read<WAOnboardingProvider>().serviceAdminData.type == 'SHOP';
+          setState(() {
+            this.isPetShop = isPetShop;
+          });
+        }
+      } else {
+        // Handle error if needed
+      }
+      dashboardProvider.setLoading(false);
     }
-    dashboardProvider.setLoading(false);
   }
 
   @override
