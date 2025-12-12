@@ -6,6 +6,7 @@ import 'package:w_dashboard/helpers/main_layout_menu_item.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
 class MainLayout extends StatefulWidget {
@@ -39,7 +40,6 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   void dispose() {
-    _sideMenuController.close();
     super.dispose();
   }
 
@@ -59,7 +59,7 @@ class _MainLayoutState extends State<MainLayout> {
             backgroundColor: ColorHelper.white.color,
             builder: (data) => SideMenuData(items: _buildMenuItems()),
           ),
-          Expanded(child: Container(child: widget.child)),
+          Expanded(child: widget.child),
         ],
       ),
     );
@@ -131,20 +131,22 @@ class _BuildActionProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      children: [
-        const CircleAvatar(radius: 18, backgroundImage: NetworkImage('https://upload.wikimedia.org/wikipedia/en/7/77/EricCartman.png')),
-        const SizedBox(width: 8),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Eric Cartman', style: theme.textTheme.bodyMedium),
-            Text('Admin', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
-          ],
-        ),
-        const SizedBox(width: 30),
-      ],
+    return Consumer<WAOnboardingProvider>(
+      builder: (context, provider, _) => Row(
+        children: [
+          CircleAvatar(radius: 18, backgroundImage: NetworkImage(provider.serviceAdminData.serviceProfileImage?.url ?? '')),
+          const SizedBox(width: 8),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(provider.serviceAdminData.contact?.email ?? '', style: theme.textTheme.bodyMedium),
+              Text('Admin', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+            ],
+          ),
+          const SizedBox(width: 30),
+        ],
+      ),
     );
   }
 }
