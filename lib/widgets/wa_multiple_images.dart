@@ -111,7 +111,7 @@ class _WAMultipleImagePickerState extends State<WAMultipleImagePicker> {
       spacing: 12,
       runSpacing: 12,
       children: [
-        ..._images.asMap().entries.map((entry) {
+        ..._images.asMap().entries.take(widget.maxImages).map((entry) {
           return _ImageTile(imageBytes: entry.value, onRemove: () => _removeImage(entry.key));
         }),
         if (_images.length < widget.maxImages) _AddImageTile(onTap: _pickImage, addImageLabel: widget.addImageLabel),
