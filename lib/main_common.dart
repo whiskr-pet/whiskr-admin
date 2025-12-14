@@ -16,6 +16,7 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/texts_provider.dart';
+import 'package:whiskr_admin_panel/l10n/models/screen_texts/inventory_texts.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
 import 'config/flavor_config.dart';
@@ -93,7 +94,7 @@ class WhiskrAdminApp extends StatelessWidget {
             localizationsDelegates: const [AppLocalizations.delegate, GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
 
             builder: (context, child) {
-              return TextsProvider(loginTexts: LoginTexts(context), onboardingTexts: OnboardingTexts(context), child: child!);
+              return TextsProvider(loginTexts: LoginTexts(context), onboardingTexts: OnboardingTexts(context), inventoryTexts: InventoryTexts(context), child: child!);
             },
           );
         },
