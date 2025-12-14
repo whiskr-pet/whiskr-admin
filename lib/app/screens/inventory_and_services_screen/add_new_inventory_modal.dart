@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/models/form_data_file_bytes.dart';
+import 'package:w_utils/models/image_model.dart';
+import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 
 class AddInventoryModal extends StatefulWidget {
@@ -50,7 +53,19 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 
   Future<void> _pickImage() async {
     final imageProvider = context.read<ImageHandleProvider>();
-    await imageProvider.pickImageForWeb();
+    final ResponseModel<FormDataFileBytes?> response = await imageProvider.pickImageForWeb();
+    if (!response.isSuccess && mounted) {
+      WACustomSnackbar.instance.showSnack(context, response.error ?? 'Error picking image', type: WACustomSnackbarType.error);
+    } else if (response.isSuccess && response.data != null) {
+      final ResponseModel<ImageModel> responseModel = await imageProvider.uploadWebSingleImage('products_inventory_images');
+      if (!responseModel.isSuccess && mounted) {
+        WACustomSnackbar.instance.showSnack(context, responseModel.error ?? 'Error uploading image', type: WACustomSnackbarType.error);
+      } else {
+        if (mounted) {
+          context.read<WAInventoryServicesProvider>().setImage(responseModel.data!);
+        }
+      }
+    }
   }
 
   Future<void> _handleSave() async {
@@ -67,8 +82,6 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 
       try {
         if (widget.onSave != null) {
-          // todo add image when uploaded, maybe change a logic little bit
-          // context.read<WAInventoryServicesProvider>().setImage();
           widget.onSave!();
         }
       } catch (e) {
