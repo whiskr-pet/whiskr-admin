@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
+import 'package:w_image_module/helpers/image_constants.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/form_data_file_bytes.dart';
@@ -11,21 +12,25 @@ import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 
+import '../../../l10n/models/screen_texts/inventory_texts.dart';
+import '../../providers/texts_provider.dart';
+
 class AddInventoryModal extends StatefulWidget {
   final Function? onSave;
+  final bool isEditMode;
 
-  const AddInventoryModal({super.key, required this.onSave});
+  const AddInventoryModal({super.key, required this.onSave, this.isEditMode = false});
 
   @override
   State<AddInventoryModal> createState() => _AddInventoryModalState();
 
-  static void show(BuildContext context, {required Function onSave}) {
+  static void show(BuildContext context, {required Function onSave, bool isEditMode = false}) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => ChangeNotifierProvider(
         create: (_) => ImageHandleProvider(),
-        child: AddInventoryModal(onSave: onSave),
+        child: AddInventoryModal(onSave: onSave, isEditMode: isEditMode),
       ),
     );
   }
@@ -52,14 +57,15 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
   }
 
   Future<void> _pickImage() async {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     final imageProvider = context.read<ImageHandleProvider>();
     final ResponseModel<FormDataFileBytes?> response = await imageProvider.pickImageForWeb();
     if (!response.isSuccess && mounted) {
-      WACustomSnackbar.instance.showSnack(context, response.error ?? 'Error picking image', type: WACustomSnackbarType.error);
+      WACustomSnackbar.instance.showSnack(context, response.error ?? texts.inventoryErrorPickingImage, type: WACustomSnackbarType.error);
     } else if (response.isSuccess && response.data != null) {
-      final ResponseModel<ImageModel> responseModel = await imageProvider.uploadWebSingleImage('products_inventory_images');
+      final ResponseModel<ImageModel> responseModel = await imageProvider.uploadWebSingleImage(ProviderImageConstants.productInventoryImages);
       if (!responseModel.isSuccess && mounted) {
-        WACustomSnackbar.instance.showSnack(context, responseModel.error ?? 'Error uploading image', type: WACustomSnackbarType.error);
+        WACustomSnackbar.instance.showSnack(context, responseModel.error ?? texts.inventoryErrorUploadingImage, type: WACustomSnackbarType.error);
       } else {
         if (mounted) {
           context.read<WAInventoryServicesProvider>().setImage(responseModel.data!);
@@ -70,14 +76,6 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 
   Future<void> _handleSave() async {
     if (context.read<WAInventoryServicesProvider>().formKey.currentState!.validate()) {
-      final imageProvider = context.read<ImageHandleProvider>();
-
-      // Check if image is selected
-      if (imageProvider.imageBytes == null) {
-        WACustomSnackbar.instance.showSnack(context, 'Please select an image', type: WACustomSnackbarType.error);
-        return;
-      }
-
       context.read<WAInventoryServicesProvider>().setIsUploading(true);
 
       try {
@@ -98,6 +96,7 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Dialog(
@@ -124,21 +123,21 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ImagePickerWidget(onPickImage: _pickImage),
+                          ImagePickerWidget(onPickImage: _pickImage, image: context.watch<WAInventoryServicesProvider>().productToEdit?.image),
                           const SizedBox(height: 20),
                           CustomTextField(
                             controller: context.read<WAInventoryServicesProvider>().nameController,
-                            label: 'Product Name',
+                            label: texts.inventoryProductNameLabel,
                             icon: Icons.inventory_2_outlined,
-                            validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                            validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                           ),
                           const SizedBox(height: 20),
                           CustomTextField(
                             controller: context.read<WAInventoryServicesProvider>().descriptionController,
-                            label: 'Description',
+                            label: texts.inventoryDescriptionLabel,
                             icon: Icons.description_outlined,
                             maxLines: 3,
-                            validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                            validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                           ),
                           const SizedBox(height: 20),
                           Row(
@@ -146,18 +145,18 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                               Expanded(
                                 child: CustomTextField(
                                   controller: context.read<WAInventoryServicesProvider>().brandController,
-                                  label: 'Brand',
+                                  label: texts.inventoryBrandLabel,
                                   icon: Icons.business_outlined,
-                                  validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                  validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                                 ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
                                 child: CustomTextField(
                                   controller: context.read<WAInventoryServicesProvider>().categoryController,
-                                  label: 'Category',
+                                  label: texts.inventoryCategoryLabel,
                                   icon: Icons.category_outlined,
-                                  validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                  validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                                 ),
                               ),
                             ],
@@ -168,18 +167,18 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                               Expanded(
                                 child: CustomTextField(
                                   controller: context.read<WAInventoryServicesProvider>().priceController,
-                                  label: 'Price',
+                                  label: texts.inventoryPriceLabel,
                                   icon: Icons.attach_money,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
-                                  validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                  validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                                 ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
                                 child: CustomDropdown(
                                   value: context.read<WAInventoryServicesProvider>().currency,
-                                  label: 'Currency',
+                                  label: texts.inventoryCurrencyLabel,
                                   icon: Icons.currency_exchange,
                                   items: const ['USD', 'EUR', 'GBP', 'BAM'],
                                   onChanged: (v) => context.read<WAInventoryServicesProvider>().setCurrency(v!),
@@ -193,11 +192,11 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                               Expanded(
                                 child: CustomTextField(
                                   controller: context.read<WAInventoryServicesProvider>().stockController,
-                                  label: 'Stock Quantity',
+                                  label: texts.inventoryStockQuantityLabel,
                                   icon: Icons.inventory_outlined,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                                  validator: (v) => v?.isEmpty ?? true ? 'Required' : null,
+                                  validator: (v) => v?.isEmpty ?? true ? texts.inventoryRequiredField : null,
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -217,7 +216,7 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                     ),
                   ),
                 ),
-                ModalFooter(isUploading: context.watch<WAInventoryServicesProvider>().isUploading, onCancel: _handleCancel, onSave: _handleSave),
+                ModalFooter(isUploading: context.watch<WAInventoryServicesProvider>().isUploading, onCancel: _handleCancel, onSave: _handleSave, isEditMode: widget.isEditMode),
               ],
             ),
           ),
@@ -234,6 +233,7 @@ class ModalHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.all(24),
@@ -249,7 +249,7 @@ class ModalHeader extends StatelessWidget {
             child: const Icon(Icons.add_shopping_cart, color: Colors.white, size: 28),
           ),
           const SizedBox(width: 16),
-          Text('Add New Product', style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color)),
+          Text(texts.inventoryAddProductButton, style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color)),
         ],
       ),
     );
@@ -258,20 +258,22 @@ class ModalHeader extends StatelessWidget {
 
 class ImagePickerWidget extends StatelessWidget {
   final VoidCallback onPickImage;
+  final ImageModel? image;
 
-  const ImagePickerWidget({super.key, required this.onPickImage});
+  const ImagePickerWidget({super.key, required this.onPickImage, this.image});
 
   @override
   Widget build(BuildContext context) {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Consumer<ImageHandleProvider>(
       builder: (context, imageProvider, _) {
-        final hasImage = imageProvider.imageBytes != null;
+        final hasImage = image != null || imageProvider.imageBytes != null;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Product Image',
+              texts.inventoryProductImageLabel,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey.shade800),
             ),
             const SizedBox(height: 12),
@@ -290,8 +292,9 @@ class ImagePickerWidget extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            // TODO(danispreldzic):: check this out
-                            child: Image.memory(base64Decode(imageProvider.imageBytes!.fileBytes), width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+                            child: image != null && image?.url != null && image!.url!.isNotEmpty
+                                ? Image.network(image!.url!, width: double.infinity, height: double.infinity, fit: BoxFit.cover)
+                                : Image.memory(base64Decode(imageProvider.imageBytes!.fileBytes), width: double.infinity, height: double.infinity, fit: BoxFit.cover),
                           ),
                           Positioned(
                             top: 8,
@@ -305,7 +308,7 @@ class ImagePickerWidget extends StatelessWidget {
                               child: IconButton(
                                 icon: const Icon(Icons.edit, color: Colors.blue),
                                 onPressed: onPickImage,
-                                tooltip: 'Change image',
+                                tooltip: texts.inventoryChangeImage,
                               ),
                             ),
                           ),
@@ -317,11 +320,11 @@ class ImagePickerWidget extends StatelessWidget {
                           Icon(Icons.cloud_upload_outlined, size: 64, color: Colors.grey.shade400),
                           const SizedBox(height: 16),
                           Text(
-                            'Click to upload product image',
+                            texts.inventoryUploadImageHint,
                             style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(height: 8),
-                          Text('PNG, JPG up to 10MB', style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
+                          Text(texts.inventoryUploadImageFormats, style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
                         ],
                       ),
               ),
@@ -424,10 +427,11 @@ class TagSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Tags', style: theme.textTheme.bodyMedium),
+        Text(texts.inventoryTagsLabel, style: theme.textTheme.bodyMedium),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -436,7 +440,7 @@ class TagSection extends StatelessWidget {
                 controller: controller,
                 onSubmitted: (_) => onAddTag(),
                 decoration: InputDecoration(
-                  hintText: 'Add a tag...',
+                  hintText: texts.inventoryAddTagHint,
                   prefixIcon: Icon(Icons.label_outline, color: ColorHelper.greenWeb.color),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.add_circle, color: ColorHelper.orange500.color),
@@ -496,6 +500,7 @@ class ActiveStatusSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -507,7 +512,7 @@ class ActiveStatusSwitch extends StatelessWidget {
         children: [
           Icon(Icons.toggle_on_outlined, color: ColorHelper.greenWeb.color),
           const SizedBox(width: 12),
-          Expanded(child: Text('Active Status', style: theme.textTheme.bodyMedium)),
+          Expanded(child: Text(texts.inventoryActiveStatusLabel, style: theme.textTheme.bodyMedium)),
           Switch(value: active, onChanged: onChanged, activeThumbColor: ColorHelper.orange500.color),
         ],
       ),
@@ -519,11 +524,13 @@ class ModalFooter extends StatelessWidget {
   final bool isUploading;
   final VoidCallback onCancel;
   final VoidCallback onSave;
+  final bool isEditMode;
 
-  const ModalFooter({super.key, required this.isUploading, required this.onCancel, required this.onSave});
+  const ModalFooter({super.key, required this.isUploading, required this.onCancel, required this.onSave, this.isEditMode = false});
 
   @override
   Widget build(BuildContext context) {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -540,7 +547,7 @@ class ModalFooter extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text(
-              'Cancel',
+              texts.inventoryCancelButton,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? Colors.grey.shade400 : Colors.grey.shade700),
             ),
           ),
@@ -556,7 +563,7 @@ class ModalFooter extends StatelessWidget {
             ),
             child: isUploading
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
-                : const Text('Add Product', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                : Text(isEditMode ? texts.inventoryEditProductButton : texts.inventoryAddProductButton, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
         ],
       ),

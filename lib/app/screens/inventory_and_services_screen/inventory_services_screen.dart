@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/text_fields/wa_custom_search_text.dart';
 import 'package:w_components/wa_custom_inventory_data_widget/wa_custom_inventory_data_widget.dart';
-import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_components/wa_inventory_table/wa_inventory_table.dart';
 import 'package:w_components/wa_services_table/wa_services_table.dart';
 import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
-import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
-import 'package:whiskr_admin_panel/app/helpers/inventory_services_screen_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
+import 'package:whiskr_admin_panel/l10n/models/screen_texts/inventory_texts.dart';
 
-import 'add_new_inventory_modal.dart';
+import '../../helpers/utils/inventory_utils/inventory_action_utils.dart';
+import '../../providers/texts_provider.dart';
 
 class InventoryServicesScreen extends StatefulWidget {
   const InventoryServicesScreen({super.key});
@@ -80,11 +80,12 @@ class _BuildHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final double titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 28.0, desktop: 32.0, widescreen: 36.0);
     final isTablet = Responsive.isTablet(context);
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Inventory', style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
+        Text(texts.inventoryTitle, style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
         SizedBox(height: Responsive.value(context: context, mobile: 25.0, tablet: 20.0, desktop: 25.0, widescreen: 30.0)),
         Card(
           color: ColorHelper.white.color,
@@ -196,30 +197,14 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonHeight = Responsive.value(context: context, mobile: 45.0, tablet: 45.0, desktop: 45.0, widescreen: 48.0);
     final isTablet = Responsive.isTablet(context);
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
     return SizedBox(
       width: isTablet ? null : Responsive.value(context: context, mobile: 500.0, tablet: null, desktop: 500.0, widescreen: 550.0),
       height: buttonHeight,
       child: CommonButton(
-        onPressed: () => AddInventoryModal.show(
-          context,
-          onSave: () async {
-            final ResponseModel<String> response = await context.read<WAInventoryServicesProvider>().createInventoryProduct();
-            if (response.isSuccess) {
-              if (context.mounted) {
-                WACustomSnackbar.instance.showSnack(context, 'Successfully added new item to your inventory');
-                context.read<WAInventoryServicesProvider>().resetControllers();
-              }
-            } else {
-              debugPrint('Error adding new inventory item: ${response.error}');
-              if (context.mounted) {
-                WACustomSnackbar.instance.showSnack(context, 'Error adding new inventory item: ${response.error}', type: WACustomSnackbarType.error);
-              }
-            }
-            if (context.mounted) context.pop();
-          },
-        ),
-        buttonTitle: '+ Add Inventory',
+        onPressed: () async => await InventoryActionUtils.onAddInventoryItem(context.read<WAInventoryServicesProvider>(), context),
+        buttonTitle: texts.addInventoryButton,
         buttonType: PPButtonType.web,
         showBorder: false,
       ),
@@ -247,9 +232,7 @@ class _BuildInventoryTable extends StatelessWidget {
           onDelete: (String id, String inventoryName) {
             helper.showDeleteDialog(context, id, inventoryName);
           },
-          onEdit: (String id) {
-            debugPrint("edit FROM ABOVE");
-          },
+          onEdit: (WAProduct product) async => await InventoryActionUtils.onEditInventory(product, context.read<WAInventoryServicesProvider>(), context),
         );
       },
     );
