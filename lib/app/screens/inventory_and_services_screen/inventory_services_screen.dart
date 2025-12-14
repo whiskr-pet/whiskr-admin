@@ -12,15 +12,35 @@ import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:wa_inventory_services_module/models/wa_inventory_stats_model.dart';
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/inventory_services_screen_helper.dart';
+import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 
 import 'add_new_inventory_modal.dart';
 
-class InventoryServicesScreen extends StatelessWidget {
+class InventoryServicesScreen extends StatefulWidget {
   const InventoryServicesScreen({super.key});
+
+  @override
+  State<InventoryServicesScreen> createState() => _InventoryServicesScreenState();
+}
+
+class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getInitialData();
+    });
+    super.initState();
+  }
+
+  Future<void> _getInitialData() async {
+    final WAInventoryServicesProvider provider = context.read<WAInventoryServicesProvider>();
+    provider.setLoading(true);
+    await Future.wait([provider.getInventoryStats(), provider.getAllProducts()]);
+    provider.setLoading(false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +49,7 @@ class InventoryServicesScreen extends StatelessWidget {
 }
 
 class _BuildBody extends StatelessWidget {
-  const _BuildBody({super.key});
+  const _BuildBody();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +73,7 @@ class _BuildBody extends StatelessWidget {
 }
 
 class _BuildHeader extends StatelessWidget {
-  const _BuildHeader({super.key});
+  const _BuildHeader();
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +124,7 @@ class _BuildHeader extends StatelessWidget {
             child: Consumer(
               builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
                 return InventorySummaryWidget(
-                  stats: InventoryStats(total: provider.productsValueList.length, lowStock: provider.lowStockProducts.length, outOfStock: provider.outOfStockProducts.length),
+                  stats: provider.inventoryStats,
                   onTotalTap: () => provider.clearStatusFilter(),
                   onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
                   onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
@@ -130,7 +150,7 @@ class _BuildHeader extends StatelessWidget {
             child: Consumer(
               builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
                 return InventorySummaryWidget(
-                  stats: InventoryStats(total: provider.productsValueList.length, lowStock: provider.lowStockProducts.length, outOfStock: provider.outOfStockProducts.length),
+                  stats: provider.inventoryStats,
                   onTotalTap: () => provider.clearStatusFilter(),
                   onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
                   onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
@@ -170,7 +190,7 @@ class _BuildHeader extends StatelessWidget {
 }
 
 class _BuildAddInventoryOrServiceButton extends StatelessWidget {
-  const _BuildAddInventoryOrServiceButton({super.key});
+  const _BuildAddInventoryOrServiceButton();
 
   @override
   Widget build(BuildContext context) {
@@ -183,13 +203,20 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
       child: CommonButton(
         onPressed: () => AddInventoryModal.show(
           context,
-          onSave: () {
-            final ResponseModel response = context.read<WAInventoryServicesProvider>().addProduct();
+          onSave: () async {
+            final ResponseModel<String> response = await context.read<WAInventoryServicesProvider>().createInventoryProduct();
             if (response.isSuccess) {
-              WACustomSnackbar.instance.showSnack(context, 'Successfully added new item to your inventory');
-              context.read<WAInventoryServicesProvider>().resetControllers();
+              if (context.mounted) {
+                WACustomSnackbar.instance.showSnack(context, 'Successfully added new item to your inventory');
+                context.read<WAInventoryServicesProvider>().resetControllers();
+              }
+            } else {
+              debugPrint('Error adding new inventory item: ${response.error}');
+              if (context.mounted) {
+                WACustomSnackbar.instance.showSnack(context, 'Error adding new inventory item: ${response.error}', type: WACustomSnackbarType.error);
+              }
             }
-            context.pop();
+            if (context.mounted) context.pop();
           },
         ),
         buttonTitle: '+ Add Inventory',
@@ -208,14 +235,22 @@ class _BuildInventoryTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
 
-    return WAInventoryTable(
-      orders: context.watch<WAInventoryServicesProvider>().products,
-      height: tableHeight,
-      onDelete: (String id, String inventoryName) {
-        helper.showDeleteDialog(context, id, inventoryName);
-      },
-      onEdit: (String id) {
-        debugPrint("edit FROM ABOVE");
+    return Selector<WAInventoryServicesProvider, bool>(
+      selector: (_, provider) => provider.isLoading,
+      builder: (context, isLoading, child) {
+        if (isLoading) {
+          return Center(child: LoadingAnimationHelper.loading);
+        }
+        return WAInventoryTable(
+          orders: context.watch<WAInventoryServicesProvider>().products,
+          height: tableHeight,
+          onDelete: (String id, String inventoryName) {
+            helper.showDeleteDialog(context, id, inventoryName);
+          },
+          onEdit: (String id) {
+            debugPrint("edit FROM ABOVE");
+          },
+        );
       },
     );
   }
