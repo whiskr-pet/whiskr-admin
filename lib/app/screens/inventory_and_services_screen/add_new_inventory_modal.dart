@@ -293,8 +293,8 @@ class ImagePickerWidget extends StatelessWidget {
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: image != null && image?.url != null && image!.url!.isNotEmpty
-                                ? Image.network(image!.url!, width: double.infinity, height: double.infinity, fit: BoxFit.cover)
-                                : Image.memory(base64Decode(imageProvider.imageBytes!.fileBytes), width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+                                ? Image.network(image!.url!, width: double.infinity, height: double.infinity, fit: BoxFit.contain)
+                                : Image.memory(base64Decode(imageProvider.imageBytes!.fileBytes), width: double.infinity, height: double.infinity, fit: BoxFit.contain),
                           ),
                           Positioned(
                             top: 8,
