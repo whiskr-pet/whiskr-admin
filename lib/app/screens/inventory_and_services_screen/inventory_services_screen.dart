@@ -63,6 +63,8 @@ class _BuildBody extends StatelessWidget {
           _BuildHeader(),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
           _BuildInventoryTable(),
+          const SizedBox(height: 30),
+          const _BuildPaginationControls(),
           // todo when BE is ready
           // _BuildServicesTable(),
           const SizedBox(height: 40),
@@ -235,6 +237,193 @@ class _BuildInventoryTable extends StatelessWidget {
           onEdit: (WAProduct product) async => await InventoryActionUtils.onEditInventory(product, context.read<WAInventoryServicesProvider>(), context),
         );
       },
+    );
+  }
+}
+
+class _BuildPaginationControls extends StatelessWidget {
+  const _BuildPaginationControls();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isMobile = Responsive.isMobile(context);
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+
+    return Consumer<WAInventoryServicesProvider>(
+      builder: (context, provider, child) {
+        final currentPage = provider.currentPage;
+        final totalPages = provider.totalPages;
+        final hasPrevious = provider.hasPreviousPage;
+        final hasNext = provider.hasNextPage;
+
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: Responsive.value(context: context, mobile: 0.0, tablet: 0.0, desktop: 0.0, widescreen: 0.0)),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 2))],
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Responsive.value(context: context, mobile: 20.0, tablet: 32.0, desktop: 40.0, widescreen: 48.0),
+              vertical: Responsive.value(context: context, mobile: 16.0, tablet: 20.0, desktop: 24.0, widescreen: 28.0),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _PaginationButton(
+                  icon: Icons.chevron_left_rounded,
+                  label: isMobile ? null : texts.inventoryPreviousButton,
+                  onPressed: hasPrevious ? () => provider.loadPreviousPage() : null,
+                  isEnabled: hasPrevious,
+                  width: isMobile ? 48 : 140,
+                ),
+
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 24.0, desktop: 28.0, widescreen: 32.0),
+                    vertical: Responsive.value(context: context, mobile: 10.0, tablet: 12.0, desktop: 14.0, widescreen: 16.0),
+                  ),
+                  decoration: BoxDecoration(
+                    color: ColorHelper.green300.color.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: ColorHelper.greenWeb.color.withValues(alpha: 0.2), width: 1),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        texts.inventoryPage,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: Responsive.value(context: context, mobile: 13.0, tablet: 14.0, desktop: 15.0, widescreen: 15.0),
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(color: ColorHelper.greenWeb.color, borderRadius: BorderRadius.circular(8)),
+                        child: Text(
+                          '$currentPage',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            fontSize: Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 16.0),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        texts.inventoryPageOf,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          fontSize: Responsive.value(context: context, mobile: 13.0, tablet: 14.0, desktop: 15.0, widescreen: 15.0),
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '$totalPages',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 16.0),
+                          color: Colors.grey[800],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                _PaginationButton(
+                  icon: Icons.chevron_right_rounded,
+                  label: isMobile ? null : texts.inventoryNextButton,
+                  onPressed: hasNext ? () => provider.loadNextPage() : null,
+                  isEnabled: hasNext,
+                  isNext: true,
+                  width: isMobile ? 48 : 140,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PaginationButton extends StatefulWidget {
+  final IconData icon;
+  final String? label;
+  final VoidCallback? onPressed;
+  final bool isEnabled;
+  final bool isNext;
+  final double width;
+
+  const _PaginationButton({required this.icon, this.label, this.onPressed, required this.isEnabled, this.isNext = false, required this.width});
+
+  @override
+  State<_PaginationButton> createState() => _PaginationButtonState();
+}
+
+class _PaginationButtonState extends State<_PaginationButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: widget.isEnabled ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
+      child: GestureDetector(
+        onTap: widget.isEnabled ? widget.onPressed : null,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          width: widget.width,
+          height: 48,
+          decoration: BoxDecoration(
+            gradient: widget.isEnabled
+                ? (_isHovered
+                      ? LinearGradient(colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withValues(alpha: 0.85)], begin: Alignment.topLeft, end: Alignment.bottomRight)
+                      : LinearGradient(
+                          colors: [ColorHelper.greenWeb.color.withValues(alpha: 0.1), ColorHelper.greenWeb.color.withValues(alpha: 0.05)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ))
+                : null,
+            color: widget.isEnabled ? null : Colors.grey[100],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: widget.isEnabled ? (_isHovered ? ColorHelper.greenWeb.color : ColorHelper.greenWeb.color.withValues(alpha: 0.3)) : Colors.grey[300]!,
+              width: _isHovered && widget.isEnabled ? 2 : 1.5,
+            ),
+            boxShadow: _isHovered && widget.isEnabled ? [BoxShadow(color: ColorHelper.greenWeb.color.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 4))] : [],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (!widget.isNext && widget.label != null) Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+              if (widget.label != null) ...[
+                const SizedBox(width: 6),
+                Text(
+                  widget.label!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                    color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400],
+                  ),
+                ),
+              ],
+              if (widget.label == null) Icon(widget.icon, size: 24, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+              if (widget.isNext && widget.label != null) Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
