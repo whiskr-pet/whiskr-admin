@@ -1,0 +1,502 @@
+{
+  "@@locale": "bs",
+
+  "loginWelcomeTitle": "Dobrodošli nazad",
+  "@loginWelcomeTitle": {
+    "description": "Title displayed on the login screen header"
+  },
+
+  "loginSubtitle": "Prijavite se za pristup administratorskoj ploči",
+  "@loginSubtitle": {
+    "description": "Subtitle text displayed below the login welcome title"
+  },
+
+  "loginEmailLabel": "Email",
+  "@loginEmailLabel": {
+    "description": "Label for the email input field"
+  },
+
+  "loginPasswordLabel": "Lozinka",
+  "@loginPasswordLabel": {
+    "description": "Label for the password input field"
+  },
+
+  "loginSignInButton": "Prijavi se",
+  "@loginSignInButton": {
+    "description": "Text for the sign in button"
+  },
+
+  "loginForgotPasswordButton": "Zaboravili ste lozinku?",
+  "@loginForgotPasswordButton": {
+    "description": "Text for the forgot password button"
+  },
+
+  "loginCopyrightFooter": "© 2025 Whiskr. Sva prava zadržana.",
+  "@loginCopyrightFooter": {
+    "description": "Copyright text displayed at the bottom of the login screen"
+  },
+
+  "loginForgotPasswordComingSoon": "Funkcionalnost za zaboravljenu lozinku uskoro dolazi!",
+  "@loginForgotPasswordComingSoon": {
+    "description": "Snackbar message shown when forgot password is clicked"
+  },
+
+  "onboardingIntroWelcome": "Dobrodošli u",
+  "@onboardingIntroWelcome": {
+    "description": "Welcome text on onboarding intro screen"
+  },
+
+  "onboardingIntroSetup": "Hajde da postavimo profil vašeg poslovanja",
+  "@onboardingIntroSetup": {
+    "description": "Setup text on onboarding intro screen"
+  },
+
+  "onboardingGetStarted": "Započni",
+  "@onboardingGetStarted": {
+    "description": "Get started button text"
+  },
+
+  "onboardingStepTitleGeneral": "Opće informacije",
+  "@onboardingStepTitleGeneral": {
+    "description": "Title for step 0 - general information"
+  },
+
+  "onboardingStepDescriptionGeneral": "Recite nam nešto o vašem poslovanju",
+  "@onboardingStepDescriptionGeneral": {
+    "description": "Description for step 0 - general information"
+  },
+
+  "onboardingStepTitleLocation": "Detalji lokacije",
+  "@onboardingStepTitleLocation": {
+    "description": "Title for step 1 - location"
+  },
+
+  "onboardingStepDescriptionLocation": "Gdje se nalazite?",
+  "@onboardingStepDescriptionLocation": {
+    "description": "Description for step 1 - location"
+  },
+
+  "onboardingStepTitleWorkingHours": "Radno vrijeme",
+  "@onboardingStepTitleWorkingHours": {
+    "description": "Title for step 2 - working hours"
+  },
+
+  "onboardingStepDescriptionWorkingHours": "Postavite radno vrijeme vašeg poslovanja",
+  "@onboardingStepDescriptionWorkingHours": {
+    "description": "Description for step 2 - working hours"
+  },
+
+  "onboardingGeneralInfoNameLabel": "Naziv poslovanja",
+  "@onboardingGeneralInfoNameLabel": {
+    "description": "Label for business name field"
+  },
+
+  "onboardingGeneralInfoNameHint": "Unesite naziv vašeg poslovanja",
+  "@onboardingGeneralInfoNameHint": {
+    "description": "Hint for business name field"
+  },
+
+  "onboardingGeneralInfoPhoneLabel": "Broj telefona",
+  "@onboardingGeneralInfoPhoneLabel": {
+    "description": "Label for phone number field"
+  },
+
+  "onboardingGeneralInfoPhoneHint": "Unesite broj telefona",
+  "@onboardingGeneralInfoPhoneHint": {
+    "description": "Hint for phone number field"
+  },
+
+  "onboardingGeneralInfoPhoneFormat": "+387 (61) 000-000",
+  "@onboardingGeneralInfoPhoneFormat": {
+    "description": "Phone number format example"
+  },
+
+  "onboardingGeneralInfoDescriptionLabel": "Opis",
+  "@onboardingGeneralInfoDescriptionLabel": {
+    "description": "Label for description field"
+  },
+
+  "onboardingGeneralInfoDescriptionHint": "Opišite vaše poslovanje",
+  "@onboardingGeneralInfoDescriptionHint": {
+    "description": "Hint for description field"
+  },
+
+  "onboardingGeneralInfoEmailLabel": "Email",
+  "@onboardingGeneralInfoEmailLabel": {
+    "description": "Label for email field"
+  },
+
+  "onboardingGeneralInfoEmailHint": "Unesite email adresu",
+  "@onboardingGeneralInfoEmailHint": {
+    "description": "Hint for email field"
+  },
+
+  "onboardingGeneralInfoWebsiteLabel": "Website",
+  "@onboardingGeneralInfoWebsiteLabel": {
+    "description": "Label for website field"
+  },
+
+  "onboardingGeneralInfoWebsiteHint": "Unesite URL web stranice",
+  "@onboardingGeneralInfoWebsiteHint": {
+    "description": "Hint for website field"
+  },
+
+  "onboardingGeneralInfoServiceProfilePhoto": "Dodajte profilnu fotografiju vašeg poslovanja (opcionalno)",
+  "@onboardingGeneralInfoServiceProfilePhoto": {
+    "description": "Text for service profile photo upload"
+  },
+
+  "onboardingWAMultipleImagePickerAddImage": "Dodaj sliku",
+  "@onboardingWAMultipleImagePickerAddImage": {
+    "description": "Add image button text"
+  },
+
+  "onboardingWAMultipleImagePickerImageAdded": "Slika uspješno dodana",
+  "@onboardingWAMultipleImagePickerImageAdded": {
+    "description": "Success message when image is added"
+  },
+
+  "onboardingWAMultipleImagePickerImageRemoved": "Slika uklonjena",
+  "@onboardingWAMultipleImagePickerImageRemoved": {
+    "description": "Message when image is removed"
+  },
+
+  "onboardingWAMultipleImagePickerMaxReached": "Dostignut maksimum slika (5)",
+  "@onboardingWAMultipleImagePickerMaxReached": {
+    "description": "Message when max images reached"
+  },
+
+  "onboardingWAMultipleImagePickerTitle": "Dodajte slike poslovanja",
+  "@onboardingWAMultipleImagePickerTitle": {
+    "description": "Title for image picker section"
+  },
+
+  "onboardingLocationAddressLabel": "Adresa",
+  "@onboardingLocationAddressLabel": {
+    "description": "Label for address field"
+  },
+
+  "onboardingLocationAddressHint": "Unesite ulicu i broj",
+  "@onboardingLocationAddressHint": {
+    "description": "Hint for address field"
+  },
+
+  "onboardingLocationCityLabel": "Grad",
+  "@onboardingLocationCityLabel": {
+    "description": "Label for city field"
+  },
+
+  "onboardingLocationCityHint": "Unesite grad",
+  "@onboardingLocationCityHint": {
+    "description": "Hint for city field"
+  },
+
+  "onboardingLocationStateLabel": "Entitet/Kanton",
+  "@onboardingLocationStateLabel": {
+    "description": "Label for state field"
+  },
+
+  "onboardingLocationStateHint": "Unesite entitet/kanton",
+  "@onboardingLocationStateHint": {
+    "description": "Hint for state field"
+  },
+
+  "onboardingLocationZipLabel": "Poštanski broj",
+  "@onboardingLocationZipLabel": {
+    "description": "Label for zip code field"
+  },
+
+  "onboardingLocationZipHint": "Unesite poštanski broj",
+  "@onboardingLocationZipHint": {
+    "description": "Hint for zip code field"
+  },
+
+  "onboardingLocationNoteLabel": "Napomena",
+  "@onboardingLocationNoteLabel": {
+    "description": "Label for location note field"
+  },
+
+  "onboardingLocationNoteHint": "Dodatni detalji o lokaciji",
+  "@onboardingLocationNoteHint": {
+    "description": "Hint for location note field"
+  },
+
+  "onboardingWorkingHoursHeader": "Postavite radno vrijeme za svaki dan",
+  "@onboardingWorkingHoursHeader": {
+    "description": "Header text for working hours section"
+  },
+
+  "onboardingSummaryHeaderTitle": "Pregledajte profil vašeg poslovanja",
+  "@onboardingSummaryHeaderTitle": {
+    "description": "Title on summary screen header"
+  },
+
+  "onboardingSummaryHeaderSubtitle": "Molimo pregledajte sve informacije prije slanja",
+  "@onboardingSummaryHeaderSubtitle": {
+    "description": "Subtitle on summary screen header"
+  },
+
+  "onboardingSummaryStepIndicator": "Korak 3 od 3",
+  "@onboardingSummaryStepIndicator": {
+    "description": "Step indicator on summary screen"
+  },
+
+  "onboardingSummaryTitleGeneralInfo": "Opće informacije",
+  "@onboardingSummaryTitleGeneralInfo": {
+    "description": "Title for general info section"
+  },
+
+  "onboardingSummaryTitleLocation": "Lokacija",
+  "@onboardingSummaryTitleLocation": {
+    "description": "Title for location section"
+  },
+
+  "onboardingSummaryTitleWorkingHours": "Radno vrijeme",
+  "@onboardingSummaryTitleWorkingHours": {
+    "description": "Title for working hours section"
+  },
+
+  "onboardingSummaryBusinessPending": "Naziv poslovanja nije unesen",
+  "@onboardingSummaryBusinessPending": {
+    "description": "Placeholder when business name not entered"
+  },
+
+  "onboardingSummaryLocationNotSet": "Nije postavljeno",
+  "@onboardingSummaryLocationNotSet": {
+    "description": "Placeholder when location not set"
+  },
+
+  "onboardingSummaryImageUploadedSingle": "slika",
+  "@onboardingSummaryImageUploadedSingle": {
+    "description": "Singular form of image"
+  },
+
+  "onboardingSummaryImageUploadedPlural": "slika",
+  "@onboardingSummaryImageUploadedPlural": {
+    "description": "Plural form of images"
+  },
+
+  "onboardingSummaryHighlightBusiness": "Poslovanje",
+  "@onboardingSummaryHighlightBusiness": {
+    "description": "Label for business highlight chip"
+  },
+
+  "onboardingSummaryHighlightLocation": "Lokacija",
+  "@onboardingSummaryHighlightLocation": {
+    "description": "Label for location highlight chip"
+  },
+
+  "onboardingSummaryHighlightMedia": "Mediji",
+  "@onboardingSummaryHighlightMedia": {
+    "description": "Label for media highlight chip"
+  },
+
+  "onboardingSummaryEdit": "Uredi",
+  "@onboardingSummaryEdit": {
+    "description": "Edit button text"
+  },
+
+  "onboardingSummaryImageSingular": "slika",
+  "@onboardingSummaryImageSingular": {
+    "description": "Singular form for image counter"
+  },
+
+  "onboardingSummaryImagePlural": "slika",
+  "@onboardingSummaryImagePlural": {
+    "description": "Plural form for image counter"
+  },
+
+  "onboardingSummaryImagesTitle": "Slike usluga",
+  "@onboardingSummaryImagesTitle": {
+    "description": "Title for images section on summary"
+  },
+
+  "onboardingSummaryMapTitle": "Mapa lokacije",
+  "@onboardingSummaryMapTitle": {
+    "description": "Title for map section on summary"
+  },
+
+  "onboardingSummaryMapDescription": "Lokacija vašeg poslovanja na mapi",
+  "@onboardingSummaryMapDescription": {
+    "description": "Description for map section"
+  },
+
+  "onboardingSummarySubmitComplete": "Završi postavljanje",
+  "@onboardingSummarySubmitComplete": {
+    "description": "Submit button text on summary screen"
+  },
+
+  "onboardingHelperPhone": "Telefon",
+  "@onboardingHelperPhone": {
+    "description": "Phone label in summary"
+  },
+
+  "onboardingHelperEmail": "Email",
+  "@onboardingHelperEmail": {
+    "description": "Email label in summary"
+  },
+
+  "onboardingHelperWebsite": "Website",
+  "@onboardingHelperWebsite": {
+    "description": "Website label in summary"
+  },
+
+  "onboardingHelperAddress": "Adresa",
+  "@onboardingHelperAddress": {
+    "description": "Address label in summary"
+  },
+
+  "onboardingHelperCity": "Grad",
+  "@onboardingHelperCity": {
+    "description": "City label in summary"
+  },
+
+  "onboardingHelperState": "Entitet/Kanton",
+  "@onboardingHelperState": {
+    "description": "State label in summary"
+  },
+
+  "onboardingHelperZipCode": "Poštanski broj",
+  "@onboardingHelperZipCode": {
+    "description": "Zip code label in summary"
+  },
+
+  "onboardingHelperNote": "Napomena",
+  "@onboardingHelperNote": {
+    "description": "Note label in summary"
+  },
+
+  "onboardingHelperClosed": "Zatvoreno",
+  "@onboardingHelperClosed": {
+    "description": "Text for closed days"
+  },
+  "inventoryTitle": "Inventar i usluge",
+  "@inventoryTitle": {
+    "description": "Main title for inventory screen"
+  },
+
+  "inventoryAddInventoryButton": "Dodaj novi proizvod",
+  "@inventoryAddInventoryButton": {
+    "description": "Button to add new inventory item"
+  },
+
+  "inventoryPreviousButton": "Prethodno",
+  "@inventoryPreviousButton": {
+    "description": "Previous page button text"
+  },
+
+  "inventoryNextButton": "Sljedeće",
+  "@inventoryNextButton": {
+    "description": "Next page button text"
+  },
+
+  "inventoryPage": "Stranica",
+  "@inventoryPage": {
+    "description": "Page label in pagination"
+  },
+
+  "inventoryPageOf": "od",
+  "@inventoryPageOf": {
+    "description": "Of text in pagination (Page X of Y)"
+  },
+
+  "inventoryErrorPickingImage": "Nije uspjelo odabiranje slike",
+  "@inventoryErrorPickingImage": {
+    "description": "Error message when image picking fails"
+  },
+
+  "inventoryErrorUploadingImage": "Nije uspjelo učitavanje slike",
+  "@inventoryErrorUploadingImage": {
+    "description": "Error message when image upload fails"
+  },
+
+  "inventoryAddProductButton": "Dodaj proizvod",
+  "@inventoryAddProductButton": {
+    "description": "Add product button text in modal header"
+  },
+
+  "inventoryEditProductButton": "Ažuriraj proizvod",
+  "@inventoryEditProductButton": {
+    "description": "Edit product button text in modal footer"
+  },
+
+  "inventoryProductNameLabel": "Naziv proizvoda",
+  "@inventoryProductNameLabel": {
+    "description": "Label for product name field"
+  },
+
+  "inventoryDescriptionLabel": "Opis",
+  "@inventoryDescriptionLabel": {
+    "description": "Label for description field"
+  },
+
+  "inventoryBrandLabel": "Marka",
+  "@inventoryBrandLabel": {
+    "description": "Label for brand field"
+  },
+
+  "inventoryCategoryLabel": "Kategorija",
+  "@inventoryCategoryLabel": {
+    "description": "Label for category field"
+  },
+
+  "inventoryPriceLabel": "Cijena",
+  "@inventoryPriceLabel": {
+    "description": "Label for price field"
+  },
+
+  "inventoryCurrencyLabel": "Valuta",
+  "@inventoryCurrencyLabel": {
+    "description": "Label for currency dropdown"
+  },
+
+  "inventoryStockQuantityLabel": "Količina na stanju",
+  "@inventoryStockQuantityLabel": {
+    "description": "Label for stock quantity field"
+  },
+
+  "inventoryRequiredField": "Ovo polje je obavezno",
+  "@inventoryRequiredField": {
+    "description": "Validation message for required fields"
+  },
+
+  "inventoryProductImageLabel": "Slika proizvoda",
+  "@inventoryProductImageLabel": {
+    "description": "Label for product image section"
+  },
+
+  "inventoryChangeImage": "Promijeni sliku",
+  "@inventoryChangeImage": {
+    "description": "Tooltip for change image button"
+  },
+
+  "inventoryUploadImageHint": "Kliknite da učitate sliku",
+  "@inventoryUploadImageHint": {
+    "description": "Hint text for image upload area"
+  },
+
+  "inventoryUploadImageFormats": "Podržano: JPG, PNG, WEBP (Maks 5MB)",
+  "@inventoryUploadImageFormats": {
+    "description": "Supported image formats text"
+  },
+
+  "inventoryTagsLabel": "Oznake (opcionalno)",
+  "@inventoryTagsLabel": {
+    "description": "Label for tags section"
+  },
+
+  "inventoryAddTagHint": "Unesite oznaku i pritisnite Enter",
+  "@inventoryAddTagHint": {
+    "description": "Hint text for tag input field"
+  },
+
+  "inventoryActiveStatusLabel": "Status aktivnosti proizvoda",
+  "@inventoryActiveStatusLabel": {
+    "description": "Label for active status switch"
+  },
+
+  "inventoryCancelButton": "Odustani",
+  "@inventoryCancelButton": {
+    "description": "Cancel button text in modal"
+  }
+}

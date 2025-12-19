@@ -5,8 +5,8 @@ import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_stepper.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
-import 'package:whiskr_admin_panel/l10n/models/localized_texts.dart';
 
+import '../../../../localization_models/onboarding_text/onboarding_text.dart';
 import '../../../providers/texts_provider.dart';
 
 class OnboardingGeneralInfoScreen extends StatelessWidget {

@@ -6,7 +6,7 @@ import 'package:wa_onboarding_module/models/working_day_helper_model.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 
-import '../../../../../l10n/models/screen_texts/onboarding_texts.dart';
+import '../../../../../localization_models/localization_models.dart';
 import '../../../../providers/texts_provider.dart';
 
 class OnboardingWorkingHoursStep extends StatefulWidget {
@@ -109,7 +109,11 @@ class WorkingDayItem extends StatelessWidget {
           Expanded(
             child: Text(
               day.name,
-              style: theme.textTheme.bodyMedium?.copyWith(fontSize: labelFontSize, fontWeight: FontWeight.w500, color: day.isOpen ? ColorHelper.grey700.color : ColorHelper.grey300.color),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: labelFontSize,
+                fontWeight: FontWeight.w500,
+                color: day.isOpen ? ColorHelper.grey700.color : ColorHelper.grey300.color,
+              ),
             ),
           ),
           TimePickerButton(time: day.openingTime, enabled: day.isOpen, onTimeSelected: onOpeningTimeChanged),
@@ -148,7 +152,12 @@ class TimePickerButton extends StatelessWidget {
         child: Center(
           child: Text(
             enabled ? OnboardingActionUtils.formatTime(time) : '00 : 00',
-            style: theme.textTheme.bodyMedium!.copyWith(fontSize: timeFontSize, fontWeight: FontWeight.w600, color: enabled ? ColorHelper.white.color : ColorHelper.grey300.color, letterSpacing: 1.0),
+            style: theme.textTheme.bodyMedium!.copyWith(
+              fontSize: timeFontSize,
+              fontWeight: FontWeight.w600,
+              color: enabled ? ColorHelper.white.color : ColorHelper.grey300.color,
+              letterSpacing: 1.0,
+            ),
           ),
         ),
       ),

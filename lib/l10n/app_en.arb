@@ -1,0 +1,502 @@
+{
+  "@@locale": "en",
+  
+  "loginWelcomeTitle": "Welcome Back",
+  "@loginWelcomeTitle": {
+    "description": "Title displayed on the login screen header"
+  },
+  
+  "loginSubtitle": "Sign in to access your admin dashboard",
+  "@loginSubtitle": {
+    "description": "Subtitle text displayed below the login welcome title"
+  },
+  
+  "loginEmailLabel": "Email",
+  "@loginEmailLabel": {
+    "description": "Label for the email input field"
+  },
+  
+  "loginPasswordLabel": "Password",
+  "@loginPasswordLabel": {
+    "description": "Label for the password input field"
+  },
+  
+  "loginSignInButton": "Sign In",
+  "@loginSignInButton": {
+    "description": "Text for the sign in button"
+  },
+  
+  "loginForgotPasswordButton": "Forgot Password?",
+  "@loginForgotPasswordButton": {
+    "description": "Text for the forgot password button"
+  },
+  
+  "loginCopyrightFooter": "© 2025 Whiskr. All rights reserved.",
+  "@loginCopyrightFooter": {
+    "description": "Copyright text displayed at the bottom of the login screen"
+  },
+  
+  "loginForgotPasswordComingSoon": "Forgot password functionality coming soon!",
+  "@loginForgotPasswordComingSoon": {
+    "description": "Snackbar message shown when forgot password is clicked"
+  },
+  
+  "onboardingIntroWelcome": "Welcome to",
+  "@onboardingIntroWelcome": {
+    "description": "Welcome text on onboarding intro screen"
+  },
+  
+  "onboardingIntroSetup": "Let's set up your business profile",
+  "@onboardingIntroSetup": {
+    "description": "Setup text on onboarding intro screen"
+  },
+  
+  "onboardingGetStarted": "Get Started",
+  "@onboardingGetStarted": {
+    "description": "Get started button text"
+  },
+  
+  "onboardingStepTitleGeneral": "General Information",
+  "@onboardingStepTitleGeneral": {
+    "description": "Title for step 0 - general information"
+  },
+  
+  "onboardingStepDescriptionGeneral": "Tell us about your business",
+  "@onboardingStepDescriptionGeneral": {
+    "description": "Description for step 0 - general information"
+  },
+  
+  "onboardingStepTitleLocation": "Location Details",
+  "@onboardingStepTitleLocation": {
+    "description": "Title for step 1 - location"
+  },
+  
+  "onboardingStepDescriptionLocation": "Where are you located?",
+  "@onboardingStepDescriptionLocation": {
+    "description": "Description for step 1 - location"
+  },
+  
+  "onboardingStepTitleWorkingHours": "Working Hours",
+  "@onboardingStepTitleWorkingHours": {
+    "description": "Title for step 2 - working hours"
+  },
+  
+  "onboardingStepDescriptionWorkingHours": "Set your business hours",
+  "@onboardingStepDescriptionWorkingHours": {
+    "description": "Description for step 2 - working hours"
+  },
+  
+  "onboardingGeneralInfoNameLabel": "Business Name",
+  "@onboardingGeneralInfoNameLabel": {
+    "description": "Label for business name field"
+  },
+  
+  "onboardingGeneralInfoNameHint": "Enter your business name",
+  "@onboardingGeneralInfoNameHint": {
+    "description": "Hint for business name field"
+  },
+  
+  "onboardingGeneralInfoPhoneLabel": "Phone Number",
+  "@onboardingGeneralInfoPhoneLabel": {
+    "description": "Label for phone number field"
+  },
+  
+  "onboardingGeneralInfoPhoneHint": "Enter phone number",
+  "@onboardingGeneralInfoPhoneHint": {
+    "description": "Hint for phone number field"
+  },
+  
+  "onboardingGeneralInfoPhoneFormat": "+XXX (XX) XXX-XXX",
+  "@onboardingGeneralInfoPhoneFormat": {
+    "description": "Phone number format example"
+  },
+  
+  "onboardingGeneralInfoDescriptionLabel": "Description",
+  "@onboardingGeneralInfoDescriptionLabel": {
+    "description": "Label for description field"
+  },
+  
+  "onboardingGeneralInfoDescriptionHint": "Describe your business",
+  "@onboardingGeneralInfoDescriptionHint": {
+    "description": "Hint for description field"
+  },
+  
+  "onboardingGeneralInfoEmailLabel": "Email",
+  "@onboardingGeneralInfoEmailLabel": {
+    "description": "Label for email field"
+  },
+  
+  "onboardingGeneralInfoEmailHint": "Enter email address",
+  "@onboardingGeneralInfoEmailHint": {
+    "description": "Hint for email field"
+  },
+  
+  "onboardingGeneralInfoWebsiteLabel": "Website",
+  "@onboardingGeneralInfoWebsiteLabel": {
+    "description": "Label for website field"
+  },
+  
+  "onboardingGeneralInfoWebsiteHint": "Enter website URL",
+  "@onboardingGeneralInfoWebsiteHint": {
+    "description": "Hint for website field"
+  },
+  
+  "onboardingGeneralInfoServiceProfilePhoto": "Upload your business profile photo (optional)",
+  "@onboardingGeneralInfoServiceProfilePhoto": {
+    "description": "Text for service profile photo upload"
+  },
+  
+  "onboardingWAMultipleImagePickerAddImage": "Add Image",
+  "@onboardingWAMultipleImagePickerAddImage": {
+    "description": "Add image button text"
+  },
+  
+  "onboardingWAMultipleImagePickerImageAdded": "Image added successfully",
+  "@onboardingWAMultipleImagePickerImageAdded": {
+    "description": "Success message when image is added"
+  },
+  
+  "onboardingWAMultipleImagePickerImageRemoved": "Image removed",
+  "@onboardingWAMultipleImagePickerImageRemoved": {
+    "description": "Message when image is removed"
+  },
+  
+  "onboardingWAMultipleImagePickerMaxReached": "Maximum images reached (5)",
+  "@onboardingWAMultipleImagePickerMaxReached": {
+    "description": "Message when max images reached"
+  },
+  
+  "onboardingWAMultipleImagePickerTitle": "Upload Business Images",
+  "@onboardingWAMultipleImagePickerTitle": {
+    "description": "Title for image picker section"
+  },
+  
+  "onboardingLocationAddressLabel": "Address",
+  "@onboardingLocationAddressLabel": {
+    "description": "Label for address field"
+  },
+  
+  "onboardingLocationAddressHint": "Enter street address",
+  "@onboardingLocationAddressHint": {
+    "description": "Hint for address field"
+  },
+  
+  "onboardingLocationCityLabel": "City",
+  "@onboardingLocationCityLabel": {
+    "description": "Label for city field"
+  },
+  
+  "onboardingLocationCityHint": "Enter city",
+  "@onboardingLocationCityHint": {
+    "description": "Hint for city field"
+  },
+  
+  "onboardingLocationStateLabel": "State",
+  "@onboardingLocationStateLabel": {
+    "description": "Label for state field"
+  },
+  
+  "onboardingLocationStateHint": "Enter state",
+  "@onboardingLocationStateHint": {
+    "description": "Hint for state field"
+  },
+  
+  "onboardingLocationZipLabel": "Zip Code",
+  "@onboardingLocationZipLabel": {
+    "description": "Label for zip code field"
+  },
+  
+  "onboardingLocationZipHint": "Enter zip code",
+  "@onboardingLocationZipHint": {
+    "description": "Hint for zip code field"
+  },
+  
+  "onboardingLocationNoteLabel": "Note",
+  "@onboardingLocationNoteLabel": {
+    "description": "Label for location note field"
+  },
+  
+  "onboardingLocationNoteHint": "Additional location details",
+  "@onboardingLocationNoteHint": {
+    "description": "Hint for location note field"
+  },
+  
+  "onboardingWorkingHoursHeader": "Set your working hours for each day",
+  "@onboardingWorkingHoursHeader": {
+    "description": "Header text for working hours section"
+  },
+  
+  "onboardingSummaryHeaderTitle": "Review Your Business Profile",
+  "@onboardingSummaryHeaderTitle": {
+    "description": "Title on summary screen header"
+  },
+  
+  "onboardingSummaryHeaderSubtitle": "Please review all information before submitting",
+  "@onboardingSummaryHeaderSubtitle": {
+    "description": "Subtitle on summary screen header"
+  },
+  
+  "onboardingSummaryStepIndicator": "Step 3 of 3",
+  "@onboardingSummaryStepIndicator": {
+    "description": "Step indicator on summary screen"
+  },
+  
+  "onboardingSummaryTitleGeneralInfo": "General Information",
+  "@onboardingSummaryTitleGeneralInfo": {
+    "description": "Title for general info section"
+  },
+  
+  "onboardingSummaryTitleLocation": "Location",
+  "@onboardingSummaryTitleLocation": {
+    "description": "Title for location section"
+  },
+  
+  "onboardingSummaryTitleWorkingHours": "Working Hours",
+  "@onboardingSummaryTitleWorkingHours": {
+    "description": "Title for working hours section"
+  },
+  
+  "onboardingSummaryBusinessPending": "Business Name Pending",
+  "@onboardingSummaryBusinessPending": {
+    "description": "Placeholder when business name not entered"
+  },
+  
+  "onboardingSummaryLocationNotSet": "Not Set",
+  "@onboardingSummaryLocationNotSet": {
+    "description": "Placeholder when location not set"
+  },
+  
+  "onboardingSummaryImageUploadedSingle": "image",
+  "@onboardingSummaryImageUploadedSingle": {
+    "description": "Singular form of image"
+  },
+  
+  "onboardingSummaryImageUploadedPlural": "images",
+  "@onboardingSummaryImageUploadedPlural": {
+    "description": "Plural form of images"
+  },
+  
+  "onboardingSummaryHighlightBusiness": "Business",
+  "@onboardingSummaryHighlightBusiness": {
+    "description": "Label for business highlight chip"
+  },
+  
+  "onboardingSummaryHighlightLocation": "Location",
+  "@onboardingSummaryHighlightLocation": {
+    "description": "Label for location highlight chip"
+  },
+  
+  "onboardingSummaryHighlightMedia": "Media",
+  "@onboardingSummaryHighlightMedia": {
+    "description": "Label for media highlight chip"
+  },
+  
+  "onboardingSummaryEdit": "Edit",
+  "@onboardingSummaryEdit": {
+    "description": "Edit button text"
+  },
+  
+  "onboardingSummaryImageSingular": "image",
+  "@onboardingSummaryImageSingular": {
+    "description": "Singular form for image counter"
+  },
+  
+  "onboardingSummaryImagePlural": "images",
+  "@onboardingSummaryImagePlural": {
+    "description": "Plural form for image counter"
+  },
+  
+  "onboardingSummaryImagesTitle": "Service Images",
+  "@onboardingSummaryImagesTitle": {
+    "description": "Title for images section on summary"
+  },
+  
+  "onboardingSummaryMapTitle": "Location Map",
+  "@onboardingSummaryMapTitle": {
+    "description": "Title for map section on summary"
+  },
+  
+  "onboardingSummaryMapDescription": "Your business location on the map",
+  "@onboardingSummaryMapDescription": {
+    "description": "Description for map section"
+  },
+  
+  "onboardingSummarySubmitComplete": "Complete Setup",
+  "@onboardingSummarySubmitComplete": {
+    "description": "Submit button text on summary screen"
+  },
+  
+  "onboardingHelperPhone": "Phone",
+  "@onboardingHelperPhone": {
+    "description": "Phone label in summary"
+  },
+  
+  "onboardingHelperEmail": "Email",
+  "@onboardingHelperEmail": {
+    "description": "Email label in summary"
+  },
+  
+  "onboardingHelperWebsite": "Website",
+  "@onboardingHelperWebsite": {
+    "description": "Website label in summary"
+  },
+  
+  "onboardingHelperAddress": "Address",
+  "@onboardingHelperAddress": {
+    "description": "Address label in summary"
+  },
+  
+  "onboardingHelperCity": "City",
+  "@onboardingHelperCity": {
+    "description": "City label in summary"
+  },
+  
+  "onboardingHelperState": "State",
+  "@onboardingHelperState": {
+    "description": "State label in summary"
+  },
+  
+  "onboardingHelperZipCode": "Zip Code",
+  "@onboardingHelperZipCode": {
+    "description": "Zip code label in summary"
+  },
+  
+  "onboardingHelperNote": "Note",
+  "@onboardingHelperNote": {
+    "description": "Note label in summary"
+  },
+  
+  "onboardingHelperClosed": "Closed",
+  "@onboardingHelperClosed": {
+    "description": "Text for closed days"
+  },
+  "inventoryTitle": "Inventory & Services",
+  "@inventoryTitle": {
+    "description": "Main title for inventory screen"
+  },
+
+  "inventoryAddInventoryButton": "Add New Product",
+  "@inventoryAddInventoryButton": {
+    "description": "Button to add new inventory item"
+  },
+
+  "inventoryPreviousButton": "Previous",
+  "@inventoryPreviousButton": {
+    "description": "Previous page button text"
+  },
+
+  "inventoryNextButton": "Next",
+  "@inventoryNextButton": {
+    "description": "Next page button text"
+  },
+
+  "inventoryPage": "Page",
+  "@inventoryPage": {
+    "description": "Page label in pagination"
+  },
+
+  "inventoryPageOf": "of",
+  "@inventoryPageOf": {
+    "description": "Of text in pagination (Page X of Y)"
+  },
+
+  "inventoryErrorPickingImage": "Failed to pick image",
+  "@inventoryErrorPickingImage": {
+    "description": "Error message when image picking fails"
+  },
+
+  "inventoryErrorUploadingImage": "Failed to upload image",
+  "@inventoryErrorUploadingImage": {
+    "description": "Error message when image upload fails"
+  },
+
+  "inventoryAddProductButton": "Add Product",
+  "@inventoryAddProductButton": {
+    "description": "Add product button text in modal header"
+  },
+
+  "inventoryEditProductButton": "Update Product",
+  "@inventoryEditProductButton": {
+    "description": "Edit product button text in modal footer"
+  },
+
+  "inventoryProductNameLabel": "Product Name",
+  "@inventoryProductNameLabel": {
+    "description": "Label for product name field"
+  },
+
+  "inventoryDescriptionLabel": "Description",
+  "@inventoryDescriptionLabel": {
+    "description": "Label for description field"
+  },
+
+  "inventoryBrandLabel": "Brand",
+  "@inventoryBrandLabel": {
+    "description": "Label for brand field"
+  },
+
+  "inventoryCategoryLabel": "Category",
+  "@inventoryCategoryLabel": {
+    "description": "Label for category field"
+  },
+
+  "inventoryPriceLabel": "Price",
+  "@inventoryPriceLabel": {
+    "description": "Label for price field"
+  },
+
+  "inventoryCurrencyLabel": "Currency",
+  "@inventoryCurrencyLabel": {
+    "description": "Label for currency dropdown"
+  },
+
+  "inventoryStockQuantityLabel": "Stock Quantity",
+  "@inventoryStockQuantityLabel": {
+    "description": "Label for stock quantity field"
+  },
+
+  "inventoryRequiredField": "This field is required",
+  "@inventoryRequiredField": {
+    "description": "Validation message for required fields"
+  },
+
+  "inventoryProductImageLabel": "Product Image",
+  "@inventoryProductImageLabel": {
+    "description": "Label for product image section"
+  },
+
+  "inventoryChangeImage": "Change Image",
+  "@inventoryChangeImage": {
+    "description": "Tooltip for change image button"
+  },
+
+  "inventoryUploadImageHint": "Click to upload an image",
+  "@inventoryUploadImageHint": {
+    "description": "Hint text for image upload area"
+  },
+
+  "inventoryUploadImageFormats": "Supported: JPG, PNG, WEBP (Max 5MB)",
+  "@inventoryUploadImageFormats": {
+    "description": "Supported image formats text"
+  },
+
+  "inventoryTagsLabel": "Tags (Optional)",
+  "@inventoryTagsLabel": {
+    "description": "Label for tags section"
+  },
+
+  "inventoryAddTagHint": "Enter a tag and press Enter",
+  "@inventoryAddTagHint": {
+    "description": "Hint text for tag input field"
+  },
+
+  "inventoryActiveStatusLabel": "Product Active Status",
+  "@inventoryActiveStatusLabel": {
+    "description": "Label for active status switch"
+  },
+
+  "inventoryCancelButton": "Cancel",
+  "@inventoryCancelButton": {
+    "description": "Cancel button text in modal"
+  }
+}
