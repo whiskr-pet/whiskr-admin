@@ -7,7 +7,7 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/config/flavor_config.dart';
 
-import '../../../../../l10n/models/screen_texts/onboarding_texts.dart';
+import '../../../../../localization_models/localization_models.dart';
 import '../../../../providers/texts_provider.dart';
 
 class OnboardingLocationStep extends StatelessWidget {
@@ -34,11 +34,21 @@ class OnboardingLocationStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().cityController, label: texts.locationCityLabel, hint: texts.locationCityHint, isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().cityController,
+                label: texts.locationCityLabel,
+                hint: texts.locationCityHint,
+                isRequired: true,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().stateController, label: texts.locationStateLabel, hint: texts.locationStateHint, isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().stateController,
+                label: texts.locationStateLabel,
+                hint: texts.locationStateHint,
+                isRequired: true,
+              ),
             ),
           ],
         ),
@@ -46,11 +56,21 @@ class OnboardingLocationStep extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().zipCodeController, label: texts.locationZipLabel, hint: texts.locationZipHint, isRequired: true),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().zipCodeController,
+                label: texts.locationZipLabel,
+                hint: texts.locationZipHint,
+                isRequired: true,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
-              child: WACustomTextField(controller: context.read<WAOnboardingProvider>().noteController, label: texts.locationNoteLabel, hint: texts.locationNoteHint, isRequired: false),
+              child: WACustomTextField(
+                controller: context.read<WAOnboardingProvider>().noteController,
+                label: texts.locationNoteLabel,
+                hint: texts.locationNoteHint,
+                isRequired: false,
+              ),
             ),
           ],
         ),

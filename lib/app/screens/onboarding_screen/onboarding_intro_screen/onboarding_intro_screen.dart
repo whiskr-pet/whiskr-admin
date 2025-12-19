@@ -9,7 +9,7 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
-import '../../../../l10n/models/screen_texts/onboarding_texts.dart';
+import '../../../../localization_models/localization_models.dart';
 import '../../../providers/texts_provider.dart';
 
 class OnboardingIntroScreen extends StatelessWidget {
@@ -53,7 +53,12 @@ class _BuildOnboardingIntroBody extends StatelessWidget {
             children: [
               Text(
                 texts.introWelcome,
-                style: theme.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900, fontSize: headlineFontSize, color: ColorHelper.greenWeb.color, fontFamily: 'NunitoSans'),
+                style: theme.textTheme.headlineLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  fontSize: headlineFontSize,
+                  color: ColorHelper.greenWeb.color,
+                  fontFamily: 'NunitoSans',
+                ),
               ),
               Image.asset(Assets.images.whiskrLogo.path, width: logoWidth, height: 155),
             ],

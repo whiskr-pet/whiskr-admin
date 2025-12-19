@@ -14,10 +14,10 @@ import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/ui_organization_helper/onboarding_organization_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
-import 'package:whiskr_admin_panel/l10n/models/localized_texts.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
 import '../../../../config/flavor_config.dart';
+import '../../../../localization_models/localization_models.dart';
 import '../../../providers/texts_provider.dart';
 
 class OnboardingSummaryScreen extends StatelessWidget {
@@ -111,8 +111,16 @@ class _BuildSummaryBody extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      if (onboardingProvider.imageBytesListForServiceUpload.isNotEmpty) ...<Widget>[_BuildServiceImagesCard(provider: onboardingProvider), const SizedBox(height: 24)],
-                      _BuildInfoCard(title: onboardingTexts.summaryTitleWorkingHours, icon: Icons.access_time, infoRows: onboardingHelper.hoursInfoRow(onboardingProvider, context), currentStep: 2),
+                      if (onboardingProvider.imageBytesListForServiceUpload.isNotEmpty) ...<Widget>[
+                        _BuildServiceImagesCard(provider: onboardingProvider),
+                        const SizedBox(height: 24),
+                      ],
+                      _BuildInfoCard(
+                        title: onboardingTexts.summaryTitleWorkingHours,
+                        icon: Icons.access_time,
+                        infoRows: onboardingHelper.hoursInfoRow(onboardingProvider, context),
+                        currentStep: 2,
+                      ),
                       const SizedBox(height: 24),
                       _BuildMapCard(),
                       const SizedBox(height: 32),
@@ -152,7 +160,11 @@ class _BuildPageHeader extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(colors: <Color>[ColorHelper.greenWeb.color.withValues(alpha: 0.08), ColorHelper.white.color], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(
+          colors: <Color>[ColorHelper.greenWeb.color.withValues(alpha: 0.08), ColorHelper.white.color],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
