@@ -12,7 +12,7 @@ import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 
-import '../../../l10n/models/screen_texts/inventory_texts.dart';
+import '../../../localization_models/localization_models.dart';
 import '../../providers/texts_provider.dart';
 
 class AddInventoryModal extends StatefulWidget {
@@ -210,7 +210,10 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                             onRemoveTag: context.read<WAInventoryServicesProvider>().removeTag,
                           ),
                           const SizedBox(height: 24),
-                          ActiveStatusSwitch(active: context.watch<WAInventoryServicesProvider>().active, onChanged: (v) => context.read<WAInventoryServicesProvider>().setIsActive(v)),
+                          ActiveStatusSwitch(
+                            active: context.watch<WAInventoryServicesProvider>().active,
+                            onChanged: (v) => context.read<WAInventoryServicesProvider>().setIsActive(v),
+                          ),
                         ],
                       ),
                     ),

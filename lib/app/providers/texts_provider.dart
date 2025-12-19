@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:whiskr_admin_panel/l10n/models/localized_texts.dart';
 
-import '../../l10n/models/screen_texts/inventory_texts.dart';
+import '../../localization_models/localization_models.dart';
 
 class TextsProvider extends InheritedWidget {
   final LoginTexts loginTexts;

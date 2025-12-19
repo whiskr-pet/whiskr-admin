@@ -14,8 +14,8 @@ import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
-import 'package:whiskr_admin_panel/l10n/models/screen_texts/inventory_texts.dart';
 
+import '../../../localization_models/localization_models.dart';
 import '../../helpers/utils/inventory_utils/inventory_action_utils.dart';
 import '../../providers/texts_provider.dart';
 
@@ -388,7 +388,11 @@ class _PaginationButtonState extends State<_PaginationButton> {
           decoration: BoxDecoration(
             gradient: widget.isEnabled
                 ? (_isHovered
-                      ? LinearGradient(colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withValues(alpha: 0.85)], begin: Alignment.topLeft, end: Alignment.bottomRight)
+                      ? LinearGradient(
+                          colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withValues(alpha: 0.85)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
                       : LinearGradient(
                           colors: [ColorHelper.greenWeb.color.withValues(alpha: 0.1), ColorHelper.greenWeb.color.withValues(alpha: 0.05)],
                           begin: Alignment.topLeft,
@@ -406,7 +410,8 @@ class _PaginationButtonState extends State<_PaginationButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (!widget.isNext && widget.label != null) Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+              if (!widget.isNext && widget.label != null)
+                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
               if (widget.label != null) ...[
                 const SizedBox(width: 6),
                 Text(
@@ -419,7 +424,8 @@ class _PaginationButtonState extends State<_PaginationButton> {
                 ),
               ],
               if (widget.label == null) Icon(widget.icon, size: 24, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
-              if (widget.isNext && widget.label != null) Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+              if (widget.isNext && widget.label != null)
+                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
             ],
           ),
         ),
