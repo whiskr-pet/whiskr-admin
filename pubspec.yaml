@@ -45,62 +45,62 @@ dependencies:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c  
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c   
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   wa_onboarding_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_onboarding_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c    
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5    
   w_image_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_image_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   wa_map_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_map_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   wa_inventory_services_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_inventory_services_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   wa_analytics_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_analytics_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
   w_user_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_user_module
-      ref: 6195c5b0aadad8c179a2e9909f2580ea7382f85c
+      ref: 399d31dff3c03ec2b10f207c1ba0b6178c994aa5
 
 
 dev_dependencies:
@@ -132,6 +132,8 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
+    - .env.dev
+    - .env.prod
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
