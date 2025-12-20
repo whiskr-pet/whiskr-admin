@@ -36,6 +36,8 @@ class InventoryActionUtils {
   }
 
   static Future<void> onAddInventoryItem(WAInventoryServicesProvider provider, BuildContext context) async {
+    // this will enable add modal
+    provider.clearEditMode();
     AddInventoryModal.show(
       context,
       onSave: () async {
