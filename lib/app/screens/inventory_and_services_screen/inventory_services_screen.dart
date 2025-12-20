@@ -11,6 +11,7 @@ import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
@@ -18,6 +19,7 @@ import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_s
 import '../../../localization_models/localization_models.dart';
 import '../../helpers/utils/inventory_utils/inventory_action_utils.dart';
 import '../../providers/texts_provider.dart';
+import 'inventory_filters.dart';
 
 class InventoryServicesScreen extends StatefulWidget {
   const InventoryServicesScreen({super.key});
@@ -27,12 +29,15 @@ class InventoryServicesScreen extends StatefulWidget {
 }
 
 class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
+  late WAInventorySearchProvider searchProvider;
+
   @override
   void initState() {
+    super.initState();
+    searchProvider = WAInventorySearchProvider();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getInitialData();
     });
-    super.initState();
   }
 
   Future<void> _getInitialData() async {
@@ -44,7 +49,16 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _BuildBody());
+    return MultiProvider(
+      providers: [ChangeNotifierProvider.value(value: searchProvider)],
+      child: Scaffold(body: _BuildBody()),
+    );
+  }
+
+  @override
+  void dispose() {
+    searchProvider.dispose();
+    super.dispose();
   }
 }
 
@@ -65,8 +79,6 @@ class _BuildBody extends StatelessWidget {
           _BuildInventoryTable(),
           const SizedBox(height: 30),
           const _BuildPaginationControls(),
-          // todo when BE is ready
-          // _BuildServicesTable(),
           const SizedBox(height: 40),
         ],
       ),
@@ -89,14 +101,7 @@ class _BuildHeader extends StatelessWidget {
       children: [
         Text(texts.inventoryTitle, style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
         SizedBox(height: Responsive.value(context: context, mobile: 25.0, tablet: 20.0, desktop: 25.0, widescreen: 30.0)),
-        Card(
-          color: ColorHelper.white.color,
-          child: SizedBox(
-            height: Responsive.value(context: context, mobile: 320.0, tablet: 370.0, desktop: 330.0, widescreen: 370.0),
-            child: isTablet ? _buildTabletLayout(context) : _buildDesktopLayout(context),
-          ),
-        ),
-        const SizedBox(height: 25),
+        AnimatedSize(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut, child: isTablet ? _buildTabletLayout(context) : _buildDesktopLayout(context)),
       ],
     );
   }
@@ -122,6 +127,7 @@ class _BuildHeader extends StatelessWidget {
               ),
             ],
           ),
+          const InventoryFiltersWidget(),
           const SizedBox(height: 16),
           Expanded(
             child: Consumer(
@@ -141,54 +147,45 @@ class _BuildHeader extends StatelessWidget {
   }
 
   Widget _buildDesktopLayout(BuildContext context) {
-    final summaryWidth = Responsive.value(context: context, mobile: 800.0, tablet: 600.0, desktop: 800.0, widescreen: 900.0);
     final controlsWidth = Responsive.value(context: context, mobile: 500.0, tablet: 400.0, desktop: 400.0, widescreen: 550.0);
-    final spacing = Responsive.value(context: context, mobile: 50.0, tablet: 30.0, desktop: 50.0, widescreen: 60.0);
 
-    return Row(
-      children: [
-        Expanded(
-          child: SizedBox(
-            width: summaryWidth,
-            child: Consumer(
-              builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
-                return InventorySummaryWidget(
-                  stats: provider.inventoryStats,
-                  onTotalTap: () => provider.clearStatusFilter(),
-                  onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
-                  onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
-                );
-              },
-            ),
-          ),
-        ),
-        SizedBox(width: spacing),
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const _BuildAddInventoryOrServiceButton(),
-                SizedBox(
-                  width: controlsWidth,
-                  child: WASearchTextField(
-                    onChanged: (String value) {
-                      _handleSearch(value, context);
-                    },
-                  ),
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: .spaceBetween,
+            children: [
+              SizedBox(
+                width: controlsWidth,
+                child: WASearchTextField(
+                  onChanged: (String value) {
+                    _handleSearch(value, context);
+                  },
                 ),
-              ],
-            ),
+              ),
+              const _BuildAddInventoryOrServiceButton(),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 20),
+          const InventoryFiltersWidget(),
+        ],
+      ),
     );
   }
 
   static void _handleSearch(String value, BuildContext context) {
-    context.read<WAInventoryServicesProvider>().updateSearchQuery(value);
+    final inventoryProvider = context.read<WAInventoryServicesProvider>();
+    final searchProvider = context.read<WAInventorySearchProvider>();
+
+    if (value.isEmpty) {
+      inventoryProvider.setSearchMode(false);
+    } else {
+      inventoryProvider.setSearchMode(true);
+      searchProvider.updateQuery(value);
+    }
   }
 }
 
@@ -222,19 +219,75 @@ class _BuildInventoryTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
 
-    return Selector<WAInventoryServicesProvider, bool>(
-      selector: (_, provider) => provider.isLoading,
-      builder: (context, isLoading, child) {
+    return Consumer2<WAInventoryServicesProvider, WAInventorySearchProvider>(
+      builder: (context, inventoryProvider, searchProvider, child) {
+        // Determine which provider to use
+        final bool isSearchMode = inventoryProvider.isSearchMode;
+        final bool isLoading = isSearchMode ? searchProvider.isLoading : inventoryProvider.isLoading;
+        final List<WAProduct> products = isSearchMode ? searchProvider.items : inventoryProvider.products;
+        final String? error = isSearchMode ? searchProvider.error : null;
+
+        // Show loading
         if (isLoading) {
-          return Center(child: LoadingAnimationHelper.loading);
+          return SizedBox(
+            height: tableHeight,
+            child: Center(child: LoadingAnimationHelper.loading),
+          );
         }
+
+        // Show error (from search)
+        if (error != null) {
+          return SizedBox(
+            height: tableHeight,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
+                  const SizedBox(height: 16),
+                  Text('Error: $error'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(onPressed: () => searchProvider.refresh(), child: const Text('Retry')),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Show empty state
+        if (products.isEmpty) {
+          return SizedBox(
+            height: tableHeight,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(isSearchMode ? 'No products found' : 'No products available', style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  if (isSearchMode) ...[const SizedBox(height: 8), Text('Try adjusting your search', style: TextStyle(fontSize: 14, color: Colors.grey[500]))],
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Show table
         return WAInventoryTable(
-          orders: context.watch<WAInventoryServicesProvider>().products,
+          orders: products,
           height: tableHeight,
-          onDelete: (String id, String inventoryName) {
+          onDelete: (String id, String inventoryName) async {
             helper.showDeleteDialog(context, id, inventoryName);
           },
-          onEdit: (WAProduct product) async => await InventoryActionUtils.onEditInventory(product, context.read<WAInventoryServicesProvider>(), context),
+          onEdit: (WAProduct product) async {
+            await InventoryActionUtils.onEditInventory(product, inventoryProvider, context);
+            // Refresh the active source
+            if (isSearchMode) {
+              await searchProvider.refresh();
+            } else {
+              await inventoryProvider.getAllProducts();
+            }
+          },
         );
       },
     );
@@ -250,12 +303,14 @@ class _BuildPaginationControls extends StatelessWidget {
     final isMobile = Responsive.isMobile(context);
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
-    return Consumer<WAInventoryServicesProvider>(
-      builder: (context, provider, child) {
-        final currentPage = provider.currentPage;
-        final totalPages = provider.totalPages;
-        final hasPrevious = provider.hasPreviousPage;
-        final hasNext = provider.hasNextPage;
+    return Consumer2<WAInventoryServicesProvider, WAInventorySearchProvider>(
+      builder: (context, inventoryProvider, searchProvider, child) {
+        final bool isSearchMode = inventoryProvider.isSearchMode;
+
+        final int currentPage = isSearchMode ? searchProvider.currentPage : inventoryProvider.currentPage;
+        final int totalPages = isSearchMode ? searchProvider.totalPages : inventoryProvider.totalPages;
+        final bool hasPrevious = isSearchMode ? searchProvider.hasPreviousPage : inventoryProvider.hasPreviousPage;
+        final bool hasNext = isSearchMode ? searchProvider.hasNextPage : inventoryProvider.hasNextPage;
 
         return Container(
           margin: EdgeInsets.symmetric(horizontal: Responsive.value(context: context, mobile: 0.0, tablet: 0.0, desktop: 0.0, widescreen: 0.0)),
@@ -275,11 +330,18 @@ class _BuildPaginationControls extends StatelessWidget {
                 _PaginationButton(
                   icon: Icons.chevron_left_rounded,
                   label: isMobile ? null : texts.inventoryPreviousButton,
-                  onPressed: hasPrevious ? () => provider.loadPreviousPage() : null,
+                  onPressed: hasPrevious
+                      ? () {
+                          if (isSearchMode) {
+                            searchProvider.previousPage();
+                          } else {
+                            inventoryProvider.loadPreviousPage();
+                          }
+                        }
+                      : null,
                   isEnabled: hasPrevious,
                   width: isMobile ? 48 : 140,
                 ),
-
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 24.0, desktop: 28.0, widescreen: 32.0),
@@ -335,11 +397,18 @@ class _BuildPaginationControls extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 _PaginationButton(
                   icon: Icons.chevron_right_rounded,
                   label: isMobile ? null : texts.inventoryNextButton,
-                  onPressed: hasNext ? () => provider.loadNextPage() : null,
+                  onPressed: hasNext
+                      ? () {
+                          if (isSearchMode) {
+                            searchProvider.nextPage();
+                          } else {
+                            inventoryProvider.loadNextPage();
+                          }
+                        }
+                      : null,
                   isEnabled: hasNext,
                   isNext: true,
                   width: isMobile ? 48 : 140,

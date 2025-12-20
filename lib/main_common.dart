@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/helpers/api_header_helper.dart';
@@ -22,13 +23,15 @@ import 'config/flavor_config.dart';
 import 'l10n/app_localizations.dart';
 import 'localization_models/localization_models.dart';
 
-Future<void> initializeApp({required Flavor flavor, required String appName, required String env}) async {
+Future<void> initializeApp({required Flavor flavor, required String appName, required String env, required String dotEnvFile}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Get environment variables from dart-define
-  const String baseUrl = String.fromEnvironment('BASE_URL', defaultValue: 'DEVTEST');
-  const String flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
-  const String mapboxAccessToken = String.fromEnvironment('MAPBOX_ACCESS_TOKEN', defaultValue: 'NOTOKEN');
+  await dotenv.load(fileName: dotEnvFile);
+
+  // Get environment variables from .env file
+  final String baseUrl = dotenv.env['BASE_URL'] ?? 'DEVTEST';
+  final String flavorString = dotenv.env['FLAVOR'] ?? 'dev';
+  final String mapboxAccessToken = dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? 'NOTOKEN';
 
   debugPrint('🔗 Environment Variables Loaded:');
   debugPrint('  BASE_URL: $baseUrl');
