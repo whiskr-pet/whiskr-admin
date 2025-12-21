@@ -43,7 +43,7 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
   Future<void> _getInitialData() async {
     final WAInventoryServicesProvider provider = context.read<WAInventoryServicesProvider>();
     provider.setLoading(true);
-    await Future.wait([provider.getInventoryStats(), provider.getAllProducts()]);
+    await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
     provider.setLoading(false);
   }
 
@@ -127,7 +127,11 @@ class _BuildHeader extends StatelessWidget {
               ),
             ],
           ),
-          const InventoryFiltersWidget(),
+          Consumer<WAInventoryServicesProvider>(
+            builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
+              return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
+            },
+          ),
           const SizedBox(height: 16),
           Expanded(
             child: Consumer(
@@ -170,7 +174,11 @@ class _BuildHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const InventoryFiltersWidget(),
+          Consumer<WAInventoryServicesProvider>(
+            builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
+              return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
+            },
+          ),
         ],
       ),
     );
