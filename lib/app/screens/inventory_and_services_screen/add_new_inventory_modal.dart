@@ -3,14 +3,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
-import 'package:w_image_module/helpers/image_constants.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:w_utils/models/form_data_file_bytes.dart';
 import 'package:w_utils/models/image_model.dart';
-import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_action_utils.dart';
 
 import '../../../localization_models/localization_models.dart';
 import '../../providers/texts_provider.dart';
@@ -56,44 +53,6 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
-    final imageProvider = context.read<ImageHandleProvider>();
-    final ResponseModel<FormDataFileBytes?> response = await imageProvider.pickImageForWeb();
-    if (!response.isSuccess && mounted) {
-      WACustomSnackbar.instance.showSnack(context, response.error ?? texts.inventoryErrorPickingImage, type: WACustomSnackbarType.error);
-    } else if (response.isSuccess && response.data != null) {
-      final ResponseModel<ImageModel> responseModel = await imageProvider.uploadWebSingleImage(ProviderImageConstants.productInventoryImages);
-      if (!responseModel.isSuccess && mounted) {
-        WACustomSnackbar.instance.showSnack(context, responseModel.error ?? texts.inventoryErrorUploadingImage, type: WACustomSnackbarType.error);
-      } else {
-        if (mounted) {
-          context.read<WAInventoryServicesProvider>().setImage(responseModel.data!);
-        }
-      }
-    }
-  }
-
-  Future<void> _handleSave() async {
-    if (context.read<WAInventoryServicesProvider>().formKey.currentState!.validate()) {
-      context.read<WAInventoryServicesProvider>().setIsUploading(true);
-
-      try {
-        if (widget.onSave != null) {
-          widget.onSave!();
-        }
-      } catch (e) {
-        WACustomSnackbar.instance.showSnack(context, 'Error: $e', type: WACustomSnackbarType.error);
-      } finally {
-        context.read<WAInventoryServicesProvider>().setIsUploading(false);
-      }
-    }
-  }
-
-  void _handleCancel() {
-    _animationController.reverse().then((_) => Navigator.of(context).pop());
-  }
-
   @override
   Widget build(BuildContext context) {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
@@ -123,7 +82,10 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ImagePickerWidget(onPickImage: _pickImage, image: context.watch<WAInventoryServicesProvider>().productToEdit?.image),
+                          ImagePickerWidget(
+                            onPickImage: InventoryActionUtils.pickInventoryImage(context),
+                            image: context.watch<WAInventoryServicesProvider>().productToEdit?.image,
+                          ),
                           const SizedBox(height: 20),
                           CustomTextField(
                             controller: context.read<WAInventoryServicesProvider>().nameController,
@@ -219,7 +181,12 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
                     ),
                   ),
                 ),
-                ModalFooter(isUploading: context.watch<WAInventoryServicesProvider>().isUploading, onCancel: _handleCancel, onSave: _handleSave, isEditMode: widget.isEditMode),
+                ModalFooter(
+                  isUploading: context.watch<WAInventoryServicesProvider>().isUploading,
+                  onCancel: InventoryActionUtils.handleCancel(_animationController, context),
+                  onSave: InventoryActionUtils.handleSave(widget.onSave, context),
+                  isEditMode: widget.isEditMode,
+                ),
               ],
             ),
           ),
@@ -319,7 +286,7 @@ class _CategorySelectorState extends State<CategorySelector> {
       items: [
         ...widget.availableCategories.map((String category) {
           return DropdownMenuItem<String>(value: category, child: Text(category));
-        }).toList(),
+        }),
         DropdownMenuItem<String>(
           value: '__custom__',
           child: Row(
