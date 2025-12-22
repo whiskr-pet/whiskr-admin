@@ -498,5 +498,135 @@
   "inventoryCancelButton": "Cancel",
   "@inventoryCancelButton": {
     "description": "Cancel button text in modal"
+  },
+
+  "inventoryFiltersTitle": "Filters",
+  "@inventoryFiltersTitle": {
+    "description": "Title for filters section"
+  },
+
+  "inventoryFiltersClearAll": "Clear All",
+  "@inventoryFiltersClearAll": {
+    "description": "Button text to clear all filters"
+  },
+
+  "inventoryFiltersStockStatus": "Stock Status",
+  "@inventoryFiltersStockStatus": {
+    "description": "Label for stock status filter section"
+  },
+
+  "inventoryFiltersInStock": "In Stock",
+  "@inventoryFiltersInStock": {
+    "description": "Filter chip for in stock products"
+  },
+
+  "inventoryFiltersLowStock": "Low Stock",
+  "@inventoryFiltersLowStock": {
+    "description": "Filter chip for low stock products"
+  },
+
+  "inventoryFiltersOutOfStock": "Out of Stock",
+  "@inventoryFiltersOutOfStock": {
+    "description": "Filter chip for out of stock products"
+  },
+
+  "inventoryFiltersProductStatus": "Product Status",
+  "@inventoryFiltersProductStatus": {
+    "description": "Label for product status filter section"
+  },
+
+  "inventoryFiltersActive": "Active",
+  "@inventoryFiltersActive": {
+    "description": "Filter chip for active products"
+  },
+
+  "inventoryFiltersInactive": "Inactive",
+  "@inventoryFiltersInactive": {
+    "description": "Filter chip for inactive products"
+  },
+
+  "inventoryFiltersAdvanced": "Advanced Filters",
+  "@inventoryFiltersAdvanced": {
+    "description": "Text for advanced filters toggle"
+  },
+
+  "inventoryFiltersCategory": "Category",
+  "@inventoryFiltersCategory": {
+    "description": "Label for category filter section"
+  },
+
+  "inventoryFiltersCategorySelectHint": "Select a category",
+  "@inventoryFiltersCategorySelectHint": {
+    "description": "Hint text for category dropdown"
+  },
+
+  "inventoryFiltersCategoryNoneAvailable": "No categories available",
+  "@inventoryFiltersCategoryNoneAvailable": {
+    "description": "Text when no categories are available"
+  },
+
+  "inventoryFiltersAllCategories": "All Categories",
+  "@inventoryFiltersAllCategories": {
+    "description": "Option to select all categories"
+  },
+
+  "inventoryFiltersTags": "Tags",
+  "@inventoryFiltersTags": {
+    "description": "Label for tags filter section"
+  },
+
+  "inventoryFiltersTagsAddHint": "Add a tag",
+  "@inventoryFiltersTagsAddHint": {
+    "description": "Hint text for tags dropdown"
+  },
+
+  "inventoryFiltersTagsNoneAvailable": "No tags available",
+  "@inventoryFiltersTagsNoneAvailable": {
+    "description": "Text when no tags are available"
+  },
+
+  "inventoryFiltersSortBy": "Sort By",
+  "@inventoryFiltersSortBy": {
+    "description": "Label for sort by section"
+  },
+
+  "inventoryFiltersSortSelectHint": "Select sorting option",
+  "@inventoryFiltersSortSelectHint": {
+    "description": "Hint text for sort by dropdown"
+  },
+
+  "inventoryFiltersSortDefault": "Default",
+  "@inventoryFiltersSortDefault": {
+    "description": "Default sorting option"
+  },
+
+  "inventoryFiltersSortDateCreated": "Date Created",
+  "@inventoryFiltersSortDateCreated": {
+    "description": "Sort by date created option"
+  },
+
+  "inventoryFiltersSortLastUpdated": "Last Updated",
+  "@inventoryFiltersSortLastUpdated": {
+    "description": "Sort by last updated option"
+  },
+
+  "inventoryFiltersSortStockQuantity": "Stock Quantity",
+  "@inventoryFiltersSortStockQuantity": {
+    "description": "Sort by stock quantity option"
+  },
+
+  "inventoryFiltersSortPrice": "Price",
+  "@inventoryFiltersSortPrice": {
+    "description": "Sort by price option"
+  },
+
+  "inventoryFiltersSortAscending": "Ascending",
+  "@inventoryFiltersSortAscending": {
+    "description": "Ascending sort order"
+  },
+
+  "inventoryFiltersSortDescending": "Descending",
+  "@inventoryFiltersSortDescending": {
+    "description": "Descending sort order"
   }
 }

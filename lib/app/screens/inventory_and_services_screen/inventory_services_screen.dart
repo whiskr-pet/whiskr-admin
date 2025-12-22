@@ -118,11 +118,7 @@ class _BuildHeader extends StatelessWidget {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(top: 0),
-                  child: WASearchTextField(
-                    onChanged: (String value) {
-                      _handleSearch(value, context);
-                    },
-                  ),
+                  child: WASearchTextField(onChanged: (String value) => InventoryActionUtils.handleSearch(value, context)),
                 ),
               ),
             ],
@@ -164,11 +160,7 @@ class _BuildHeader extends StatelessWidget {
             children: [
               SizedBox(
                 width: controlsWidth,
-                child: WASearchTextField(
-                  onChanged: (String value) {
-                    _handleSearch(value, context);
-                  },
-                ),
+                child: WASearchTextField(onChanged: (String value) => InventoryActionUtils.handleSearch(value, context)),
               ),
               const _BuildAddInventoryOrServiceButton(),
             ],
@@ -182,18 +174,6 @@ class _BuildHeader extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  static void _handleSearch(String value, BuildContext context) {
-    final inventoryProvider = context.read<WAInventoryServicesProvider>();
-    final searchProvider = context.read<WAInventorySearchProvider>();
-
-    if (value.isEmpty) {
-      inventoryProvider.setSearchMode(false);
-    } else {
-      inventoryProvider.setSearchMode(true);
-      searchProvider.updateQuery(value);
-    }
   }
 }
 

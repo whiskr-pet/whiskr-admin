@@ -8,6 +8,7 @@ import 'package:w_utils/models/form_data_file_bytes.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
 
 import '../../../../localization_models/inventory_text/inventory_text.dart';
@@ -79,6 +80,18 @@ class InventoryActionUtils {
       }
     }
     provider.setLoading(false);
+  }
+
+  static void handleSearch(String value, BuildContext context) {
+    final inventoryProvider = context.read<WAInventoryServicesProvider>();
+    final searchProvider = context.read<WAInventorySearchProvider>();
+
+    if (value.isEmpty) {
+      inventoryProvider.setSearchMode(false);
+    } else {
+      inventoryProvider.setSearchMode(true);
+      searchProvider.updateQuery(value);
+    }
   }
 
   // Add / Edit Inventory modal
