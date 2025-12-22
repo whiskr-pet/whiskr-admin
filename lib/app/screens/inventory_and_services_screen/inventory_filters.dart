@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_search_module/w_search_module.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
@@ -234,25 +235,25 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
             children: [
               _FilterChip(
                 label: texts.inventoryFiltersInStock,
-                isSelected: _selectedStatus == 'inStock',
+                isSelected: _selectedStatus == LowStockProductStatus.inStock.name,
                 onSelected: (bool selected) {
-                  _applyStatusFilter(selected ? 'inStock' : null);
+                  _applyStatusFilter(selected ? LowStockProductStatus.inStock.name : null);
                 },
                 icon: Icons.check_circle_outline,
               ),
               _FilterChip(
                 label: texts.inventoryFiltersLowStock,
-                isSelected: _selectedStatus == 'lowStock',
+                isSelected: _selectedStatus == LowStockProductStatus.lowStock.name,
                 onSelected: (bool selected) {
-                  _applyStatusFilter(selected ? 'lowStock' : null);
+                  _applyStatusFilter(selected ? LowStockProductStatus.lowStock.name : null);
                 },
                 icon: Icons.warning_amber_rounded,
               ),
               _FilterChip(
                 label: texts.inventoryFiltersOutOfStock,
-                isSelected: _selectedStatus == 'outOfStock',
+                isSelected: _selectedStatus == LowStockProductStatus.outOfStock.name,
                 onSelected: (bool selected) {
-                  _applyStatusFilter(selected ? 'outOfStock' : null);
+                  _applyStatusFilter(selected ? LowStockProductStatus.outOfStock.name : null);
                 },
                 icon: Icons.cancel_outlined,
               ),
