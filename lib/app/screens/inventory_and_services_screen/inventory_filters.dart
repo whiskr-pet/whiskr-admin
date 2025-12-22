@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:w_search_module/helpers/w_search_enums.dart';
+import 'package:w_search_module/w_search_module.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+
+import '../../../localization_models/inventory_text/inventory_text.dart';
+import '../../providers/texts_provider.dart';
 
 class InventoryFiltersWidget extends StatefulWidget {
   final List<String> availableCategories;
@@ -60,13 +63,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
 
     final WAInventorySearchProvider searchProvider = context.read<WAInventorySearchProvider>();
     final WAInventoryServicesProvider inventoryProvider = context.read<WAInventoryServicesProvider>();
-
-    searchProvider.removeCustomFilter('status');
-    searchProvider.filterByActive(null);
-    searchProvider.filterByCategory(null);
-    searchProvider.filterByTags(null);
-    searchProvider.setSorting(null, null);
-
+    searchProvider.clearAllFilters();
     // Disable search mode to show all products
     inventoryProvider.setSearchMode(false);
   }
@@ -157,15 +154,17 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
   }
 
   String _getSortDisplayName(String sortBy) {
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+
     switch (sortBy) {
       case 'created_at':
-        return 'Date Created';
+        return texts.inventoryFiltersSortDateCreated;
       case 'updated_at':
-        return 'Last Updated';
+        return texts.inventoryFiltersSortLastUpdated;
       case 'stock_quantity':
-        return 'Stock Quantity';
+        return texts.inventoryFiltersSortStockQuantity;
       case 'price':
-        return 'Price';
+        return texts.inventoryFiltersSortPrice;
       default:
         return sortBy;
     }
@@ -174,6 +173,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
   @override
   Widget build(BuildContext context) {
     final bool hasActiveFilters = _selectedStatus != null || _selectedActiveStatus != null || _selectedCategory != null || _selectedTags.isNotEmpty || _selectedSortBy != null;
+    final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
     return Container(
       padding: EdgeInsets.all(Responsive.value(context: context, mobile: 12.0, tablet: 16.0, desktop: 16.0, widescreen: 20.0)),
@@ -193,7 +193,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
               Icon(Icons.filter_list_rounded, size: 20, color: ColorHelper.greenWeb.color),
               const SizedBox(width: 8),
               Text(
-                'Filters',
+                texts.inventoryFiltersTitle,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey[800]),
               ),
               if (hasActiveFilters)
@@ -212,7 +212,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                   onPressed: _clearFilters,
                   icon: Icon(Icons.clear_rounded, size: 16, color: Colors.red[400]),
                   label: Text(
-                    'Clear All',
+                    texts.inventoryFiltersClearAll,
                     style: TextStyle(color: Colors.red[400], fontWeight: FontWeight.w500, fontSize: 13),
                   ),
                   style: TextButton.styleFrom(
@@ -226,14 +226,14 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
           const SizedBox(height: 12),
 
           // Stock Status Filter Chips
-          _SectionLabel(icon: Icons.inventory_rounded, label: 'Stock Status'),
+          _SectionLabel(icon: Icons.inventory_rounded, label: texts.inventoryFiltersStockStatus),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               _FilterChip(
-                label: 'In Stock',
+                label: texts.inventoryFiltersInStock,
                 isSelected: _selectedStatus == 'inStock',
                 onSelected: (bool selected) {
                   _applyStatusFilter(selected ? 'inStock' : null);
@@ -241,7 +241,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 icon: Icons.check_circle_outline,
               ),
               _FilterChip(
-                label: 'Low Stock',
+                label: texts.inventoryFiltersLowStock,
                 isSelected: _selectedStatus == 'lowStock',
                 onSelected: (bool selected) {
                   _applyStatusFilter(selected ? 'lowStock' : null);
@@ -249,7 +249,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 icon: Icons.warning_amber_rounded,
               ),
               _FilterChip(
-                label: 'Out of Stock',
+                label: texts.inventoryFiltersOutOfStock,
                 isSelected: _selectedStatus == 'outOfStock',
                 onSelected: (bool selected) {
                   _applyStatusFilter(selected ? 'outOfStock' : null);
@@ -262,14 +262,14 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
           const SizedBox(height: 16),
 
           // Active Status Filter
-          _SectionLabel(icon: Icons.toggle_on_rounded, label: 'Product Status'),
+          _SectionLabel(icon: Icons.toggle_on_rounded, label: texts.inventoryFiltersProductStatus),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               _FilterChip(
-                label: 'Active',
+                label: texts.inventoryFiltersActive,
                 isSelected: _selectedActiveStatus == true,
                 onSelected: (bool selected) {
                   _applyActiveFilter(selected ? true : null);
@@ -277,7 +277,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 icon: Icons.visibility_rounded,
               ),
               _FilterChip(
-                label: 'Inactive',
+                label: texts.inventoryFiltersInactive,
                 isSelected: _selectedActiveStatus == false,
                 onSelected: (bool selected) {
                   _applyActiveFilter(selected ? false : null);
@@ -299,7 +299,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Advanced Filters',
+                    texts.inventoryFiltersAdvanced,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
                   ),
                   const SizedBox(width: 4),
@@ -326,7 +326,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 const SizedBox(height: 16),
 
                 // Category Filter
-                _SectionLabel(icon: Icons.category_rounded, label: 'Category'),
+                _SectionLabel(icon: Icons.category_rounded, label: texts.inventoryFiltersCategory),
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
@@ -339,7 +339,10 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       value: _selectedCategory,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(widget.availableCategories.isEmpty ? 'No categories available' : 'Select a category', style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+                        child: Text(
+                          widget.availableCategories.isEmpty ? texts.inventoryFiltersCategoryNoneAvailable : texts.inventoryFiltersCategorySelectHint,
+                          style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                        ),
                       ),
                       isExpanded: true,
                       icon: Padding(
@@ -348,11 +351,11 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       ),
                       borderRadius: BorderRadius.circular(10),
                       items: [
-                        const DropdownMenuItem<String>(
+                        DropdownMenuItem<String>(
                           value: null,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('All Categories', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                            child: Text(texts.inventoryFiltersAllCategories, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                           ),
                         ),
                         ...widget.availableCategories.map((String category) {
@@ -377,7 +380,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 const SizedBox(height: 16),
 
                 // Tags Filter
-                _SectionLabel(icon: Icons.local_offer_rounded, label: 'Tags'),
+                _SectionLabel(icon: Icons.local_offer_rounded, label: texts.inventoryFiltersTags),
                 const SizedBox(height: 8),
 
                 // Selected Tags Display
@@ -412,7 +415,10 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       value: null,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text(widget.availableTags.isEmpty ? 'No tags available' : 'Add a tag', style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+                        child: Text(
+                          widget.availableTags.isEmpty ? texts.inventoryFiltersTagsNoneAvailable : texts.inventoryFiltersTagsAddHint,
+                          style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                        ),
                       ),
                       isExpanded: true,
                       icon: Padding(
@@ -443,7 +449,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 const SizedBox(height: 16),
 
                 // Sorting Options
-                _SectionLabel(icon: Icons.sort_rounded, label: 'Sort By'),
+                _SectionLabel(icon: Icons.sort_rounded, label: texts.inventoryFiltersSortBy),
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
@@ -456,7 +462,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       value: _selectedSortBy,
                       hint: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Text('Select sorting option', style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+                        child: Text(texts.inventoryFiltersSortSelectHint, style: TextStyle(color: Colors.grey[500], fontSize: 14)),
                       ),
                       isExpanded: true,
                       icon: Padding(
@@ -465,11 +471,11 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       ),
                       borderRadius: BorderRadius.circular(10),
                       items: [
-                        const DropdownMenuItem<String>(
+                        DropdownMenuItem<String>(
                           value: null,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Text('Default', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                            child: Text(texts.inventoryFiltersSortDefault, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                           ),
                         ),
                         ..._sortOptions.map((String option) {
@@ -480,7 +486,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                               child: Text(_getSortDisplayName(option), style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
                             ),
                           );
-                        }).toList(),
+                        }),
                       ],
                       onChanged: (String? newValue) {
                         if (newValue == null) {
@@ -499,7 +505,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                     children: [
                       Expanded(
                         child: _FilterChip(
-                          label: 'Ascending',
+                          label: texts.inventoryFiltersSortAscending,
                           isSelected: _selectedSortOrder == SortOrder.asc,
                           onSelected: (bool selected) {
                             _applySorting(_selectedSortBy, selected ? SortOrder.asc : SortOrder.desc);
@@ -510,7 +516,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       const SizedBox(width: 8),
                       Expanded(
                         child: _FilterChip(
-                          label: 'Descending',
+                          label: texts.inventoryFiltersSortDescending,
                           isSelected: _selectedSortOrder == SortOrder.desc,
                           onSelected: (bool selected) {
                             _applySorting(_selectedSortBy, selected ? SortOrder.desc : SortOrder.asc);

@@ -498,5 +498,135 @@
   "inventoryCancelButton": "Odustani",
   "@inventoryCancelButton": {
     "description": "Cancel button text in modal"
+  },
+
+  "inventoryFiltersTitle": "Filteri",
+  "@inventoryFiltersTitle": {
+    "description": "Title for filters section"
+  },
+
+  "inventoryFiltersClearAll": "Obriši sve",
+  "@inventoryFiltersClearAll": {
+    "description": "Button text to clear all filters"
+  },
+
+  "inventoryFiltersStockStatus": "Status zaliha",
+  "@inventoryFiltersStockStatus": {
+    "description": "Label for stock status filter section"
+  },
+
+  "inventoryFiltersInStock": "Na stanju",
+  "@inventoryFiltersInStock": {
+    "description": "Filter chip for in stock products"
+  },
+
+  "inventoryFiltersLowStock": "Niske zalihe",
+  "@inventoryFiltersLowStock": {
+    "description": "Filter chip for low stock products"
+  },
+
+  "inventoryFiltersOutOfStock": "Nema na stanju",
+  "@inventoryFiltersOutOfStock": {
+    "description": "Filter chip for out of stock products"
+  },
+
+  "inventoryFiltersProductStatus": "Status proizvoda",
+  "@inventoryFiltersProductStatus": {
+    "description": "Label for product status filter section"
+  },
+
+  "inventoryFiltersActive": "Aktivan",
+  "@inventoryFiltersActive": {
+    "description": "Filter chip for active products"
+  },
+
+  "inventoryFiltersInactive": "Neaktivan",
+  "@inventoryFiltersInactive": {
+    "description": "Filter chip for inactive products"
+  },
+
+  "inventoryFiltersAdvanced": "Napredni filteri",
+  "@inventoryFiltersAdvanced": {
+    "description": "Text for advanced filters toggle"
+  },
+
+  "inventoryFiltersCategory": "Kategorija",
+  "@inventoryFiltersCategory": {
+    "description": "Label for category filter section"
+  },
+
+  "inventoryFiltersCategorySelectHint": "Odaberite kategoriju",
+  "@inventoryFiltersCategorySelectHint": {
+    "description": "Hint text for category dropdown"
+  },
+
+  "inventoryFiltersCategoryNoneAvailable": "Nema dostupnih kategorija",
+  "@inventoryFiltersCategoryNoneAvailable": {
+    "description": "Text when no categories are available"
+  },
+
+  "inventoryFiltersAllCategories": "Sve kategorije",
+  "@inventoryFiltersAllCategories": {
+    "description": "Option to select all categories"
+  },
+
+  "inventoryFiltersTags": "Oznake",
+  "@inventoryFiltersTags": {
+    "description": "Label for tags filter section"
+  },
+
+  "inventoryFiltersTagsAddHint": "Dodaj oznaku",
+  "@inventoryFiltersTagsAddHint": {
+    "description": "Hint text for tags dropdown"
+  },
+
+  "inventoryFiltersTagsNoneAvailable": "Nema dostupnih oznaka",
+  "@inventoryFiltersTagsNoneAvailable": {
+    "description": "Text when no tags are available"
+  },
+
+  "inventoryFiltersSortBy": "Sortiraj po",
+  "@inventoryFiltersSortBy": {
+    "description": "Label for sort by section"
+  },
+
+  "inventoryFiltersSortSelectHint": "Odaberite opciju sortiranja",
+  "@inventoryFiltersSortSelectHint": {
+    "description": "Hint text for sort by dropdown"
+  },
+
+  "inventoryFiltersSortDefault": "Zadano",
+  "@inventoryFiltersSortDefault": {
+    "description": "Default sorting option"
+  },
+
+  "inventoryFiltersSortDateCreated": "Datum kreiranja",
+  "@inventoryFiltersSortDateCreated": {
+    "description": "Sort by date created option"
+  },
+
+  "inventoryFiltersSortLastUpdated": "Posljednje ažurirano",
+  "@inventoryFiltersSortLastUpdated": {
+    "description": "Sort by last updated option"
+  },
+
+  "inventoryFiltersSortStockQuantity": "Količina na stanju",
+  "@inventoryFiltersSortStockQuantity": {
+    "description": "Sort by stock quantity option"
+  },
+
+  "inventoryFiltersSortPrice": "Cijena",
+  "@inventoryFiltersSortPrice": {
+    "description": "Sort by price option"
+  },
+
+  "inventoryFiltersSortAscending": "Uzlazno",
+  "@inventoryFiltersSortAscending": {
+    "description": "Ascending sort order"
+  },
+
+  "inventoryFiltersSortDescending": "Silazno",
+  "@inventoryFiltersSortDescending": {
+    "description": "Descending sort order"
   }
 }
