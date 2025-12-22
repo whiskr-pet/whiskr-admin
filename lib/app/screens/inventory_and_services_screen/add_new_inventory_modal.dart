@@ -484,7 +484,10 @@ class ImagePickerWidget extends StatelessWidget {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Consumer<ImageHandleProvider>(
       builder: (context, imageProvider, _) {
-        final hasImage = image != null || imageProvider.imageBytes != null;
+        // More specific checks for each image source
+        final hasNetworkImage = image?.url != null && image!.url!.isNotEmpty;
+        final hasLocalImage = imageProvider.imageBytes != null;
+        final hasImage = hasNetworkImage || hasLocalImage;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -509,7 +512,7 @@ class ImagePickerWidget extends StatelessWidget {
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: image != null && image?.url != null && image!.url!.isNotEmpty
+                            child: hasNetworkImage
                                 ? Image.network(image!.url!, width: double.infinity, height: double.infinity, fit: BoxFit.contain)
                                 : Image.memory(base64Decode(imageProvider.imageBytes!.fileBytes), width: double.infinity, height: double.infinity, fit: BoxFit.contain),
                           ),
