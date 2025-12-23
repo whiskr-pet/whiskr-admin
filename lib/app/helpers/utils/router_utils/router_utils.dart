@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:w_utils/storage_manager/storage_prefs_manager.dart';
+import 'package:w_utils/w_utils.dart';
 
 import '../../../../routing/routes.dart';
 
@@ -12,7 +12,7 @@ class RouterUtils {
 
   static Future<bool> _isAuthenticated() async {
     try {
-      final String userData = await storagePrefs.getValue(StoragePrefsManager.USER_DATA_KEY);
+      final String userData = await storagePrefs.getValue(StorageKeys.USER_DATA_KEY);
       final String accessToken = await storagePrefs.getAccessTokenValue();
       final String refreshToken = await storagePrefs.getRefreshTokenValue();
 

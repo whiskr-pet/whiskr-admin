@@ -8,12 +8,12 @@ import 'package:w_utils/models/form_data_file_bytes.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 
 import '../../../../localization_models/inventory_text/inventory_text.dart';
 import '../../../providers/texts_provider.dart';
-import '../../../screens/inventory_and_services_screen/add_new_inventory_modal.dart';
+import '../../../screens/inventory_and_services_screen/inventory/add_new_inventory_modal.dart';
 
 class InventoryActionUtils {
   InventoryActionUtils._();

@@ -370,7 +370,7 @@
   "@onboardingHelperClosed": {
     "description": "Text for closed days"
   },
-  "inventoryTitle": "Inventar i usluge",
+  "inventoryTitle": "Inventar",
   "@inventoryTitle": {
     "description": "Main title for inventory screen"
   },

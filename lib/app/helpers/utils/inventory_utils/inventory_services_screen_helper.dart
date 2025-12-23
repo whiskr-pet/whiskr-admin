@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_action_utils.dart';
 
 class InventoryServicesHelper {

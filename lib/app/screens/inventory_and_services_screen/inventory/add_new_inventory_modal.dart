@@ -6,11 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_action_utils.dart';
 
-import '../../../localization_models/localization_models.dart';
-import '../../providers/texts_provider.dart';
+import '../../../../localization_models/localization_models.dart';
+import '../../../providers/texts_provider.dart';
 
 class AddInventoryModal extends StatefulWidget {
   final Function? onSave;
