@@ -12,7 +12,7 @@ import 'package:w_utils/helper/util_constants.dart';
 import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
 import 'package:wa_analytics_module/providers/wa_analytics_provider.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';

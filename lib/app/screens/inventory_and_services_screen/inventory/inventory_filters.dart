@@ -4,11 +4,11 @@ import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_search_module/w_search_module.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 
-import '../../../localization_models/inventory_text/inventory_text.dart';
-import '../../providers/texts_provider.dart';
+import '../../../../localization_models/inventory_text/inventory_text.dart';
+import '../../../providers/texts_provider.dart';
 
 class InventoryFiltersWidget extends StatefulWidget {
   final List<String> availableCategories;

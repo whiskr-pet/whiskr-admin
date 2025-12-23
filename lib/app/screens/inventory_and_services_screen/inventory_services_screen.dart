@@ -6,20 +6,20 @@ import 'package:w_components/wa_custom_inventory_data_widget/wa_custom_inventory
 import 'package:w_components/wa_inventory_table/wa_inventory_table.dart';
 import 'package:w_components/wa_services_table/wa_services_table.dart';
 import 'package:w_dashboard/helpers/stock_status_type.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:w_utils/services/service_type_service.dart';
+import 'package:w_utils/w_utils.dart';
 import 'package:wa_inventory_services_module/models/wa_inventory_product_model.dart';
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_search_provider.dart';
-import 'package:wa_inventory_services_module/providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
 
 import '../../../localization_models/localization_models.dart';
 import '../../helpers/utils/inventory_utils/inventory_action_utils.dart';
 import '../../providers/texts_provider.dart';
-import 'inventory_filters.dart';
+import 'inventory/inventory_filters.dart';
 
 class InventoryServicesScreen extends StatefulWidget {
   const InventoryServicesScreen({super.key});
@@ -30,6 +30,7 @@ class InventoryServicesScreen extends StatefulWidget {
 
 class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
   late WAInventorySearchProvider searchProvider;
+  bool? _isTypeShop;
 
   @override
   void initState() {
@@ -42,16 +43,29 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
 
   Future<void> _getInitialData() async {
     final WAInventoryServicesProvider provider = context.read<WAInventoryServicesProvider>();
+    final bool isTypeShop = await ServiceTypeService.getServiceType();
+    setState(() {
+      _isTypeShop = isTypeShop;
+    });
     provider.setLoading(true);
-    await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
+    if (isTypeShop) {
+      await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
+    } else {
+      await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
+    }
     provider.setLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Show loading indicator while determining service type
+    if (_isTypeShop == null) {
+      return Scaffold(body: Center(child: LoadingAnimationHelper.loading));
+    }
+
     return MultiProvider(
       providers: [ChangeNotifierProvider.value(value: searchProvider)],
-      child: Scaffold(body: _BuildBody()),
+      child: Scaffold(body: _BuildBody(isTypeShop: _isTypeShop!)),
     );
   }
 
@@ -63,7 +77,9 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
 }
 
 class _BuildBody extends StatelessWidget {
-  const _BuildBody();
+  const _BuildBody({required this.isTypeShop});
+
+  final bool isTypeShop;
 
   @override
   Widget build(BuildContext context) {
@@ -74,9 +90,9 @@ class _BuildBody extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: horizontalPadding),
       child: Column(
         children: [
-          _BuildHeader(),
+          _BuildHeader(isTypeShop: isTypeShop),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 16.0, desktop: 20.0, widescreen: 24.0)),
-          _BuildInventoryTable(),
+          isTypeShop ? _BuildInventoryTable() : _BuildServicesTable(),
           const SizedBox(height: 30),
           const _BuildPaginationControls(),
           const SizedBox(height: 40),
@@ -87,7 +103,9 @@ class _BuildBody extends StatelessWidget {
 }
 
 class _BuildHeader extends StatelessWidget {
-  const _BuildHeader();
+  const _BuildHeader({required this.isTypeShop});
+
+  final bool isTypeShop;
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +117,7 @@ class _BuildHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(texts.inventoryTitle, style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
+        Text(isTypeShop ? texts.inventoryTitle : 'Services', style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
         SizedBox(height: Responsive.value(context: context, mobile: 25.0, tablet: 20.0, desktop: 25.0, widescreen: 30.0)),
         AnimatedSize(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut, child: isTablet ? _buildTabletLayout(context) : _buildDesktopLayout(context)),
       ],
@@ -113,7 +131,7 @@ class _BuildHeader extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Expanded(child: _BuildAddInventoryOrServiceButton()),
+              Expanded(child: _BuildAddInventoryOrServiceButton(isTypeShop: isTypeShop)),
               const SizedBox(width: 12),
               Expanded(
                 child: Padding(
@@ -123,24 +141,26 @@ class _BuildHeader extends StatelessWidget {
               ),
             ],
           ),
-          Consumer<WAInventoryServicesProvider>(
-            builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
-              return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
-            },
-          ),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Consumer(
-              builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
-                return InventorySummaryWidget(
-                  stats: provider.inventoryStats,
-                  onTotalTap: () => provider.clearStatusFilter(),
-                  onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
-                  onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
-                );
+          if (isTypeShop)
+            Consumer<WAInventoryServicesProvider>(
+              builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
+                return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
               },
             ),
-          ),
+          const SizedBox(height: 16),
+          if (isTypeShop)
+            Expanded(
+              child: Consumer(
+                builder: (BuildContext context, WAInventoryServicesProvider provider, Widget? child) {
+                  return InventorySummaryWidget(
+                    stats: provider.inventoryStats,
+                    onTotalTap: () => provider.clearStatusFilter(),
+                    onLowStockTap: () => provider.setStatusFilter(LowStockProductStatus.lowStock),
+                    onOutOfStockTap: () => provider.setStatusFilter(LowStockProductStatus.outOfStock),
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );
@@ -156,21 +176,22 @@ class _BuildHeader extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
-            mainAxisAlignment: .spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
                 width: controlsWidth,
                 child: WASearchTextField(onChanged: (String value) => InventoryActionUtils.handleSearch(value, context)),
               ),
-              const _BuildAddInventoryOrServiceButton(),
+              _BuildAddInventoryOrServiceButton(isTypeShop: isTypeShop),
             ],
           ),
           const SizedBox(height: 20),
-          Consumer<WAInventoryServicesProvider>(
-            builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
-              return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
-            },
-          ),
+          if (isTypeShop)
+            Consumer<WAInventoryServicesProvider>(
+              builder: (BuildContext context, WAInventoryServicesProvider provider, child) {
+                return InventoryFiltersWidget(availableCategories: provider.inventoryCategories, availableTags: provider.inventoryTags);
+              },
+            ),
         ],
       ),
     );
@@ -178,7 +199,9 @@ class _BuildHeader extends StatelessWidget {
 }
 
 class _BuildAddInventoryOrServiceButton extends StatelessWidget {
-  const _BuildAddInventoryOrServiceButton();
+  const _BuildAddInventoryOrServiceButton({required this.isTypeShop});
+
+  final bool isTypeShop;
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +214,7 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
       height: buttonHeight,
       child: CommonButton(
         onPressed: () async => await InventoryActionUtils.onAddInventoryItem(context.read<WAInventoryServicesProvider>(), context),
-        buttonTitle: texts.addInventoryButton,
+        buttonTitle: isTypeShop ? texts.addInventoryButton : 'Add Service',
         buttonType: PPButtonType.web,
         showBorder: false,
       ),
@@ -209,13 +232,11 @@ class _BuildInventoryTable extends StatelessWidget {
 
     return Consumer2<WAInventoryServicesProvider, WAInventorySearchProvider>(
       builder: (context, inventoryProvider, searchProvider, child) {
-        // Determine which provider to use
         final bool isSearchMode = inventoryProvider.isSearchMode;
         final bool isLoading = isSearchMode ? searchProvider.isLoading : inventoryProvider.isLoading;
         final List<WAProduct> products = isSearchMode ? searchProvider.items : inventoryProvider.products;
         final String? error = isSearchMode ? searchProvider.error : null;
 
-        // Show loading
         if (isLoading) {
           return SizedBox(
             height: tableHeight,
@@ -223,7 +244,6 @@ class _BuildInventoryTable extends StatelessWidget {
           );
         }
 
-        // Show error (from search)
         if (error != null) {
           return SizedBox(
             height: tableHeight,
@@ -242,7 +262,6 @@ class _BuildInventoryTable extends StatelessWidget {
           );
         }
 
-        // Show empty state
         if (products.isEmpty) {
           return SizedBox(
             height: tableHeight,
@@ -260,7 +279,6 @@ class _BuildInventoryTable extends StatelessWidget {
           );
         }
 
-        // Show table
         return WAInventoryTable(
           orders: products,
           height: tableHeight,
@@ -269,7 +287,6 @@ class _BuildInventoryTable extends StatelessWidget {
           },
           onEdit: (WAProduct product) async {
             await InventoryActionUtils.onEditInventory(product, inventoryProvider, context);
-            // Refresh the active source
             if (isSearchMode) {
               await searchProvider.refresh();
             } else {
