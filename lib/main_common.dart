@@ -13,6 +13,7 @@ import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_the
 import 'package:w_utils/w_utils.dart';
 import 'package:wa_analytics_module/providers/wa_analytics_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
@@ -81,6 +82,7 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
         ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
         ChangeNotifierProvider<WAInventoryServicesProvider>(create: (_) => WAInventoryServicesProvider(), lazy: true),
+        ChangeNotifierProvider<WAServicesProvider>(create: (_) => WAServicesProvider(), lazy: true),
         ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
         ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
       ],
