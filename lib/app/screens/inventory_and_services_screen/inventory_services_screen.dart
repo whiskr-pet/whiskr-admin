@@ -13,8 +13,10 @@ import 'package:wa_inventory_services_module/models/wa_inventory_product_model.d
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
+import 'package:whiskr_admin_panel/app/helpers/utils/service_offered_utils/service_offered_action_utils.dart';
 
 import '../../../localization_models/localization_models.dart';
 import '../../helpers/utils/inventory_utils/inventory_action_utils.dart';
@@ -43,6 +45,7 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
 
   Future<void> _getInitialData() async {
     final WAInventoryServicesProvider provider = context.read<WAInventoryServicesProvider>();
+    final WAServicesProvider serviceOffersProvider = context.read<WAServicesProvider>();
     final bool isTypeShop = await ServiceTypeService.getServiceType();
     setState(() {
       _isTypeShop = isTypeShop;
@@ -51,7 +54,7 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
     if (isTypeShop) {
       await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
     } else {
-      await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
+      await Future.wait([serviceOffersProvider.getAllOffers()]);
     }
     provider.setLoading(false);
   }
@@ -213,7 +216,9 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
       width: isTablet ? null : Responsive.value(context: context, mobile: 500.0, tablet: null, desktop: 500.0, widescreen: 550.0),
       height: buttonHeight,
       child: CommonButton(
-        onPressed: () async => await InventoryActionUtils.onAddInventoryItem(context.read<WAInventoryServicesProvider>(), context),
+        onPressed: () async => isTypeShop
+            ? await InventoryActionUtils.onAddInventoryItem(context.read<WAInventoryServicesProvider>(), context)
+            : await ServiceOfferedActionUtils.onAddServiceOffered(context.read<WAServicesProvider>(), context),
         buttonTitle: isTypeShop ? texts.addInventoryButton : 'Add Service',
         buttonType: PPButtonType.web,
         showBorder: false,
@@ -516,98 +521,68 @@ class _BuildServicesTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
 
-    return WaServicesTable(
-      services: _localServices,
-      height: tableHeight,
-      onDelete: (String id, String serviceName) {
-        // helper.showDeleteDialog(context, id, serviceName);
-      },
-      onEdit: (String id) {
-        debugPrint("edit FROM ABOVE");
+    return Consumer2<WAServicesProvider, WAInventorySearchProvider>(
+      builder: (context, serviceOfferedProvider, searchProvider, child) {
+        final bool isSearchMode = serviceOfferedProvider.isSearchMode;
+        final bool isLoading = isSearchMode ? searchProvider.isLoading : serviceOfferedProvider.isLoading;
+        // todo return this
+        // final List<WAServiceOfferedModel> products = isSearchMode ? searchProvider.items : serviceOfferedProvider.serviceOfferedList;
+        final List<WAServiceOfferedModel> offers = serviceOfferedProvider.serviceOfferedList;
+        final String? error = isSearchMode ? searchProvider.error : null;
+
+        if (isLoading) {
+          return SizedBox(
+            height: tableHeight,
+            child: Center(child: LoadingAnimationHelper.loading),
+          );
+        }
+
+        if (error != null) {
+          return SizedBox(
+            height: tableHeight,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
+                  const SizedBox(height: 16),
+                  Text('Error: $error'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(onPressed: () => searchProvider.refresh(), child: const Text('Retry')),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (offers.isEmpty) {
+          return SizedBox(
+            height: tableHeight,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
+                  const SizedBox(height: 16),
+                  Text(isSearchMode ? 'No offers found' : 'No offers available', style: TextStyle(fontSize: 18, color: Colors.grey[600])),
+                  if (isSearchMode) ...[const SizedBox(height: 8), Text('Try adjusting your search', style: TextStyle(fontSize: 14, color: Colors.grey[500]))],
+                ],
+              ),
+            ),
+          );
+        }
+
+        return WaServicesTable(
+          services: offers,
+          height: tableHeight,
+          onDelete: (String id, String serviceName) {
+            // helper.showDeleteDialog(context, id, serviceName);
+          },
+          onEdit: (String id) {
+            debugPrint("edit FROM ABOVE");
+          },
+        );
       },
     );
   }
 }
-
-final List<WAServiceModel> _localServices = [
-  WAServiceModel(
-    id: '1',
-    name: 'Basic Bath & Brush',
-    description: 'Includes bath, blow dry, brushing, and light trimming. Perfect for quick clean-ups.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/bath_brush.jpg', thumbnail: 'https://example.com/thumbs/bath_brush.jpg'),
-    price: 25.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '2',
-    name: 'Full Grooming Package',
-    description: 'Complete grooming with bath, haircut, nail trim, ear cleaning, and paw care.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/full_grooming.jpg', thumbnail: 'https://example.com/thumbs/full_grooming.jpg'),
-    price: 45.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '3',
-    name: 'Puppy Intro Grooming',
-    description: 'Gentle introduction to grooming for puppies. Includes light wash, brushing, and nail trimming.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/puppy_groom.jpg', thumbnail: 'https://example.com/thumbs/puppy_groom.jpg'),
-    price: 20.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '4',
-    name: 'De-Shedding Treatment',
-    description: 'Reduces shedding with deep conditioning, brushing, and blowout using special tools.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/deshedding.jpg', thumbnail: 'https://example.com/thumbs/deshedding.jpg'),
-    price: 35.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '5',
-    name: 'Nail Clipping & Paw Care',
-    description: 'Quick nail trim, paw pad cleaning, and moisturizing treatment.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/nail_care.jpg', thumbnail: 'https://example.com/thumbs/nail_care.jpg'),
-    price: 15.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '6',
-    name: 'Ear Cleaning & Hygiene',
-    description: 'Safe and gentle ear cleaning to remove dirt and reduce odor or infection risk.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/ear_clean.jpg', thumbnail: 'https://example.com/thumbs/ear_clean.jpg'),
-    price: 10.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '7',
-    name: 'Teeth Brushing & Breath Freshener',
-    description: 'Brushing with pet-safe toothpaste and finishing spray for fresh breath.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/teeth_clean.jpg', thumbnail: 'https://example.com/thumbs/teeth_clean.jpg'),
-    price: 12.0,
-    currency: 'BAM',
-    active: true,
-  ),
-  WAServiceModel(
-    id: '8',
-    name: 'Spa & Aromatherapy Bath',
-    description: 'Relaxing spa bath with natural oils and aromatherapy massage for pets.',
-    category: 'Grooming',
-    image: ImageModel(url: 'https://example.com/images/spa_bath.jpg', thumbnail: 'https://example.com/thumbs/spa_bath.jpg'),
-    price: 50.0,
-    currency: 'BAM',
-    active: true,
-  ),
-];
