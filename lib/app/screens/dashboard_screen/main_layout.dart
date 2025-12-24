@@ -6,6 +6,7 @@ import 'package:w_dashboard/helpers/main_layout_menu_item.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:w_utils/services/service_type_service.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
@@ -19,11 +20,12 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   final SideMenuController _sideMenuController = SideMenuController();
+  bool isTypeShop = false;
 
-  final List<MenuItem> _menuItems = [
+  List<MenuItem> _menuItems({required bool isTypeShop}) => [
     MenuItem(icon: Icons.dashboard, label: 'Dashboard', route: dashboardRoute),
-    MenuItem(icon: Icons.analytics, label: 'Inventory', route: inventoryRoute),
-    MenuItem(icon: Icons.folder, label: 'Orders', route: ordersRoute),
+    MenuItem(icon: Icons.analytics, label: isTypeShop ? 'Inventory' : 'Services', route: inventoryRoute),
+    MenuItem(icon: Icons.folder, label: isTypeShop ? 'Orders' : 'Appointments', route: ordersRoute),
     MenuItem(icon: Icons.people, label: 'Analytics', route: analyticsRoute),
     MenuItem(icon: Icons.settings, label: 'Settings', route: settingsRoute),
   ];
@@ -36,6 +38,21 @@ class _MainLayoutState extends State<MainLayout> {
     } else {
       _sideMenuController.close();
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _getInitialData();
+    });
+  }
+
+  Future<void> _getInitialData() async {
+    final bool type = await ServiceTypeService.getServiceType();
+    setState(() {
+      isTypeShop = type;
+    });
   }
 
   @override
@@ -57,7 +74,7 @@ class _MainLayoutState extends State<MainLayout> {
             minWidth: 75,
             maxWidth: 250,
             backgroundColor: ColorHelper.white.color,
-            builder: (data) => SideMenuData(items: _buildMenuItems()),
+            builder: (data) => SideMenuData(items: _buildMenuItems(isTypeShop)),
           ),
           Expanded(child: widget.child),
         ],
@@ -65,8 +82,8 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
-  List<SideMenuItemDataTile> _buildMenuItems() {
-    return _menuItems.asMap().entries.map((entry) {
+  List<SideMenuItemDataTile> _buildMenuItems(bool isTypeShop) {
+    return _menuItems(isTypeShop: isTypeShop).asMap().entries.map((entry) {
       final index = entry.key;
       final item = entry.value;
       final String route = item.route;
