@@ -10,7 +10,7 @@ class ServiceOfferedActionUtils {
   ServiceOfferedActionUtils._();
 
   static Future<void> onAddServiceOffered(WAServicesProvider provider, BuildContext context) async {
-    // this will enable add modal
+    // this will enable add modal // todo
     // provider.clearEditMode();
     AddServiceOfferedModal.show(
       context,
@@ -30,6 +30,22 @@ class ServiceOfferedActionUtils {
         if (context.mounted) context.pop();
       },
     );
+  }
+
+  static Future<void> onDeleteServiceOffered(BuildContext context, WAServicesProvider provider, String serviceOfferedID, String serviceOfferedName) async {
+    context.pop();
+    provider.setLoading(true);
+    final ResponseModel<String> result = await provider.deleteServiceOffered(serviceOfferedID: serviceOfferedID);
+    if (result.isSuccess) {
+      if (context.mounted) {
+        WACustomSnackbar.instance.showSnack(context, 'Product "$serviceOfferedName" deleted successfully.', type: WACustomSnackbarType.success);
+      }
+    } else {
+      if (context.mounted) {
+        WACustomSnackbar.instance.showSnack(context, result.error ?? '');
+      }
+    }
+    provider.setLoading(false);
   }
 
   static VoidCallback handleSave(Function? onSave, BuildContext context) {
