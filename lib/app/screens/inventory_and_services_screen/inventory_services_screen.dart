@@ -576,7 +576,7 @@ class _BuildServicesTable extends StatelessWidget {
           services: offers,
           height: tableHeight,
           onDelete: (String id, String serviceName) {
-            // helper.showDeleteDialog(context, id, serviceName);
+            helper.showDeleteDialogServiceOffered(context, id, serviceName);
           },
           onEdit: (String id) {
             debugPrint("edit FROM ABOVE");
