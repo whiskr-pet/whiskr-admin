@@ -13,6 +13,7 @@ import 'package:wa_inventory_services_module/models/wa_inventory_product_model.d
 import 'package:wa_inventory_services_module/models/wa_services_model.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
+import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_service_offered_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/inventory_utils/inventory_services_screen_helper.dart';
@@ -32,12 +33,14 @@ class InventoryServicesScreen extends StatefulWidget {
 
 class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
   late WAInventorySearchProvider searchProvider;
+  late WaServiceOfferedSearchProvider serviceSearchProvider;
   bool? _isTypeShop;
 
   @override
   void initState() {
     super.initState();
     searchProvider = WAInventorySearchProvider();
+    serviceSearchProvider = WaServiceOfferedSearchProvider();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _getInitialData();
     });
@@ -54,7 +57,7 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
     if (isTypeShop) {
       await Future.wait([provider.getInventoryStats(), provider.getAllProducts(), provider.getInventoryCategories(), provider.getInventoryTags()]);
     } else {
-      await Future.wait([serviceOffersProvider.getAllOffers()]);
+      await Future.wait([serviceOffersProvider.getAllOffers(), serviceOffersProvider.getServiceOfferedTags(), serviceOffersProvider.getServiceOfferedCategories()]);
     }
     provider.setLoading(false);
   }
@@ -67,14 +70,20 @@ class _InventoryServicesScreenState extends State<InventoryServicesScreen> {
     }
 
     return MultiProvider(
-      providers: [ChangeNotifierProvider.value(value: searchProvider)],
-      child: Scaffold(body: _BuildBody(isTypeShop: _isTypeShop!)),
+      providers: [
+        ChangeNotifierProvider.value(value: searchProvider),
+        ChangeNotifierProvider.value(value: serviceSearchProvider),
+      ],
+      builder: (context, child) {
+        return Scaffold(body: _BuildBody(isTypeShop: _isTypeShop!));
+      },
     );
   }
 
   @override
   void dispose() {
     searchProvider.dispose();
+    serviceSearchProvider.dispose();
     super.dispose();
   }
 }
@@ -183,7 +192,9 @@ class _BuildHeader extends StatelessWidget {
             children: [
               SizedBox(
                 width: controlsWidth,
-                child: WASearchTextField(onChanged: (String value) => InventoryActionUtils.handleSearch(value, context)),
+                child: WASearchTextField(
+                  onChanged: (String value) => isTypeShop ? InventoryActionUtils.handleSearch(value, context) : ServiceOfferedActionUtils.handleSearch(value, context),
+                ),
               ),
               _BuildAddInventoryOrServiceButton(isTypeShop: isTypeShop),
             ],
@@ -521,13 +532,11 @@ class _BuildServicesTable extends StatelessWidget {
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
 
-    return Consumer2<WAServicesProvider, WAInventorySearchProvider>(
+    return Consumer2<WAServicesProvider, WaServiceOfferedSearchProvider>(
       builder: (context, serviceOfferedProvider, searchProvider, child) {
         final bool isSearchMode = serviceOfferedProvider.isSearchMode;
         final bool isLoading = isSearchMode ? searchProvider.isLoading : serviceOfferedProvider.isLoading;
-        // todo return this
-        // final List<WAServiceOfferedModel> products = isSearchMode ? searchProvider.items : serviceOfferedProvider.serviceOfferedList;
-        final List<WAServiceOfferedModel> offers = serviceOfferedProvider.serviceOfferedList;
+        final List<WAServiceOfferedModel> offers = isSearchMode ? searchProvider.items : serviceOfferedProvider.serviceOfferedList;
         final String? error = isSearchMode ? searchProvider.error : null;
 
         if (isLoading) {
@@ -578,8 +587,8 @@ class _BuildServicesTable extends StatelessWidget {
           onDelete: (String id, String serviceName) {
             helper.showDeleteDialogServiceOffered(context, id, serviceName);
           },
-          onEdit: (String id) {
-            debugPrint("edit FROM ABOVE");
+          onEdit: (WAServiceOfferedModel offer) async {
+            await ServiceOfferedActionUtils.onEditOffer(offer, serviceOfferedProvider, context);
           },
         );
       },
