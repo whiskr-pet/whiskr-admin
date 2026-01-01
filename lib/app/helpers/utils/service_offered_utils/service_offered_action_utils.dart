@@ -3,15 +3,17 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_utils/models/response_model.dart';
+import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_service_offered_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
+import 'package:wa_inventory_services_module/wa_inventory_services_module.dart';
 import 'package:whiskr_admin_panel/app/screens/inventory_and_services_screen/services_offered/add_new_service_offered_modal.dart';
 
 class ServiceOfferedActionUtils {
   ServiceOfferedActionUtils._();
 
   static Future<void> onAddServiceOffered(WAServicesProvider provider, BuildContext context) async {
-    // this will enable add modal // todo
-    // provider.clearEditMode();
+    // this will enable add modal
+    provider.clearEditMode();
     AddServiceOfferedModal.show(
       context,
       onSave: () async {
@@ -27,6 +29,31 @@ class ServiceOfferedActionUtils {
             WACustomSnackbar.instance.showSnack(context, 'Error adding new service offer: ${response.error}', type: WACustomSnackbarType.error);
           }
         }
+        if (context.mounted) context.pop();
+      },
+    );
+  }
+
+  static Future<void> onEditOffer(WAServiceOfferedModel offer, WAServicesProvider provider, BuildContext context) async {
+    provider.initializeEditMode(offer);
+    AddServiceOfferedModal.show(
+      context,
+      isEditMode: true,
+      onSave: () async {
+        provider.setLoading(true);
+        final ResponseModel<String> response = await provider.updateInventoryProduct();
+        if (response.isSuccess) {
+          if (context.mounted) {
+            WACustomSnackbar.instance.showSnack(context, 'Successfully updated service offer');
+            provider.clearEditMode();
+          }
+        } else {
+          debugPrint('Error updating service offer: ${response.error}');
+          if (context.mounted) {
+            WACustomSnackbar.instance.showSnack(context, 'Error updating service offer: ${response.error}', type: WACustomSnackbarType.error);
+          }
+        }
+        provider.setLoading(false);
         if (context.mounted) context.pop();
       },
     );
@@ -69,5 +96,17 @@ class ServiceOfferedActionUtils {
     return () async {
       animationController.reverse().then((_) => Navigator.of(context).pop());
     };
+  }
+
+  static void handleSearch(String value, BuildContext context) {
+    final WAServicesProvider serviceOfferProvider = context.read<WAServicesProvider>();
+    final WaServiceOfferedSearchProvider searchProvider = context.read<WaServiceOfferedSearchProvider>();
+
+    if (value.isEmpty) {
+      serviceOfferProvider.setSearchMode(false);
+    } else {
+      serviceOfferProvider.setSearchMode(true);
+      searchProvider.updateQuery(value);
+    }
   }
 }
