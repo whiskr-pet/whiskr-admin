@@ -4,6 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/service_offered_utils/service_offered_action_utils.dart';
+import 'package:whiskr_admin_panel/localization_models/localization_models.dart';
+
+import '../../../providers/texts_provider.dart';
 
 class AddServiceOfferedModal extends StatefulWidget {
   final Function? onSave;
@@ -46,6 +49,7 @@ class _AddServiceOfferedModalState extends State<AddServiceOfferedModal> with Si
   @override
   Widget build(BuildContext context) {
     final WAServicesProvider provider = context.read<WAServicesProvider>();
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
     return FadeTransition(
       opacity: _fadeAnimation,
       child: Dialog(
@@ -74,23 +78,23 @@ class _AddServiceOfferedModalState extends State<AddServiceOfferedModal> with Si
                         children: [
                           _ServiceTextField(
                             controller: provider.nameController,
-                            label: 'Service Name',
+                            label: texts.serviceOfferedServiceName,
                             icon: Icons.business_center_outlined,
-                            validator: (v) => v?.isEmpty ?? true ? 'This field is required' : null,
+                            validator: (v) => v?.isEmpty ?? true ? texts.serviceOfferedRequiredField : null,
                           ),
                           const SizedBox(height: 20),
                           _ServiceTextField(
                             controller: provider.descriptionController,
-                            label: 'Description',
+                            label: texts.serviceOfferedDescription,
                             icon: Icons.description_outlined,
                             maxLines: 3,
-                            validator: (v) => v?.isEmpty ?? true ? 'This field is required' : null,
+                            validator: (v) => v?.isEmpty ?? true ? texts.serviceOfferedRequiredField : null,
                           ),
                           const SizedBox(height: 20),
                           _ServiceCategorySelector(
                             controller: provider.categoryController,
                             availableCategories: provider.serviceOfferedCategories,
-                            validator: (v) => v?.isEmpty ?? true ? 'This field is required' : null,
+                            validator: (v) => v?.isEmpty ?? true ? texts.serviceOfferedRequiredField : null,
                           ),
                           const SizedBox(height: 20),
                           Row(
@@ -98,18 +102,18 @@ class _AddServiceOfferedModalState extends State<AddServiceOfferedModal> with Si
                               Expanded(
                                 child: _ServiceTextField(
                                   controller: provider.priceController,
-                                  label: 'Price',
+                                  label: texts.serviceOfferedPrice,
                                   icon: Icons.attach_money,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}'))],
-                                  validator: (v) => v?.isEmpty ?? true ? 'This field is required' : null,
+                                  validator: (v) => v?.isEmpty ?? true ? texts.serviceOfferedRequiredField : null,
                                 ),
                               ),
                               const SizedBox(width: 16),
                               Expanded(
                                 child: _ServiceDropdown(
                                   value: provider.currency,
-                                  label: 'Currency',
+                                  label: texts.serviceOfferedCurrency,
                                   icon: Icons.currency_exchange,
                                   items: const ['BAM', 'USD', 'EUR', 'GBP'],
                                   onChanged: (v) => context.read<WAServicesProvider>().setCurrency(v!),
@@ -155,6 +159,8 @@ class _ServiceModalHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -169,7 +175,10 @@ class _ServiceModalHeader extends StatelessWidget {
             child: const Icon(Icons.add_business, color: Colors.white, size: 28),
           ),
           const SizedBox(width: 16),
-          Text(isEditMode ? 'Edit Service' : 'Add Service', style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color)),
+          Text(
+            isEditMode ? texts.serviceOfferedEditService : texts.serviceOfferedAddService,
+            style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color),
+          ),
         ],
       ),
     );
@@ -205,14 +214,16 @@ class _ServiceCategorySelectorState extends State<_ServiceCategorySelector> {
 
   @override
   Widget build(BuildContext context) {
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+
     if (_isCustom) {
-      return _ServiceTextField(controller: widget.controller, label: 'Category', icon: Icons.category_outlined, validator: widget.validator);
+      return _ServiceTextField(controller: widget.controller, label: texts.serviceOfferedCategory, icon: Icons.category_outlined, validator: widget.validator);
     }
 
     return DropdownButtonFormField<String>(
       initialValue: _selectedCategory,
       decoration: InputDecoration(
-        labelText: 'Category',
+        labelText: texts.serviceOfferedCategory,
         prefixIcon: Icon(Icons.category_outlined, color: ColorHelper.greenWeb.color),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -241,7 +252,7 @@ class _ServiceCategorySelectorState extends State<_ServiceCategorySelector> {
               Icon(Icons.add_circle_outline, size: 18, color: ColorHelper.orange500.color),
               const SizedBox(width: 8),
               Text(
-                'Custom Category',
+                texts.serviceOfferedCustomCategory,
                 style: TextStyle(color: ColorHelper.orange500.color, fontWeight: FontWeight.w600),
               ),
             ],
@@ -287,6 +298,7 @@ class _ServiceTagSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final unselectedTags = availableTags.where((tag) => !selectedTags.contains(tag)).toList();
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -302,13 +314,13 @@ class _ServiceTagSection extends StatelessWidget {
             children: [
               Icon(Icons.local_offer_rounded, size: 20, color: ColorHelper.greenWeb.color),
               const SizedBox(width: 8),
-              Text('Tags', style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(texts.serviceOfferedTags, style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
             ],
           ),
           if (unselectedTags.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(
-              'Quick Select:',
+              texts.serviceOfferedQuickSelect,
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
             ),
             const SizedBox(height: 8),
@@ -345,7 +357,7 @@ class _ServiceTagSection extends StatelessWidget {
           if (selectedTags.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(
-              'Selected Tags:',
+              texts.serviceOfferedSelectedTags,
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
             ),
             const SizedBox(height: 8),
@@ -376,13 +388,13 @@ class _ServiceTagSection extends StatelessWidget {
                   controller: controller,
                   onSubmitted: (_) => onAddTag(),
                   decoration: InputDecoration(
-                    hintText: 'Add custom tag',
+                    hintText: texts.serviceOfferedAddCustomTagHint,
                     hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
                     prefixIcon: Icon(Icons.edit_outlined, color: ColorHelper.greenWeb.color, size: 20),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.add_circle, color: ColorHelper.orange500.color, size: 24),
                       onPressed: onAddTag,
-                      tooltip: 'Add custom tag',
+                      tooltip: texts.serviceOfferedAddCustomTagTooltip,
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -499,6 +511,8 @@ class _ServiceActiveSwitch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -510,7 +524,7 @@ class _ServiceActiveSwitch extends StatelessWidget {
         children: [
           Icon(Icons.toggle_on_outlined, color: ColorHelper.greenWeb.color),
           const SizedBox(width: 12),
-          Expanded(child: Text('Active Status', style: theme.textTheme.bodyMedium)),
+          Expanded(child: Text(texts.serviceOfferedActiveStatus, style: theme.textTheme.bodyMedium)),
           Switch(value: active, onChanged: onChanged, activeThumbColor: ColorHelper.orange500.color),
         ],
       ),
@@ -528,6 +542,8 @@ class _ServiceModalFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -544,7 +560,7 @@ class _ServiceModalFooter extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             child: Text(
-              'Cancel',
+              texts.serviceOfferedCancel,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? Colors.grey.shade400 : Colors.grey.shade700),
             ),
           ),
@@ -560,7 +576,10 @@ class _ServiceModalFooter extends StatelessWidget {
             ),
             child: isUploading
                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
-                : Text(isEditMode ? 'Update Service' : 'Add Service', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                : Text(
+                    isEditMode ? texts.serviceOfferedUpdateServiceButton : texts.serviceOfferedAddServiceButton,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
           ),
         ],
       ),

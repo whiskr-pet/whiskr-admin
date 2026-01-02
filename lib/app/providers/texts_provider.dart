@@ -6,8 +6,9 @@ class TextsProvider extends InheritedWidget {
   final LoginTexts loginTexts;
   final OnboardingTexts onboardingTexts;
   final InventoryTexts inventoryTexts;
+  final ServiceOfferedText serviceOfferedText;
 
-  const TextsProvider({super.key, required this.loginTexts, required this.onboardingTexts, required this.inventoryTexts, required super.child});
+  const TextsProvider({super.key, required this.loginTexts, required this.onboardingTexts, required this.inventoryTexts, required this.serviceOfferedText, required super.child});
 
   /// Access the TextsProvider from any descendant widget
   static TextsProvider? of(BuildContext context) {
