@@ -125,11 +125,12 @@ class _BuildHeader extends StatelessWidget {
     final double titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 28.0, desktop: 32.0, widescreen: 36.0);
     final isTablet = Responsive.isTablet(context);
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+    final ServiceOfferedText serviceTexts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(isTypeShop ? texts.inventoryTitle : 'Services', style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
+        Text(isTypeShop ? texts.inventoryTitle : serviceTexts.serviceOfferedServicesTitle, style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize)),
         SizedBox(height: Responsive.value(context: context, mobile: 25.0, tablet: 20.0, desktop: 25.0, widescreen: 30.0)),
         AnimatedSize(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut, child: isTablet ? _buildTabletLayout(context) : _buildDesktopLayout(context)),
       ],
@@ -222,6 +223,7 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
     final buttonHeight = Responsive.value(context: context, mobile: 45.0, tablet: 45.0, desktop: 45.0, widescreen: 48.0);
     final isTablet = Responsive.isTablet(context);
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+    final ServiceOfferedText serviceTexts = TextsProvider.of(context)!.serviceOfferedText;
 
     return SizedBox(
       width: isTablet ? null : Responsive.value(context: context, mobile: 500.0, tablet: null, desktop: 500.0, widescreen: 550.0),
@@ -230,7 +232,7 @@ class _BuildAddInventoryOrServiceButton extends StatelessWidget {
         onPressed: () async => isTypeShop
             ? await InventoryActionUtils.onAddInventoryItem(context.read<WAInventoryServicesProvider>(), context)
             : await ServiceOfferedActionUtils.onAddServiceOffered(context.read<WAServicesProvider>(), context),
-        buttonTitle: isTypeShop ? texts.addInventoryButton : 'Add Service',
+        buttonTitle: isTypeShop ? texts.addInventoryButton : serviceTexts.serviceOfferedAddService,
         buttonType: PPButtonType.web,
         showBorder: false,
       ),
@@ -531,6 +533,7 @@ class _BuildServicesTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tableHeight = Responsive.value(context: context, mobile: 640.0, tablet: 500.0, desktop: 640.0, widescreen: 720.0);
+    final ServiceOfferedText serviceTexts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Consumer2<WAServicesProvider, WaServiceOfferedSearchProvider>(
       builder: (context, serviceOfferedProvider, searchProvider, child) {
@@ -555,9 +558,9 @@ class _BuildServicesTable extends StatelessWidget {
                 children: [
                   Icon(Icons.error_outline, size: 48, color: Colors.red[300]),
                   const SizedBox(height: 16),
-                  Text('Error: $error'),
+                  Text('${serviceTexts.serviceOfferedErrorPrefix}: $error'),
                   const SizedBox(height: 16),
-                  ElevatedButton(onPressed: () => searchProvider.refresh(), child: const Text('Retry')),
+                  ElevatedButton(onPressed: () => searchProvider.refresh(), child: Text(serviceTexts.serviceOfferedRetry)),
                 ],
               ),
             ),
@@ -573,8 +576,11 @@ class _BuildServicesTable extends StatelessWidget {
                 children: [
                   Icon(Icons.inventory_2_outlined, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
-                  Text(isSearchMode ? 'No offers found' : 'No offers available', style: TextStyle(fontSize: 18, color: Colors.grey[600])),
-                  if (isSearchMode) ...[const SizedBox(height: 8), Text('Try adjusting your search', style: TextStyle(fontSize: 14, color: Colors.grey[500]))],
+                  Text(
+                    isSearchMode ? serviceTexts.serviceOfferedNoOffersFound : serviceTexts.serviceOfferedNoOffersAvailable,
+                    style: TextStyle(fontSize: 18, color: Colors.grey[600]),
+                  ),
+                  if (isSearchMode) ...[const SizedBox(height: 8), Text(serviceTexts.serviceOfferedTryAdjustingSearch, style: TextStyle(fontSize: 14, color: Colors.grey[500]))],
                 ],
               ),
             ),
