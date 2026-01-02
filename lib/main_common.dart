@@ -103,7 +103,13 @@ class WhiskrAdminApp extends StatelessWidget {
             ],
 
             builder: (context, child) {
-              return TextsProvider(loginTexts: LoginTexts(context), onboardingTexts: OnboardingTexts(context), inventoryTexts: InventoryTexts(context), child: child!);
+              return TextsProvider(
+                loginTexts: LoginTexts(context),
+                onboardingTexts: OnboardingTexts(context),
+                inventoryTexts: InventoryTexts(context),
+                serviceOfferedText: ServiceOfferedText(context),
+                child: child!,
+              );
             },
           );
         },

@@ -628,5 +628,31 @@
   "inventoryFiltersSortDescending": "Descending",
   "@inventoryFiltersSortDescending": {
     "description": "Descending sort order"
-  }
+  },
+  "serviceOfferedAddService": "Add Service",
+  "serviceOfferedEditService": "Edit Service",
+  "serviceOfferedCancel": "Cancel",
+  "serviceOfferedAddServiceButton": "Add Service",
+  "serviceOfferedUpdateServiceButton": "Update Service",
+  "serviceOfferedServiceName": "Service Name",
+  "serviceOfferedDescription": "Description",
+  "serviceOfferedCategory": "Category",
+  "serviceOfferedPrice": "Price",
+  "serviceOfferedCurrency": "Currency",
+  "serviceOfferedActiveStatus": "Active Status",
+  "serviceOfferedRequiredField": "This field is required",
+  "serviceOfferedCustomCategory": "Custom Category",
+  "serviceOfferedTags": "Tags",
+  "serviceOfferedQuickSelect": "Quick Select:",
+  "serviceOfferedSelectedTags": "Selected Tags:",
+  "serviceOfferedAddCustomTagHint": "Add custom tag",
+  "serviceOfferedAddCustomTagTooltip": "Add custom tag",
+  "serviceOfferedServicesTitle": "Services",
+  "serviceOfferedErrorPrefix": "Error:",
+  "serviceOfferedRetry": "Retry",
+  "serviceOfferedNoProductsFound": "No products found",
+  "serviceOfferedNoProductsAvailable": "No products available",
+  "serviceOfferedTryAdjustingSearch": "Try adjusting your search",
+  "serviceOfferedNoOffersFound": "No offers found",
+  "serviceOfferedNoOffersAvailable": "No offers available"
 }

@@ -628,5 +628,31 @@
   "inventoryFiltersSortDescending": "Silazno",
   "@inventoryFiltersSortDescending": {
     "description": "Descending sort order"
-  }
+  },
+  "serviceOfferedAddService": "Dodaj uslugu",
+  "serviceOfferedEditService": "Uredi uslugu",
+  "serviceOfferedCancel": "Otkaži",
+  "serviceOfferedAddServiceButton": "Dodaj uslugu",
+  "serviceOfferedUpdateServiceButton": "Ažuriraj uslugu",
+  "serviceOfferedServiceName": "Naziv usluge",
+  "serviceOfferedDescription": "Opis",
+  "serviceOfferedCategory": "Kategorija",
+  "serviceOfferedPrice": "Cijena",
+  "serviceOfferedCurrency": "Valuta",
+  "serviceOfferedActiveStatus": "Status aktivnosti",
+  "serviceOfferedRequiredField": "Ovo polje je obavezno",
+  "serviceOfferedCustomCategory": "Prilagođena kategorija",
+  "serviceOfferedTags": "Oznake",
+  "serviceOfferedQuickSelect": "Brzi odabir:",
+  "serviceOfferedSelectedTags": "Odabrane oznake:",
+  "serviceOfferedAddCustomTagHint": "Dodaj prilagođenu oznaku",
+  "serviceOfferedAddCustomTagTooltip": "Dodaj prilagođenu oznaku",
+  "serviceOfferedServicesTitle": "Usluge",
+  "serviceOfferedErrorPrefix": "Greška:",
+  "serviceOfferedRetry": "Pokušaj ponovo",
+  "serviceOfferedNoProductsFound": "Nijedan proizvod nije pronađen",
+  "serviceOfferedNoProductsAvailable": "Nema dostupnih proizvoda",
+  "serviceOfferedTryAdjustingSearch": "Pokušajte prilagoditi pretragu",
+  "serviceOfferedNoOffersFound": "Nijedna ponuda nije pronađena",
+  "serviceOfferedNoOffersAvailable": "Nema dostupnih ponuda"
 }
