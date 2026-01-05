@@ -39836,6 +39836,7 @@ wa_analytics_module
 wa_inventory_services_module
 wa_map_module
 wa_onboarding_module
+wa_orders_appointments_module
 
 TODO: Add your license here.
 
