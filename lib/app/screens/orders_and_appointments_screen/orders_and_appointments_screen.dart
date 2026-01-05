@@ -1,24 +1,71 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
+import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_dashboard/helpers/status_chip_type.dart';
+import 'package:w_pet_service_module/providers/cart_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/extensions/string_extensions.dart';
+import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order.dart';
-import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order_and_appointments_filter.dart';
-import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/wa_order_item.dart';
+import 'package:w_utils/services/service_type_service.dart';
+import 'package:wa_orders_appointments_module/models/orders_models/wa_orders_model.dart';
+import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/order_type_chip_widget.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/schedule_type_chip_widget.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/status_update_popup_widget.dart';
 
-class OrdersAndAppointmentsScreen extends StatelessWidget {
+import '../../helpers/loading_animation_helper.dart';
+
+class OrdersAndAppointmentsScreen extends StatefulWidget {
   const OrdersAndAppointmentsScreen({super.key});
 
   @override
+  State<OrdersAndAppointmentsScreen> createState() => _OrdersAndAppointmentsScreenState();
+}
+
+class _OrdersAndAppointmentsScreenState extends State<OrdersAndAppointmentsScreen> {
+  bool? _isTypeShop;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getInitialData();
+    });
+  }
+
+  Future<void> _getInitialData() async {
+    final WaOrdersProvider provider = context.read<WaOrdersProvider>();
+    final bool isTypeShop = await ServiceTypeService.getServiceType();
+    setState(() {
+      _isTypeShop = isTypeShop;
+    });
+    provider.setIsLoading(true);
+    if (isTypeShop) {
+      await Future.wait([provider.getAllOrders()]);
+    } else {
+      // await Future.wait([serviceOffersProvider.getAllOffers(), serviceOffersProvider.getServiceOfferedTags(), serviceOffersProvider.getServiceOfferedCategories()]);
+    }
+    provider.setIsLoading(false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _BuildBody());
+    // Show loading indicator while determining service type
+    if (_isTypeShop == null) {
+      return Scaffold(body: Center(child: LoadingAnimationHelper.loading));
+    }
+
+    return Scaffold(body: _BuildBody(_isTypeShop ?? false));
   }
 }
 
 class _BuildBody extends StatefulWidget {
-  const _BuildBody({super.key});
+  const _BuildBody(this.isTypeShop);
+
+  final bool isTypeShop;
 
   @override
   State<_BuildBody> createState() => _BuildBodyState();
@@ -58,47 +105,53 @@ class _BuildBodyState extends State<_BuildBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _BuildHeader(),
+          _BuildHeader(widget.isTypeShop),
           SizedBox(height: Responsive.value(context: context, mobile: 20.0, tablet: 24.0, desktop: 28.0, widescreen: 32.0)),
-          WAOrdersAppointmentFilter(
-            selectedDate: formattedDateRange,
-            selectedOrderType: selectedOrderType?.name.toUpperCase(),
-            selectedOrderStatus: selectedOrderStatus?.name.toUpperCase(),
-            onResetFilter: () {
-              setState(() {
-                selectedDateRange = null;
-                selectedOrderType = null;
-                selectedOrderStatus = null;
-              });
-            },
-            onDateTap: () async {
-              final result = await DateRangeSelector.show(context, currentSelection: selectedDateRange);
-              if (result != null) {
-                setState(() {
-                  selectedDateRange = result;
-                });
-                debugPrint("Result onDateTap: $result");
-              }
-            },
-            onOrderTypeTap: () async {
-              final result = await OrderTypeSelector.show(context, currentSelection: selectedOrderType);
-              if (result != null) {
-                setState(() {
-                  selectedOrderType = result;
-                });
-              }
-            },
-            onOrderStatusTap: () async {
-              final result = await OrderStatusSelector.show(context, currentSelection: selectedOrderStatus);
-              if (result != null) {
-                debugPrint("Result onOrderStatusTap: $result");
-                setState(() {
-                  selectedOrderStatus = result;
-                });
-              }
+          // WAOrdersAppointmentFilter(
+          //   selectedDate: formattedDateRange,
+          //   selectedOrderType: selectedOrderType?.name.toUpperCase(),
+          //   selectedOrderStatus: selectedOrderStatus?.name.toUpperCase(),
+          //   onResetFilter: () {
+          //     setState(() {
+          //       selectedDateRange = null;
+          //       selectedOrderType = null;
+          //       selectedOrderStatus = null;
+          //     });
+          //   },
+          //   onDateTap: () async {
+          //     final result = await DateRangeSelector.show(context, currentSelection: selectedDateRange);
+          //     if (result != null) {
+          //       setState(() {
+          //         selectedDateRange = result;
+          //       });
+          //       debugPrint("Result onDateTap: $result");
+          //     }
+          //   },
+          //   onOrderTypeTap: () async {
+          //     final result = await OrderTypeSelector.show(context, currentSelection: selectedOrderType);
+          //     if (result != null) {
+          //       setState(() {
+          //         selectedOrderType = result;
+          //       });
+          //     }
+          //   },
+          //   onOrderStatusTap: () async {
+          //     final result = await OrderStatusSelector.show(context, currentSelection: selectedOrderStatus);
+          //     if (result != null) {
+          //       debugPrint("Result onOrderStatusTap: $result");
+          //       setState(() {
+          //         selectedOrderStatus = result;
+          //       });
+          //     }
+          //   },
+          // ),
+          const SizedBox(height: 40),
+          Consumer<WaOrdersProvider>(
+            builder: (context, provider, child) {
+              if (provider.isLoading) return LoadingAnimationHelper.loading;
+              return WAOrdersTable(orders: provider.ordersList);
             },
           ),
-          WAOrdersTable(orders: _listOrders),
         ],
       ),
     );
@@ -106,7 +159,9 @@ class _BuildBodyState extends State<_BuildBody> {
 }
 
 class _BuildHeader extends StatelessWidget {
-  const _BuildHeader({super.key});
+  const _BuildHeader(this.isTypeShop);
+
+  final bool isTypeShop;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +169,7 @@ class _BuildHeader extends StatelessWidget {
     final double titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 28.0, desktop: 32.0, widescreen: 36.0);
 
     return Text(
-      'Orders',
+      isTypeShop ? 'Orders' : 'Appointments',
       style: theme.textTheme.headlineMedium!.copyWith(fontSize: titleSize, fontWeight: FontWeight.bold),
     );
   }
@@ -124,7 +179,7 @@ class WAOrdersTable extends StatelessWidget {
   const WAOrdersTable({super.key, required this.orders, this.height = 430, this.onDelete, this.onEdit});
 
   final double height;
-  final List<WAOrder> orders;
+  final List<ServiceOrderModel> orders;
   final Function(String, String)? onDelete;
   final Function(String)? onEdit;
 
@@ -191,18 +246,18 @@ class _WATable extends StatelessWidget {
 
 List<DataColumn> columns(BuildContext context) {
   return [
-    DataColumn2(label: Text('ID'), size: ColumnSize.S),
-    DataColumn2(label: Text('Name'), size: ColumnSize.M),
+    DataColumn2(label: Text('Order number'), size: ColumnSize.S),
+    DataColumn2(label: Text('Name'), size: ColumnSize.S),
     DataColumn2(label: Text('Address'), size: ColumnSize.M),
     DataColumn2(label: Text('Date'), size: ColumnSize.S),
-    DataColumn2(label: Text('Time'), size: ColumnSize.S),
+    DataColumn2(label: Text('Order Type'), size: ColumnSize.S),
+    DataColumn2(label: Text('Schedule'), size: ColumnSize.S),
     DataColumn2(label: Text('Status'), size: ColumnSize.S),
   ];
 }
 
-List<DataRow> rows(BuildContext context, List<WAOrder> orders, Function? onDelete, Function? onEdit) {
+List<DataRow> rows(BuildContext context, List<ServiceOrderModel> orders, Function? onDelete, Function? onEdit) {
   final theme = Theme.of(context);
-  final avatarRadius = Responsive.value(context: context, mobile: 14.0, tablet: 20.0, desktop: 22.0, widescreen: 26.0);
 
   final nameFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 17.0);
 
@@ -211,12 +266,12 @@ List<DataRow> rows(BuildContext context, List<WAOrder> orders, Function? onDelet
   final dateFontSize = Responsive.value(context: context, mobile: 12.0, tablet: 13.0, desktop: 14.0, widescreen: 15.0);
   return orders
       .map(
-        (WAOrder order) => DataRow(
+        (ServiceOrderModel order) => DataRow(
           cells: [
-            // ID
+            // Order number
             DataCell(
               Text(
-                order.id,
+                order.orderNumber ?? '',
                 style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: nameFontSize),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -225,7 +280,7 @@ List<DataRow> rows(BuildContext context, List<WAOrder> orders, Function? onDelet
             // Name
             DataCell(
               Text(
-                order.customer,
+                '${order.user?.firstName ?? ''} ${order.user?.lastName}',
                 style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -234,46 +289,53 @@ List<DataRow> rows(BuildContext context, List<WAOrder> orders, Function? onDelet
             // Address
             DataCell(
               Text(
-                order.address,
+                order.deliveryAddress ?? '',
                 style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
               ),
             ),
             // Date
             DataCell(
               Text(
-                order.date.toIso8601String(),
+                (order.deliveryDate ?? '').toFullDateTimeString(),
                 style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
               ),
             ),
-            // Date
-            DataCell(
-              Text(
-                order.date.toIso8601String(),
-                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, fontSize: dateFontSize),
-              ),
-            ),
+            DataCell(OrderTypeChipWidget(orderType: order.orderType!.name)),
+            DataCell(ScheduleTypeChipWidget(scheduleType: order.scheduleType!.name)),
+
             // Status
-            DataCell(StatusChip.orderStatus(order.status.name)),
+            DataCell(
+              InkWell(
+                splashColor: Colors.transparent,
+                onTap: () async {
+                  await StatusUpdatePopup.show(
+                    context,
+                    currentStatus: StatusChipTypeExtension.fromString(order.status ?? ''),
+                    orderNumber: order.orderNumber ?? '',
+                    onStatusUpdate: (newStatus) async {
+                      final provider = context.read<WaOrdersProvider>();
+                      provider.setSelectedOrderForUpdate(order);
+                      provider.setStatusForUpdate(newStatus);
+
+                      final ResponseModel<String> response = await provider.updateOrderStatus();
+
+                      if (context.mounted) {
+                        if (response.isSuccess) {
+                          await provider.getAllOrders();
+                          WACustomSnackbar.instance.showSnack(context, 'Order #${order.orderNumber} status updated to ${newStatus.name.toUpperCase()}');
+                        } else {
+                          WACustomSnackbar.instance.showSnack(context, '', type: .error);
+                        }
+                      }
+                    },
+                  );
+                },
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8), child: StatusChip.orderStatus(order.status ?? '')),
+              ),
+            ),
           ],
         ),
       )
       .toList();
 }
-
-List<WAOrder> _listOrders = [
-  WAOrder(
-    id: '1232312',
-    customer: 'Danis',
-    email: 'danis.preldzic@gmail.com',
-    phone: '062748065',
-    status: StatusChipType.pending,
-    address: 'Behdzeta Mutevelica 115',
-    items: [
-      OrderItem(name: 'Crvi', price: 45, quantity: 23),
-      OrderItem(name: 'Hrana za macke', price: 25, quantity: 10),
-      OrderItem(name: 'Voda za macke', price: 2, quantity: 1),
-    ],
-    total: 72,
-    date: DateTime.now(),
-  ),
-];
