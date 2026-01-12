@@ -45,77 +45,77 @@ dependencies:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_network_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_utils:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_utils
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_components:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_components
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae  
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb  
   w_authentication:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_authentication
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae   
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb   
   w_permissions_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_permissions_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_pet_service_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_pet_service_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_dashboard:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/w_dashboard_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   wa_onboarding_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_onboarding_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae    
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb    
   w_image_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_image_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   wa_map_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_map_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   wa_inventory_services_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_inventory_services_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   wa_analytics_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_analytics_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   wa_orders_appointments_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/admin/wa_orders_appointments_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_user_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/mobile/w_user_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
   w_search_module:
     git:
       url: https://github.com/whiskr-pet/whiskr_modules.git
       path: packages/core/w_search_module
-      ref: ecfe370872f5b541e29bfe373d353ede1b9c96ae
+      ref: 1602430cd73848daca8ec02568e9771a867f31cb
 
 
 dev_dependencies:
