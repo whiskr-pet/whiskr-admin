@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_dashboard/helpers/status_chip_type.dart';
-import 'package:w_pet_service_module/providers/cart_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/extensions/string_extensions.dart';
 import 'package:w_utils/models/response_model.dart';
@@ -88,29 +87,6 @@ class _BuildBody extends StatefulWidget {
 }
 
 class _BuildBodyState extends State<_BuildBody> {
-  DateTimeRange? selectedDateRange;
-
-  OrderType? selectedOrderType;
-
-  StatusChipType? selectedOrderStatus;
-
-  String? get formattedDateRange {
-    if (selectedDateRange == null) return null;
-    final start = selectedDateRange!.start;
-    final end = selectedDateRange!.end;
-
-    // Format: "Jan 1 - Jan 7, 2025"
-    if (start.year == end.year && start.month == end.month && start.day == end.day) {
-      return '${_monthName(start.month)} ${start.day}, ${start.year}';
-    }
-    return '${_monthName(start.month)} ${start.day} - ${_monthName(end.month)} ${end.day}, ${end.year}';
-  }
-
-  String _monthName(int month) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[month - 1];
-  }
-
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = Responsive.value(context: context, mobile: 24.0, tablet: 32.0, desktop: 40.0, widescreen: 48.0);
