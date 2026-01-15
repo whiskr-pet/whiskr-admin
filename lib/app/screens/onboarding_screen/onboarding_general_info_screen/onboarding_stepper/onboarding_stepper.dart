@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/wa_custom_stepper/wa_custom_stepper.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/onboarding_utils/onboarding_action_utils.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_general_info_step.dart';
@@ -39,19 +38,27 @@ class StepperContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       constraints: const BoxConstraints(maxWidth: 900),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [BoxShadow(color: ColorHelper.black.color.withAlpha(8), blurRadius: 20, offset: const Offset(0, 4))],
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: themeData.shadowColor.withValues(alpha: 0.10),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           WACustomStepper(
-            activeColor: ColorHelper.greenWeb.color,
+            activeColor: colorScheme.primary,
             currentStep: currentStep,
             steps: context.read<WAOnboardingProvider>().steps,
             onStepPress: (int i) => OnboardingActionUtils.handleStepPress(context, i, currentStep),

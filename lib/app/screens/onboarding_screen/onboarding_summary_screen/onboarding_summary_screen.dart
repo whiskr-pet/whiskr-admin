@@ -6,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:w_components/buttons/common_button.dart';
 import 'package:w_components/wa_map_picker/wa_map_picker.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_map_module/wa_map_module.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
@@ -25,7 +24,7 @@ class OnboardingSummaryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: ColorHelper.grey100.color, body: const _BuildSummaryBody());
+    return const Scaffold(body: _BuildSummaryBody());
   }
 }
 
@@ -155,13 +154,14 @@ class _BuildPageHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final text = TextsProvider.of(context)!.onboardingTexts;
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
-          colors: <Color>[ColorHelper.greenWeb.color.withValues(alpha: 0.08), ColorHelper.white.color],
+          colors: <Color>[colorScheme.primary.withValues(alpha: 0.12), colorScheme.surface],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -177,25 +177,25 @@ class _BuildPageHeader extends StatelessWidget {
               children: <Widget>[
                 Text(
                   text.onboardingSummaryHeaderTitle,
-                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
                 ),
                 const SizedBox(height: 4),
-                Text(text.onboardingSummaryHeaderSubtitle, style: theme.textTheme.bodyMedium?.copyWith(color: ColorHelper.grey600.color)),
+                Text(text.onboardingSummaryHeaderSubtitle, style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
           const SizedBox(width: 16),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(999)),
+            decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(999)),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(Icons.check_circle_outline, size: 16, color: ColorHelper.greenWeb.color),
+                Icon(Icons.check_circle_outline, size: 16, color: colorScheme.primary),
                 const SizedBox(width: 6),
                 Text(
                   text.onboardingSummaryStepIndicator,
-                  style: theme.textTheme.bodySmall?.copyWith(color: ColorHelper.greenWeb.color, fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -251,20 +251,21 @@ class _HighlightChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = theme.colorScheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(999),
-        boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 18, offset: const Offset(0, 10))],
-        border: Border.all(color: ColorHelper.grey150.color),
+        boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.10), blurRadius: 18, offset: const Offset(0, 10))],
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
       ),
       child: Row(
         children: <Widget>[
           Container(
             padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.08), borderRadius: BorderRadius.circular(999)),
-            child: Icon(icon, size: 18, color: ColorHelper.greenWeb.color),
+            decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(999)),
+            child: Icon(icon, size: 18, color: colorScheme.primary),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -273,14 +274,14 @@ class _HighlightChip extends StatelessWidget {
               children: <Widget>[
                 Text(
                   label,
-                  style: theme.textTheme.bodySmall?.copyWith(color: ColorHelper.grey500.color, fontWeight: FontWeight.w500),
+                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: ColorHelper.grey900.color, fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface, fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -300,6 +301,7 @@ class _BuildBusinessProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final double imageSize = Responsive.value(context: context, mobile: 80.0, tablet: 100.0, desktop: 120.0);
 
     final String businessName = provider.nameController.text.isNotEmpty ? provider.nameController.text : texts.onboardingSummaryBusinessPending;
@@ -308,10 +310,10 @@ class _BuildBusinessProfileCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 20, offset: const Offset(0, 10))],
-        border: Border.all(color: ColorHelper.grey150.color),
+        boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.12), blurRadius: 20, offset: const Offset(0, 10))],
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
       ),
       padding: EdgeInsets.all(Responsive.value(context: context, mobile: 20, tablet: 24, desktop: 32)),
       child: ResponsiveBuilder(
@@ -323,16 +325,16 @@ class _BuildBusinessProfileCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   businessName,
-                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                  style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.location_on, size: 16, color: ColorHelper.grey600.color),
+                    Icon(Icons.location_on, size: 16, color: colorScheme.onSurfaceVariant),
                     const SizedBox(width: 6),
-                    Text(city, style: theme.textTheme.bodyMedium?.copyWith(color: ColorHelper.grey600.color)),
+                    Text(city, style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ],
@@ -349,14 +351,14 @@ class _BuildBusinessProfileCard extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     businessName,
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
                   ),
                   const SizedBox(height: 10),
                   Row(
                     children: <Widget>[
-                      Icon(Icons.location_on, size: 18, color: ColorHelper.grey600.color),
+                      Icon(Icons.location_on, size: 18, color: colorScheme.onSurfaceVariant),
                       const SizedBox(width: 8),
-                      Text(city, style: theme.textTheme.bodyMedium?.copyWith(color: ColorHelper.grey600.color)),
+                      Text(city, style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
                     ],
                   ),
                 ],
@@ -380,6 +382,8 @@ class _BuildBusinessImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final String userImageUrl = context.select<WAOnboardingProvider, String>((WAOnboardingProvider provider) => provider.serviceProfileImage.url ?? '');
 
     return Container(
@@ -387,8 +391,8 @@ class _BuildBusinessImage extends StatelessWidget {
       height: imageSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: ColorHelper.grey150.color,
-        border: Border.all(color: ColorHelper.greenWeb.color, width: 3),
+        color: colorScheme.surfaceContainerHighest,
+        border: Border.all(color: colorScheme.primary, width: 3),
       ),
       child: ClipOval(
         child: userImageUrl.isNotEmpty
@@ -396,10 +400,10 @@ class _BuildBusinessImage extends StatelessWidget {
                 userImageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                  return Icon(Icons.business, size: imageSize * 0.5, color: ColorHelper.grey400.color);
+                  return Icon(Icons.business, size: imageSize * 0.5, color: colorScheme.onSurfaceVariant);
                 },
               )
-            : Icon(Icons.business, size: imageSize * 0.5, color: ColorHelper.grey400.color),
+            : Icon(Icons.business, size: imageSize * 0.5, color: colorScheme.onSurfaceVariant),
       ),
     );
   }
@@ -416,14 +420,15 @@ class _BuildInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final texts = TextsProvider.of(context)!.onboardingTexts;
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16, offset: const Offset(0, 8))],
-        border: Border.all(color: ColorHelper.grey150.color),
+        boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 8))],
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
       ),
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -433,13 +438,13 @@ class _BuildInfoCard extends StatelessWidget {
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
-                child: Icon(icon, color: ColorHelper.greenWeb.color, size: 20),
+                decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+                child: Icon(icon, color: colorScheme.primary, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 title,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
               ),
               const Spacer(),
               TextButton.icon(
@@ -447,10 +452,10 @@ class _BuildInfoCard extends StatelessWidget {
                   context.read<WAOnboardingProvider>().setCurrentStep(currentStep);
                   context.go(onboardingGeneralInfoRoute);
                 },
-                icon: Icon(Icons.edit_outlined, size: 16, color: ColorHelper.grey600.color),
+                icon: Icon(Icons.edit_outlined, size: 16, color: colorScheme.onSurfaceVariant),
                 label: Text(
                   texts.onboardingSummaryEdit,
-                  style: theme.textTheme.bodySmall?.copyWith(color: ColorHelper.grey600.color, fontWeight: FontWeight.w500),
+                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                 ),
                 style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4)),
               ),
@@ -479,13 +484,14 @@ class _BuildInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           flex: 2,
-          child: Text(title, style: theme.textTheme.bodyMedium?.copyWith(color: ColorHelper.grey600.color)),
+          child: Text(title, style: theme.textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant)),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -493,7 +499,7 @@ class _BuildInfoRow extends StatelessWidget {
           child: Text(
             value.isNotEmpty ? value : '-',
             textAlign: TextAlign.right,
-            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: ColorHelper.grey900.color),
+            style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurface),
           ),
         ),
       ],
@@ -509,6 +515,7 @@ class _BuildServiceImagesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final texts = TextsProvider.of(context)!.onboardingTexts;
 
     final int imagesCount = provider.imageBytesListForServiceUpload.length;
@@ -516,10 +523,10 @@ class _BuildServiceImagesCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16, offset: const Offset(0, 8))],
-        border: Border.all(color: ColorHelper.grey150.color),
+        boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 8))],
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
       ),
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -529,21 +536,21 @@ class _BuildServiceImagesCard extends StatelessWidget {
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
-                child: Icon(Icons.photo_library_outlined, color: ColorHelper.greenWeb.color, size: 20),
+                decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.photo_library_outlined, color: colorScheme.primary, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 texts.onboardingSummaryImagesTitle,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
               ),
               const Spacer(),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(999)),
+                decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(999)),
                 child: Text(
                   '$imagesCount $counterLabel',
-                  style: theme.textTheme.bodySmall?.copyWith(color: ColorHelper.greenWeb.color, fontWeight: FontWeight.w600),
+                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.w600),
                 ),
               ),
             ],
@@ -575,7 +582,7 @@ class _BuildServiceImagesCard extends StatelessWidget {
                                   return SizedBox(
                                     width: 300,
                                     height: 300,
-                                    child: Center(child: Icon(Icons.broken_image_outlined, size: 40, color: ColorHelper.grey400.color)),
+                                    child: Center(child: Icon(Icons.broken_image_outlined, size: 40, color: colorScheme.onSurfaceVariant)),
                                   );
                                 },
                               ),
@@ -591,19 +598,19 @@ class _BuildServiceImagesCard extends StatelessWidget {
                     curve: Curves.easeOut,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: ColorHelper.grey200.color),
+                      border: Border.all(color: colorScheme.outline.withValues(alpha: 0.45)),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Container(
                         width: 120,
                         height: 120,
-                        color: ColorHelper.grey150.color,
+                        color: colorScheme.surfaceContainerHighest,
                         child: Image.memory(
                           imageBytes,
                           fit: BoxFit.cover,
                           errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
-                            return Center(child: Icon(Icons.image_outlined, size: 40, color: ColorHelper.grey400.color));
+                            return Center(child: Icon(Icons.image_outlined, size: 40, color: colorScheme.onSurfaceVariant));
                           },
                         ),
                       ),
@@ -625,15 +632,16 @@ class _BuildMapCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final texts = TextsProvider.of(context)!.onboardingTexts;
     final WAOnboardingProvider onboardingProvider = context.watch<WAOnboardingProvider>();
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: <BoxShadow>[BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 16, offset: const Offset(0, 8))],
-        border: Border.all(color: ColorHelper.grey150.color),
+        boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.12), blurRadius: 16, offset: const Offset(0, 8))],
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.35)),
       ),
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -643,18 +651,18 @@ class _BuildMapCard extends StatelessWidget {
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
-                child: Icon(Icons.map_outlined, color: ColorHelper.greenWeb.color, size: 20),
+                decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.map_outlined, color: colorScheme.primary, size: 20),
               ),
               const SizedBox(width: 12),
               Text(
                 texts.onboardingSummaryMapTitle,
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: ColorHelper.grey900.color),
+                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: colorScheme.onSurface),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          Text(texts.onboardingSummaryMapDescription, style: theme.textTheme.bodySmall?.copyWith(color: ColorHelper.grey600.color)),
+          Text(texts.onboardingSummaryMapDescription, style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant)),
           const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),

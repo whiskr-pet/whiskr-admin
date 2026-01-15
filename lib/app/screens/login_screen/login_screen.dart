@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_authentication/providers/authentication_provider.dart';
-import 'package:w_utils/w_utils.dart';
 import 'package:whiskr_admin_panel/app/helpers/utils/login_utils/login_action_utils.dart';
 
 import '../../providers/texts_provider.dart';
@@ -42,7 +41,8 @@ class _LoginHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final texts = TextsProvider.of(context)!.loginTexts;
     return Column(
       children: [
@@ -51,16 +51,18 @@ class _LoginHeader extends StatelessWidget {
           width: 100,
           height: 100,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [BoxShadow(color: Colors.black.withAlpha(10), blurRadius: 20, offset: const Offset(0, 10))],
+            boxShadow: <BoxShadow>[
+              BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.10), blurRadius: 20, offset: const Offset(0, 10)),
+            ],
           ),
           child: Image.asset('assets/images/appicon.png'),
         ),
         const SizedBox(height: 24),
-        Text(texts.welcomeTitle, style: theme.textTheme.displayLarge),
+        Text(texts.welcomeTitle, style: themeData.textTheme.displayLarge),
         const SizedBox(height: 8),
-        Text(texts.subtitle, style: theme.textTheme.bodyMedium),
+        Text(texts.subtitle, style: themeData.textTheme.bodyMedium),
       ],
     );
   }
@@ -132,14 +134,22 @@ class _LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final texts = TextsProvider.of(context)!.loginTexts;
 
     return ElevatedButton(
       onPressed: () => LoginActionUtils.onSignIn(context),
       child: context.select<AuthenticationProvider, bool>((authProvider) => authProvider.isLoading)
-          ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
-          : Text(texts.signInButton, style: theme.textTheme.bodyMedium!.copyWith(color: Colors.white)),
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary),
+              ),
+            )
+          : Text(texts.signInButton, style: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary)),
     );
   }
 }
@@ -149,11 +159,12 @@ class _LoginForgotPasswordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final texts = TextsProvider.of(context)!.loginTexts;
     return TextButton(
-      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Forgot password functionality coming soon!'))),
-      child: Text(texts.forgotPasswordButton, style: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.greenWeb.color)),
+      onPressed: () => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(texts.forgotPasswordComingSoon))),
+      child: Text(texts.forgotPasswordButton, style: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.primary)),
     );
   }
 }

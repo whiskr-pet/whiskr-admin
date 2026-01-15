@@ -655,4 +655,81 @@
   "serviceOfferedTryAdjustingSearch": "Pokušajte prilagoditi pretragu",
   "serviceOfferedNoOffersFound": "Nijedna ponuda nije pronađena",
   "serviceOfferedNoOffersAvailable": "Nema dostupnih ponuda"
+  ,
+  "settingsTitle": "Postavke",
+  "@settingsTitle": {
+    "description": "Main title for settings screen"
+  },
+  "settingsSectionAccount": "Račun",
+  "@settingsSectionAccount": {
+    "description": "Section header for account-related settings"
+  },
+  "settingsProfile": "Profil",
+  "@settingsProfile": {
+    "description": "Navigate to profile view"
+  },
+  "settingsEditProfile": "Uredi profil",
+  "@settingsEditProfile": {
+    "description": "Navigate to edit profile flow"
+  },
+  "settingsEditProfileComingSoon": "Uređivanje profila će biti omogućeno kada API bude dostupan.",
+  "@settingsEditProfileComingSoon": {
+    "description": "Placeholder text until edit profile API is integrated"
+  },
+  "settingsSectionAppearance": "Izgled",
+  "@settingsSectionAppearance": {
+    "description": "Section header for appearance-related settings"
+  },
+  "settingsTheme": "Tema",
+  "@settingsTheme": {
+    "description": "Theme setting label"
+  },
+  "settingsThemeSystem": "Sistemski zadano",
+  "@settingsThemeSystem": {
+    "description": "Theme mode option: system"
+  },
+  "settingsThemeLight": "Svijetla",
+  "@settingsThemeLight": {
+    "description": "Theme mode option: light"
+  },
+  "settingsThemeDark": "Tamna",
+  "@settingsThemeDark": {
+    "description": "Theme mode option: dark"
+  },
+  "settingsLanguage": "Jezik",
+  "@settingsLanguage": {
+    "description": "Language setting label"
+  },
+  "settingsLocaleEnglish": "Engleski",
+  "@settingsLocaleEnglish": {
+    "description": "English language label"
+  },
+  "settingsLocaleBosnian": "Bosanski",
+  "@settingsLocaleBosnian": {
+    "description": "Bosnian language label"
+  },
+  "settingsSectionSecurity": "Sigurnost i sesija",
+  "@settingsSectionSecurity": {
+    "description": "Section header for security/session settings"
+  },
+  "settingsLogout": "Odjava",
+  "@settingsLogout": {
+    "description": "Logout action label"
+  },
+  "settingsLogoutConfirmTitle": "Potvrdi odjavu",
+  "@settingsLogoutConfirmTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "settingsLogoutConfirmBody": "Bićete odjavljeni na ovom uređaju.",
+  "@settingsLogoutConfirmBody": {
+    "description": "Body text for logout confirmation dialog"
+  },
+  "settingsCancel": "Otkaži",
+  "@settingsCancel": {
+    "description": "Cancel button label"
+  },
+  "settingsConfirm": "Potvrdi",
+  "@settingsConfirm": {
+    "description": "Confirm button label"
+  }
 }

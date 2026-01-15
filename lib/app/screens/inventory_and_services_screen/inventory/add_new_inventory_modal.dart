@@ -55,6 +55,8 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -66,9 +68,11 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
             width: 700,
             constraints: const BoxConstraints(maxHeight: 800),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 40, offset: const Offset(0, 20))],
+              boxShadow: <BoxShadow>[
+                BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.18), blurRadius: 40, offset: const Offset(0, 20)),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -202,22 +206,23 @@ class ModalHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withAlpha(200)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(colors: <Color>[colorScheme.primary, colorScheme.primary.withValues(alpha: 0.85)], begin: Alignment.topLeft, end: Alignment.bottomRight),
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: Colors.white.withAlpha(70), borderRadius: BorderRadius.circular(12)),
-            child: const Icon(Icons.add_shopping_cart, color: Colors.white, size: 28),
+            decoration: BoxDecoration(color: colorScheme.onPrimary.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(12)),
+            child: Icon(Icons.add_shopping_cart, color: colorScheme.onPrimary, size: 28),
           ),
           const SizedBox(width: 16),
-          Text(texts.inventoryAddProductButton, style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color)),
+          Text(texts.inventoryAddProductButton, style: themeData.textTheme.bodyLarge!.copyWith(fontSize: 24, color: colorScheme.onPrimary)),
         ],
       ),
     );
@@ -255,6 +260,8 @@ class _CategorySelectorState extends State<CategorySelector> {
   @override
   Widget build(BuildContext context) {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     if (_isCustom) {
       return CustomTextField(controller: widget.controller, label: texts.inventoryCategoryLabel, icon: Icons.category_outlined, validator: widget.validator);
@@ -264,21 +271,21 @@ class _CategorySelectorState extends State<CategorySelector> {
       initialValue: _selectedCategory,
       decoration: InputDecoration(
         labelText: texts.inventoryCategoryLabel,
-        prefixIcon: Icon(Icons.category_outlined, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(Icons.category_outlined, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
       validator: widget.validator,
       items: [
@@ -336,7 +343,8 @@ class EnhancedTagSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
     // Get available tags that aren't already selected
@@ -345,18 +353,18 @@ class EnhancedTagSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.local_offer_rounded, size: 20, color: ColorHelper.greenWeb.color),
+              Icon(Icons.local_offer_rounded, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
-              Text(texts.inventoryTagsLabel, style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(texts.inventoryTagsLabel, style: themeData.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
             ],
           ),
 
@@ -365,7 +373,7 @@ class EnhancedTagSection extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Quick Select:',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -378,18 +386,18 @@ class EnhancedTagSection extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: ColorHelper.greenWeb.color.withValues(alpha: 0.3), width: 1.5),
+                      border: Border.all(color: colorScheme.primary.withValues(alpha: 0.35), width: 1.5),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.add_circle_outline, size: 16, color: ColorHelper.greenWeb.color),
+                        Icon(Icons.add_circle_outline, size: 16, color: colorScheme.primary),
                         const SizedBox(width: 4),
                         Text(
                           tag,
-                          style: TextStyle(color: ColorHelper.greenWeb.color, fontWeight: FontWeight.w500, fontSize: 13),
+                          style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w500, fontSize: 13),
                         ),
                       ],
                     ),
@@ -404,7 +412,7 @@ class EnhancedTagSection extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Selected Tags:',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -416,8 +424,8 @@ class EnhancedTagSection extends StatelessWidget {
                   deleteIcon: const Icon(Icons.close_rounded, size: 18),
                   onDeleted: () => onRemoveTag(tag),
                   backgroundColor: ColorHelper.orange500.color,
-                  labelStyle: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color, fontWeight: FontWeight.w600),
-                  deleteIconColor: Colors.white,
+                  labelStyle: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary, fontWeight: FontWeight.w600),
+                  deleteIconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(color: ColorHelper.orange300.color),
@@ -438,8 +446,8 @@ class EnhancedTagSection extends StatelessWidget {
                   onSubmitted: (_) => onAddTag(),
                   decoration: InputDecoration(
                     hintText: texts.inventoryAddTagHint,
-                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                    prefixIcon: Icon(Icons.edit_outlined, color: ColorHelper.greenWeb.color, size: 20),
+                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7), fontSize: 14),
+                    prefixIcon: Icon(Icons.edit_outlined, color: colorScheme.primary, size: 20),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.add_circle, color: ColorHelper.orange500.color, size: 24),
                       onPressed: onAddTag,
@@ -447,18 +455,18 @@ class EnhancedTagSection extends StatelessWidget {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(color: colorScheme.outline),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(color: colorScheme.outline),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+                      borderSide: BorderSide(color: colorScheme.primary, width: 2),
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: colorScheme.surface,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
@@ -480,6 +488,8 @@ class ImagePickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Consumer<ImageHandleProvider>(
       builder: (context, imageProvider, _) {
         // More specific checks for each image source
@@ -492,7 +502,7 @@ class ImagePickerWidget extends StatelessWidget {
           children: [
             Text(
               texts.inventoryProductImageLabel,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey.shade800),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
             ),
             const SizedBox(height: 12),
             GestureDetector(
@@ -501,8 +511,8 @@ class ImagePickerWidget extends StatelessWidget {
                 height: 200,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: hasImage ? Colors.grey.shade100 : Colors.grey.shade50,
-                  border: Border.all(color: hasImage ? Colors.blue.shade300 : Colors.grey.shade300, width: 2, style: BorderStyle.solid),
+                  color: hasImage ? colorScheme.surfaceContainerHighest : colorScheme.surfaceContainerHighest.withValues(alpha: 0.7),
+                  border: Border.all(color: hasImage ? colorScheme.primary.withValues(alpha: 0.6) : colorScheme.outline.withValues(alpha: 0.6), width: 2, style: BorderStyle.solid),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: hasImage
@@ -519,12 +529,12 @@ class ImagePickerWidget extends StatelessWidget {
                             right: 8,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: colorScheme.surface,
                                 borderRadius: BorderRadius.circular(8),
-                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 8)],
+                                boxShadow: <BoxShadow>[BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.15), blurRadius: 8)],
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
+                                icon: Icon(Icons.edit, color: colorScheme.primary),
                                 onPressed: onPickImage,
                                 tooltip: texts.inventoryChangeImage,
                               ),
@@ -535,14 +545,14 @@ class ImagePickerWidget extends StatelessWidget {
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.cloud_upload_outlined, size: 64, color: Colors.grey.shade400),
+                          Icon(Icons.cloud_upload_outlined, size: 64, color: colorScheme.onSurfaceVariant),
                           const SizedBox(height: 16),
                           Text(
                             texts.inventoryUploadImageHint,
-                            style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                            style: TextStyle(fontSize: 16, color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                           ),
                           const SizedBox(height: 8),
-                          Text(texts.inventoryUploadImageFormats, style: TextStyle(fontSize: 14, color: Colors.grey.shade500)),
+                          Text(texts.inventoryUploadImageFormats, style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.85))),
                         ],
                       ),
               ),
@@ -567,6 +577,8 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -575,21 +587,21 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(icon, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
     );
   }
@@ -606,26 +618,28 @@ class CustomDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return DropdownButtonFormField<String>(
       initialValue: value,
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(icon, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
       items: items.map((item) {
         return DropdownMenuItem(value: item, child: Text(item));
@@ -642,21 +656,22 @@ class ActiveStatusSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60)),
       ),
       child: Row(
         children: [
-          Icon(Icons.toggle_on_outlined, color: ColorHelper.greenWeb.color),
+          Icon(Icons.toggle_on_outlined, color: colorScheme.primary),
           const SizedBox(width: 12),
-          Expanded(child: Text(texts.inventoryActiveStatusLabel, style: theme.textTheme.bodyMedium)),
-          Switch(value: active, onChanged: onChanged, activeThumbColor: ColorHelper.orange500.color),
+          Expanded(child: Text(texts.inventoryActiveStatusLabel, style: themeData.textTheme.bodyMedium)),
+          Switch(value: active, onChanged: onChanged, activeThumbColor: colorScheme.secondary),
         ],
       ),
     );
@@ -674,10 +689,12 @@ class ModalFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
       ),
       child: Row(
@@ -691,21 +708,21 @@ class ModalFooter extends StatelessWidget {
             ),
             child: Text(
               texts.inventoryCancelButton,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? Colors.grey.shade400 : Colors.grey.shade700),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? colorScheme.onSurfaceVariant.withValues(alpha: 0.6) : colorScheme.onSurfaceVariant),
             ),
           ),
           const SizedBox(width: 12),
           ElevatedButton(
             onPressed: isUploading ? null : onSave,
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorHelper.greenWeb.color,
-              foregroundColor: Colors.white,
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
             child: isUploading
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
+                ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary)))
                 : Text(isEditMode ? texts.inventoryEditProductButton : texts.inventoryAddProductButton, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           ),
         ],

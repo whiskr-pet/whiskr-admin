@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/models/working_day_helper_model.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
@@ -19,7 +18,8 @@ class OnboardingWorkingHoursStep extends StatefulWidget {
 class _OnboardingWorkingHoursStepState extends State<OnboardingWorkingHoursStep> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final provider = context.watch<WAOnboardingProvider>();
     final workingDays = provider.workingDays;
     final double headerFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0);
@@ -36,7 +36,7 @@ class _OnboardingWorkingHoursStepState extends State<OnboardingWorkingHoursStep>
         children: [
           Text(
             texts.whHeader,
-            style: theme.textTheme.bodyMedium?.copyWith(fontSize: headerFontSize, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
+            style: themeData.textTheme.bodyMedium?.copyWith(fontSize: headerFontSize, fontWeight: FontWeight.w500, color: colorScheme.primary),
           ),
           SizedBox(height: verticalSpacing),
           ListView.separated(
@@ -72,7 +72,8 @@ class WorkingDayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final double labelFontSize = Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 17.0);
 
     final double horizontalPadding = Responsive.value(context: context, mobile: 12.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0);
@@ -86,8 +87,8 @@ class WorkingDayItem extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: verticalPadding),
       decoration: BoxDecoration(
-        color: ColorHelper.white.color,
-        border: Border.all(color: ColorHelper.grey200.color, width: 1),
+        color: colorScheme.surface,
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.6), width: 1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -98,21 +99,21 @@ class WorkingDayItem extends StatelessWidget {
               width: checkboxSize,
               height: checkboxSize,
               decoration: BoxDecoration(
-                color: day.isOpen ? ColorHelper.greenWeb.color : ColorHelper.white.color,
-                border: Border.all(color: day.isOpen ? ColorHelper.greenWeb.color : ColorHelper.grey200.color, width: 2),
+                color: day.isOpen ? colorScheme.primary : colorScheme.surface,
+                border: Border.all(color: day.isOpen ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.6), width: 2),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: day.isOpen ? Icon(Icons.check_rounded, color: ColorHelper.white.color, size: checkboxSize * 0.8) : null,
+              child: day.isOpen ? Icon(Icons.check_rounded, color: colorScheme.onPrimary, size: checkboxSize * 0.8) : null,
             ),
           ),
           SizedBox(width: spacingBetweenElements),
           Expanded(
             child: Text(
               day.name,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: themeData.textTheme.bodyMedium?.copyWith(
                 fontSize: labelFontSize,
                 fontWeight: FontWeight.w500,
-                color: day.isOpen ? ColorHelper.grey700.color : ColorHelper.grey300.color,
+                color: day.isOpen ? colorScheme.onSurface : colorScheme.onSurface.withValues(alpha: 0.45),
               ),
             ),
           ),
@@ -134,7 +135,8 @@ class TimePickerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     final double buttonWidth = Responsive.value(context: context, mobile: 90.0, tablet: 110.0, desktop: 120.0, widescreen: 130.0);
 
@@ -148,14 +150,17 @@ class TimePickerButton extends StatelessWidget {
         width: buttonWidth,
         height: buttonHeight,
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(color: enabled ? ColorHelper.greenWeb.color.withAlpha(180) : ColorHelper.grey150.color, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(
+          color: enabled ? colorScheme.primary.withValues(alpha: 0.85) : colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Center(
           child: Text(
             enabled ? OnboardingActionUtils.formatTime(time) : '00 : 00',
-            style: theme.textTheme.bodyMedium!.copyWith(
+            style: themeData.textTheme.bodyMedium!.copyWith(
               fontSize: timeFontSize,
               fontWeight: FontWeight.w600,
-              color: enabled ? ColorHelper.white.color : ColorHelper.grey300.color,
+              color: enabled ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
               letterSpacing: 1.0,
             ),
           ),

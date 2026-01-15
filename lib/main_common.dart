@@ -9,7 +9,6 @@ import 'package:w_image_module/providers/image_provider.dart';
 import 'package:w_network_module/network_manager/network_manager.dart';
 import 'package:w_permissions_module/services/locator.dart';
 import 'package:w_utils/helper/util_constants.dart';
-import 'package:w_utils/providers/theme_provider/whiskr_web_theme/custom_web_themes.dart';
 import 'package:w_utils/w_utils.dart';
 import 'package:wa_analytics_module/providers/wa_analytics_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
@@ -18,7 +17,9 @@ import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
+import 'package:whiskr_admin_panel/app/providers/theme_mode_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/texts_provider.dart';
+import 'package:whiskr_admin_panel/app/theme/whiskr_themes.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
 import 'config/flavor_config.dart';
@@ -87,14 +88,17 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<WaOrdersProvider>(create: (_) => WaOrdersProvider(), lazy: true),
         ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
         ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
+        ChangeNotifierProvider<ThemeModeProvider>(create: (_) => ThemeModeProvider(), lazy: true),
       ],
-      child: Consumer2<CustomThemeProvider, LocaleProvider>(
-        builder: (context, customThemeProvider, localeProvider, child) {
+      child: Consumer3<CustomThemeProvider, LocaleProvider, ThemeModeProvider>(
+        builder: (BuildContext context, CustomThemeProvider customThemeProvider, LocaleProvider localeProvider, ThemeModeProvider themeModeProvider, Widget? child) {
           return MaterialApp.router(
             title: config.values.appName,
             debugShowCheckedModeBanner: false,
             routerConfig: routeGenerator.router,
-            theme: CustomWebThemes.lightTheme,
+            theme: WhiskrThemes.lightTheme(),
+            darkTheme: WhiskrThemes.darkTheme(),
+            themeMode: themeModeProvider.themeMode,
             locale: localeProvider.locale,
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: const [
@@ -104,7 +108,7 @@ class WhiskrAdminApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
 
-            builder: (context, child) {
+            builder: (BuildContext context, Widget? child) {
               return TextsProvider(
                 loginTexts: LoginTexts(context),
                 onboardingTexts: OnboardingTexts(context),
