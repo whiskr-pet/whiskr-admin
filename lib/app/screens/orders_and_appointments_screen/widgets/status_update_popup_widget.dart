@@ -110,7 +110,8 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     return FadeTransition(
       opacity: _fadeAnimation,
@@ -123,7 +124,7 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
             width: 480,
             constraints: const BoxConstraints(maxHeight: 700),
             padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: colorScheme.surface, borderRadius: BorderRadius.circular(20)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,21 +134,21 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
                   children: [
                     Container(
                       padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(color: Colors.blue.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                      child: Icon(Icons.edit_note, color: Colors.blue, size: 28),
+                      decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(12)),
+                      child: Icon(Icons.edit_note, color: colorScheme.primary, size: 28),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Update Order Status', style: theme.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold)),
+                          Text('Update Order Status', style: themeData.textTheme.headlineSmall!.copyWith(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 4),
-                          Text('Order #${widget.orderNumber}', style: theme.textTheme.bodyMedium!.copyWith(color: Colors.grey[600])),
+                          Text('Order #${widget.orderNumber}', style: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onSurfaceVariant)),
                         ],
                       ),
                     ),
-                    IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop(), color: Colors.grey[600]),
+                    IconButton(icon: const Icon(Icons.close), onPressed: () => Navigator.of(context).pop(), color: colorScheme.onSurfaceVariant),
                   ],
                 ),
                 const SizedBox(height: 32),
@@ -156,15 +157,15 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!),
+                    border: Border.all(color: colorScheme.outline.withValues(alpha: 0.45)),
                   ),
                   child: Row(
                     children: [
                       Text(
                         'Current Status:',
-                        style: theme.textTheme.bodyMedium!.copyWith(color: Colors.grey[600], fontWeight: FontWeight.w500),
+                        style: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(width: 12),
                       StatusChip.orderStatus(widget.currentStatus.name),
@@ -174,7 +175,7 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
 
                 const SizedBox(height: 24),
 
-                Text('Select New Status', style: theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
+                Text('Select New Status', style: themeData.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold)),
 
                 const SizedBox(height: 16),
 
@@ -223,23 +224,30 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
                                             children: [
                                               Text(
                                                 status.name.toUpperCase(),
-                                                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, color: isSelected ? statusColor : Colors.black87),
+                                                style: themeData.textTheme.bodyLarge!.copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: isSelected ? statusColor : colorScheme.onSurface,
+                                                ),
                                               ),
                                               if (isCurrentStatus) ...[
                                                 const SizedBox(width: 8),
                                                 Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                                  decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.circular(4)),
+                                                  decoration: BoxDecoration(color: colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(4)),
                                                   child: Text(
                                                     'CURRENT',
-                                                    style: theme.textTheme.bodySmall!.copyWith(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey[700]),
+                                                    style: themeData.textTheme.bodySmall!.copyWith(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: colorScheme.onSurfaceVariant,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ],
                                           ),
                                           const SizedBox(height: 4),
-                                          Text(_getStatusDescription(status), style: theme.textTheme.bodySmall!.copyWith(color: Colors.grey[600])),
+                                          Text(_getStatusDescription(status), style: themeData.textTheme.bodySmall!.copyWith(color: colorScheme.onSurfaceVariant)),
                                         ],
                                       ),
                                     ),
@@ -265,12 +273,12 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
                         onPressed: () => Navigator.of(context).pop(),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          side: BorderSide(color: Colors.grey[300]!),
+                          side: BorderSide(color: colorScheme.outline.withValues(alpha: 0.60)),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                         ),
                         child: Text(
                           'Cancel',
-                          style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, color: Colors.grey[700]),
+                          style: themeData.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
                         ),
                       ),
                     ),
@@ -281,14 +289,14 @@ class _StatusUpdatePopupState extends State<StatusUpdatePopup> with SingleTicker
                         onPressed: _selectedStatus == widget.currentStatus ? null : _handleStatusUpdate,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          backgroundColor: Colors.blue,
-                          disabledBackgroundColor: Colors.grey[300],
+                          backgroundColor: colorScheme.primary,
+                          disabledBackgroundColor: colorScheme.surfaceContainerHighest,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           elevation: 0,
                         ),
                         child: Text(
                           'Update Status',
-                          style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                          style: themeData.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.bold, color: colorScheme.onPrimary),
                         ),
                       ),
                     ),

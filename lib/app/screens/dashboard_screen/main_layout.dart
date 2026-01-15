@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_dashboard/helpers/main_layout_menu_item.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:w_utils/services/service_type_service.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
@@ -62,6 +61,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return Scaffold(
       appBar: _buildAppBar(context, mounted, _toggleSideMenu),
       body: Row(
@@ -73,7 +73,7 @@ class _MainLayoutState extends State<MainLayout> {
             hasResizerToggle: false,
             minWidth: 75,
             maxWidth: 250,
-            backgroundColor: ColorHelper.white.color,
+            backgroundColor: themeData.colorScheme.surface,
             builder: (data) => SideMenuData(items: _buildMenuItems(isTypeShop)),
           ),
           Expanded(child: widget.child),
@@ -88,7 +88,8 @@ class _MainLayoutState extends State<MainLayout> {
       final item = entry.value;
       final String route = item.route;
       final isSelected = context.read<DashboardProvider>().isSelectedIndexEqualTo(index);
-      final theme = Theme.of(context);
+      final ThemeData themeData = Theme.of(context);
+      final ColorScheme colorScheme = themeData.colorScheme;
       return SideMenuItemDataTile(
         isSelected: isSelected,
         onTap: () {
@@ -96,27 +97,29 @@ class _MainLayoutState extends State<MainLayout> {
           context.go(route);
         },
         title: item.label,
-        titleStyle: theme.textTheme.bodyMedium,
-        selectedTitleStyle: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color, fontWeight: FontWeight.bold),
-        icon: Icon(item.icon, color: isSelected ? ColorHelper.white.color : ColorHelper.greenWeb.color, size: 20),
+        titleStyle: themeData.textTheme.bodyMedium,
+        selectedTitleStyle: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary, fontWeight: FontWeight.bold),
+        icon: Icon(item.icon, color: isSelected ? colorScheme.onPrimary : colorScheme.primary, size: 20),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        hoverColor: ColorHelper.greenWeb.color.withAlpha(140),
+        hoverColor: colorScheme.primary.withValues(alpha: 0.55),
         hasSelectedLine: false,
-        highlightSelectedColor: ColorHelper.greenWeb.color,
+        highlightSelectedColor: colorScheme.primary,
       );
     }).toList();
   }
 }
 
 PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallback onMenuToggle) {
+  final ThemeData themeData = Theme.of(context);
+  final ColorScheme colorScheme = themeData.colorScheme;
   return AppBar(
-    backgroundColor: ColorHelper.white.color,
+    backgroundColor: colorScheme.surface,
     toolbarHeight: 60,
     leading: Row(
       children: [
         const SizedBox(width: 10),
         IconButton(
-          icon: Icon(context.watch<DashboardProvider>().isSideMenuOpen ? Icons.menu_open : Icons.menu, color: ColorHelper.greenWeb.color),
+          icon: Icon(context.watch<DashboardProvider>().isSideMenuOpen ? Icons.menu_open : Icons.menu, color: colorScheme.primary),
           onPressed: onMenuToggle,
           tooltip: 'Toggle Menu',
         ),
@@ -147,7 +150,7 @@ class _BuildActionProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
     return Consumer<WAOnboardingProvider>(
       builder: (context, provider, _) => Row(
         children: [
@@ -157,8 +160,8 @@ class _BuildActionProfile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(provider.serviceAdminData.contact?.email ?? '', style: theme.textTheme.bodyMedium),
-              Text('Admin', style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+              Text(provider.serviceAdminData.contact?.email ?? '', style: themeData.textTheme.bodyMedium),
+              Text('Admin', style: themeData.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
             ],
           ),
           const SizedBox(width: 30),

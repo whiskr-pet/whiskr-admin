@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/providers/splash_provider/splash_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/gen/assets.gen.dart';
@@ -32,8 +31,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
     return Scaffold(
-      backgroundColor: ColorHelper.white.color,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -42,9 +41,15 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: ColorHelper.white.color,
+                color: themeData.colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: ColorHelper.black.color.withAlpha(10), blurRadius: 20, offset: const Offset(0, 10))],
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    color: themeData.shadowColor.withValues(alpha: 0.10),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
               ),
               child: Image.asset(Assets.images.appicon.path),
             ),

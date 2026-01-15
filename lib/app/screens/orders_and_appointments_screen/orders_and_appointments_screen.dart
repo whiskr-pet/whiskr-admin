@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_dashboard/helpers/status_chip_type.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/extensions/string_extensions.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
@@ -148,13 +147,15 @@ class WAOrdersTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final cardHeight = Responsive.value(context: context, mobile: 400.0, tablet: height + 20.0, desktop: height + 100.0, widescreen: height + 50.0);
 
     return Container(
       width: double.infinity,
       height: cardHeight,
       decoration: BoxDecoration(
-        border: Border.all(color: ColorHelper.grey200.color),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.45)),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -178,6 +179,7 @@ class _WATable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     final columnSpacing = Responsive.value(context: context, mobile: 12.0, tablet: 24.0, desktop: 32.0, widescreen: 40.0);
 
@@ -191,8 +193,8 @@ class _WATable extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: DataTable2(
         headingTextStyle: theme.textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-        headingRowDecoration: BoxDecoration(color: ColorHelper.white.color),
-        decoration: BoxDecoration(color: ColorHelper.white.color),
+        headingRowDecoration: BoxDecoration(color: colorScheme.surface),
+        decoration: BoxDecoration(color: colorScheme.surface),
         columnSpacing: columnSpacing,
         horizontalMargin: horizontalMargin,
         minWidth: minWidth,
@@ -309,6 +311,7 @@ class _BuildPaginationControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final isMobile = Responsive.isMobile(context);
     // final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
@@ -324,9 +327,9 @@ class _BuildPaginationControls extends StatelessWidget {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: Responsive.value(context: context, mobile: 0.0, tablet: 0.0, desktop: 0.0, widescreen: 0.0)),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 2))],
+            boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.10), blurRadius: 12, offset: const Offset(0, 2))],
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -357,9 +360,9 @@ class _BuildPaginationControls extends StatelessWidget {
                     vertical: Responsive.value(context: context, mobile: 10.0, tablet: 12.0, desktop: 14.0, widescreen: 16.0),
                   ),
                   decoration: BoxDecoration(
-                    color: ColorHelper.green300.color.withValues(alpha: 0.08),
+                    color: colorScheme.primary.withValues(alpha: 0.10),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: ColorHelper.greenWeb.color.withValues(alpha: 0.2), width: 1),
+                    border: Border.all(color: colorScheme.primary.withValues(alpha: 0.22), width: 1),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -369,19 +372,19 @@ class _BuildPaginationControls extends StatelessWidget {
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: Responsive.value(context: context, mobile: 13.0, tablet: 14.0, desktop: 15.0, widescreen: 15.0),
-                          color: Colors.grey[600],
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(color: ColorHelper.greenWeb.color, borderRadius: BorderRadius.circular(8)),
+                        decoration: BoxDecoration(color: colorScheme.primary, borderRadius: BorderRadius.circular(8)),
                         child: Text(
                           '$currentPage',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w700,
                             fontSize: Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 16.0),
-                            color: Colors.white,
+                            color: colorScheme.onPrimary,
                           ),
                         ),
                       ),
@@ -391,7 +394,7 @@ class _BuildPaginationControls extends StatelessWidget {
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: Responsive.value(context: context, mobile: 13.0, tablet: 14.0, desktop: 15.0, widescreen: 15.0),
-                          color: Colors.grey[600],
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -451,6 +454,7 @@ class _PaginationButtonState extends State<_PaginationButton> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -467,29 +471,29 @@ class _PaginationButtonState extends State<_PaginationButton> {
             gradient: widget.isEnabled
                 ? (_isHovered
                       ? LinearGradient(
-                          colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withValues(alpha: 0.85)],
+                          colors: <Color>[colorScheme.primary, colorScheme.primary.withValues(alpha: 0.85)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         )
                       : LinearGradient(
-                          colors: [ColorHelper.greenWeb.color.withValues(alpha: 0.1), ColorHelper.greenWeb.color.withValues(alpha: 0.05)],
+                          colors: <Color>[colorScheme.primary.withValues(alpha: 0.12), colorScheme.primary.withValues(alpha: 0.06)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ))
                 : null,
-            color: widget.isEnabled ? null : Colors.grey[100],
+            color: widget.isEnabled ? null : colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: widget.isEnabled ? (_isHovered ? ColorHelper.greenWeb.color : ColorHelper.greenWeb.color.withValues(alpha: 0.3)) : Colors.grey[300]!,
+              color: widget.isEnabled ? (_isHovered ? colorScheme.primary : colorScheme.primary.withValues(alpha: 0.35)) : colorScheme.outline.withValues(alpha: 0.55),
               width: _isHovered && widget.isEnabled ? 2 : 1.5,
             ),
-            boxShadow: _isHovered && widget.isEnabled ? [BoxShadow(color: ColorHelper.greenWeb.color.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 4))] : [],
+            boxShadow: _isHovered && widget.isEnabled ? <BoxShadow>[BoxShadow(color: colorScheme.primary.withValues(alpha: 0.22), blurRadius: 8, offset: const Offset(0, 4))] : <BoxShadow>[],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (!widget.isNext && widget.label != null)
-                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? colorScheme.onPrimary : colorScheme.primary) : colorScheme.onSurfaceVariant.withValues(alpha: 0.55)),
               if (widget.label != null) ...[
                 const SizedBox(width: 6),
                 Text(
@@ -497,13 +501,13 @@ class _PaginationButtonState extends State<_PaginationButton> {
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
-                    color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400],
+                    color: widget.isEnabled ? (_isHovered ? colorScheme.onPrimary : colorScheme.primary) : colorScheme.onSurfaceVariant.withValues(alpha: 0.55),
                   ),
                 ),
               ],
-              if (widget.label == null) Icon(widget.icon, size: 24, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+              if (widget.label == null) Icon(widget.icon, size: 24, color: widget.isEnabled ? (_isHovered ? colorScheme.onPrimary : colorScheme.primary) : colorScheme.onSurfaceVariant.withValues(alpha: 0.55)),
               if (widget.isNext && widget.label != null)
-                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? Colors.white : ColorHelper.greenWeb.color) : Colors.grey[400]),
+                Icon(widget.icon, size: 20, color: widget.isEnabled ? (_isHovered ? colorScheme.onPrimary : colorScheme.primary) : colorScheme.onSurfaceVariant.withValues(alpha: 0.55)),
             ],
           ),
         ),
