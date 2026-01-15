@@ -10,6 +10,7 @@ import 'package:whiskr_admin_panel/app/helpers/utils/service_offered_utils/servi
 class InventoryServicesHelper {
   Future<void> showDeleteDialog(BuildContext context, String productID, String productName) async {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final WAInventoryServicesProvider provider = context.read<WAInventoryServicesProvider>();
 
     await showDialog(
@@ -26,7 +27,7 @@ class InventoryServicesHelper {
               decoration: BoxDecoration(
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 8))],
+                boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.18), blurRadius: 20, offset: const Offset(0, 8))],
               ),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 28),
               child: Column(
@@ -59,7 +60,7 @@ class InventoryServicesHelper {
                           showBorder: false,
                           buttonType: PPButtonType.web,
                           btnTitleStyle: theme.textTheme.bodyMedium,
-                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(ColorHelper.white.color)),
+                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(colorScheme.surface)),
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -85,6 +86,7 @@ class InventoryServicesHelper {
 
   Future<void> showDeleteDialogServiceOffered(BuildContext context, String serviceOfferedID, String serviceOfferedName) async {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final WAServicesProvider provider = context.read<WAServicesProvider>();
 
     await showDialog(
@@ -101,7 +103,7 @@ class InventoryServicesHelper {
               decoration: BoxDecoration(
                 color: theme.cardColor,
                 borderRadius: BorderRadius.circular(24),
-                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 20, offset: const Offset(0, 8))],
+                boxShadow: <BoxShadow>[BoxShadow(color: theme.shadowColor.withValues(alpha: 0.18), blurRadius: 20, offset: const Offset(0, 8))],
               ),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 28),
               child: Column(
@@ -134,7 +136,7 @@ class InventoryServicesHelper {
                           showBorder: false,
                           buttonType: PPButtonType.web,
                           btnTitleStyle: theme.textTheme.bodyMedium,
-                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(ColorHelper.white.color)),
+                          style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(colorScheme.surface)),
                         ),
                       ),
                       const SizedBox(width: 16),

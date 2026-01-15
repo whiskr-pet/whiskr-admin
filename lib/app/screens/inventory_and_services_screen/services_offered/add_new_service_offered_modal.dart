@@ -48,6 +48,8 @@ class _AddServiceOfferedModalState extends State<AddServiceOfferedModal> with Si
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final WAServicesProvider provider = context.read<WAServicesProvider>();
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
     return FadeTransition(
@@ -60,9 +62,9 @@ class _AddServiceOfferedModalState extends State<AddServiceOfferedModal> with Si
             width: 700,
             constraints: const BoxConstraints(maxHeight: 800),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 40, offset: const Offset(0, 20))],
+              boxShadow: <BoxShadow>[BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.18), blurRadius: 40, offset: const Offset(0, 20))],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -158,26 +160,27 @@ class _ServiceModalHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [ColorHelper.greenWeb.color, ColorHelper.greenWeb.color.withAlpha(200)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(colors: <Color>[colorScheme.primary, colorScheme.primary.withValues(alpha: 0.85)], begin: Alignment.topLeft, end: Alignment.bottomRight),
         borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: Colors.white.withAlpha(70), borderRadius: BorderRadius.circular(12)),
-            child: const Icon(Icons.add_business, color: Colors.white, size: 28),
+            decoration: BoxDecoration(color: colorScheme.onPrimary.withValues(alpha: 0.18), borderRadius: BorderRadius.circular(12)),
+            child: Icon(Icons.add_business, color: colorScheme.onPrimary, size: 28),
           ),
           const SizedBox(width: 16),
           Text(
             isEditMode ? texts.serviceOfferedEditService : texts.serviceOfferedAddService,
-            style: theme.textTheme.bodyLarge!.copyWith(fontSize: 24, color: ColorHelper.white.color),
+            style: themeData.textTheme.bodyLarge!.copyWith(fontSize: 24, color: colorScheme.onPrimary),
           ),
         ],
       ),
@@ -215,6 +218,8 @@ class _ServiceCategorySelectorState extends State<_ServiceCategorySelector> {
   @override
   Widget build(BuildContext context) {
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     if (_isCustom) {
       return _ServiceTextField(controller: widget.controller, label: texts.serviceOfferedCategory, icon: Icons.category_outlined, validator: widget.validator);
@@ -224,21 +229,21 @@ class _ServiceCategorySelectorState extends State<_ServiceCategorySelector> {
       initialValue: _selectedCategory,
       decoration: InputDecoration(
         labelText: texts.serviceOfferedCategory,
-        prefixIcon: Icon(Icons.category_outlined, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(Icons.category_outlined, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
       validator: widget.validator,
       items: [
@@ -296,32 +301,33 @@ class _ServiceTagSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final unselectedTags = availableTags.where((tag) => !selectedTags.contains(tag)).toList();
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.local_offer_rounded, size: 20, color: ColorHelper.greenWeb.color),
+              Icon(Icons.local_offer_rounded, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
-              Text(texts.serviceOfferedTags, style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
+              Text(texts.serviceOfferedTags, style: themeData.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w600, fontSize: 16)),
             ],
           ),
           if (unselectedTags.isNotEmpty) ...[
             const SizedBox(height: 16),
             Text(
               texts.serviceOfferedQuickSelect,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -334,18 +340,18 @@ class _ServiceTagSection extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: ColorHelper.greenWeb.color.withValues(alpha: 0.3), width: 1.5),
+                      border: Border.all(color: colorScheme.primary.withValues(alpha: 0.35), width: 1.5),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.add_circle_outline, size: 16, color: ColorHelper.greenWeb.color),
+                        Icon(Icons.add_circle_outline, size: 16, color: colorScheme.primary),
                         const SizedBox(width: 4),
                         Text(
                           tag,
-                          style: TextStyle(color: ColorHelper.greenWeb.color, fontWeight: FontWeight.w500, fontSize: 13),
+                          style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w500, fontSize: 13),
                         ),
                       ],
                     ),
@@ -358,7 +364,7 @@ class _ServiceTagSection extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               texts.serviceOfferedSelectedTags,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -370,8 +376,8 @@ class _ServiceTagSection extends StatelessWidget {
                   deleteIcon: const Icon(Icons.close_rounded, size: 18),
                   onDeleted: () => onRemoveTag(tag),
                   backgroundColor: ColorHelper.orange500.color,
-                  labelStyle: theme.textTheme.bodyMedium!.copyWith(color: ColorHelper.white.color, fontWeight: FontWeight.w600),
-                  deleteIconColor: Colors.white,
+                  labelStyle: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary, fontWeight: FontWeight.w600),
+                  deleteIconColor: const Color(0xFFFFFFFF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(color: ColorHelper.orange300.color),
@@ -389,8 +395,8 @@ class _ServiceTagSection extends StatelessWidget {
                   onSubmitted: (_) => onAddTag(),
                   decoration: InputDecoration(
                     hintText: texts.serviceOfferedAddCustomTagHint,
-                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
-                    prefixIcon: Icon(Icons.edit_outlined, color: ColorHelper.greenWeb.color, size: 20),
+                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7), fontSize: 14),
+                    prefixIcon: Icon(Icons.edit_outlined, color: colorScheme.primary, size: 20),
                     suffixIcon: IconButton(
                       icon: Icon(Icons.add_circle, color: ColorHelper.orange500.color, size: 24),
                       onPressed: onAddTag,
@@ -398,18 +404,18 @@ class _ServiceTagSection extends StatelessWidget {
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(color: colorScheme.outline),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
+                      borderSide: BorderSide(color: colorScheme.outline),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+                      borderSide: BorderSide(color: colorScheme.primary, width: 2),
                     ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: colorScheme.surface,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
@@ -435,6 +441,8 @@ class _ServiceTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
@@ -443,21 +451,21 @@ class _ServiceTextField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(icon, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
     );
   }
@@ -474,26 +482,28 @@ class _ServiceDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return DropdownButtonFormField<String>(
       initialValue: value,
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: ColorHelper.greenWeb.color),
+        prefixIcon: Icon(icon, color: colorScheme.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
+          borderSide: BorderSide(color: colorScheme.outline),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: ColorHelper.greenWeb.color, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
         filled: true,
-        fillColor: Colors.grey.shade50,
+        fillColor: colorScheme.surfaceContainerHighest,
       ),
       items: items.map((item) {
         return DropdownMenuItem(value: item, child: Text(item));
@@ -510,22 +520,23 @@ class _ServiceActiveSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60)),
       ),
       child: Row(
         children: [
-          Icon(Icons.toggle_on_outlined, color: ColorHelper.greenWeb.color),
+          Icon(Icons.toggle_on_outlined, color: colorScheme.primary),
           const SizedBox(width: 12),
-          Expanded(child: Text(texts.serviceOfferedActiveStatus, style: theme.textTheme.bodyMedium)),
-          Switch(value: active, onChanged: onChanged, activeThumbColor: ColorHelper.orange500.color),
+          Expanded(child: Text(texts.serviceOfferedActiveStatus, style: themeData.textTheme.bodyMedium)),
+          Switch(value: active, onChanged: onChanged, activeThumbColor: colorScheme.secondary),
         ],
       ),
     );
@@ -543,11 +554,13 @@ class _ServiceModalFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ServiceOfferedText texts = TextsProvider.of(context)!.serviceOfferedText;
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: colorScheme.surfaceContainerHighest,
         borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(24), bottomRight: Radius.circular(24)),
       ),
       child: Row(
@@ -561,21 +574,21 @@ class _ServiceModalFooter extends StatelessWidget {
             ),
             child: Text(
               texts.serviceOfferedCancel,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? Colors.grey.shade400 : Colors.grey.shade700),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: isUploading ? colorScheme.onSurfaceVariant.withValues(alpha: 0.6) : colorScheme.onSurfaceVariant),
             ),
           ),
           const SizedBox(width: 12),
           ElevatedButton(
             onPressed: isUploading ? null : onSave,
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorHelper.greenWeb.color,
-              foregroundColor: Colors.white,
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
             child: isUploading
-                ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)))
+                ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(colorScheme.onPrimary)))
                 : Text(
                     isEditMode ? texts.serviceOfferedUpdateServiceButton : texts.serviceOfferedAddServiceButton,
                     style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

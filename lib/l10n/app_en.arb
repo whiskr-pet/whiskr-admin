@@ -655,4 +655,81 @@
   "serviceOfferedTryAdjustingSearch": "Try adjusting your search",
   "serviceOfferedNoOffersFound": "No offers found",
   "serviceOfferedNoOffersAvailable": "No offers available"
+  ,
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Main title for settings screen"
+  },
+  "settingsSectionAccount": "Account",
+  "@settingsSectionAccount": {
+    "description": "Section header for account-related settings"
+  },
+  "settingsProfile": "Profile",
+  "@settingsProfile": {
+    "description": "Navigate to profile view"
+  },
+  "settingsEditProfile": "Edit profile",
+  "@settingsEditProfile": {
+    "description": "Navigate to edit profile flow"
+  },
+  "settingsEditProfileComingSoon": "Edit profile will be enabled once the API is available.",
+  "@settingsEditProfileComingSoon": {
+    "description": "Placeholder text until edit profile API is integrated"
+  },
+  "settingsSectionAppearance": "Appearance",
+  "@settingsSectionAppearance": {
+    "description": "Section header for appearance-related settings"
+  },
+  "settingsTheme": "Theme",
+  "@settingsTheme": {
+    "description": "Theme setting label"
+  },
+  "settingsThemeSystem": "System default",
+  "@settingsThemeSystem": {
+    "description": "Theme mode option: system"
+  },
+  "settingsThemeLight": "Light",
+  "@settingsThemeLight": {
+    "description": "Theme mode option: light"
+  },
+  "settingsThemeDark": "Dark",
+  "@settingsThemeDark": {
+    "description": "Theme mode option: dark"
+  },
+  "settingsLanguage": "Language",
+  "@settingsLanguage": {
+    "description": "Language setting label"
+  },
+  "settingsLocaleEnglish": "English",
+  "@settingsLocaleEnglish": {
+    "description": "English language label"
+  },
+  "settingsLocaleBosnian": "Bosnian",
+  "@settingsLocaleBosnian": {
+    "description": "Bosnian language label"
+  },
+  "settingsSectionSecurity": "Security & session",
+  "@settingsSectionSecurity": {
+    "description": "Section header for security/session settings"
+  },
+  "settingsLogout": "Logout",
+  "@settingsLogout": {
+    "description": "Logout action label"
+  },
+  "settingsLogoutConfirmTitle": "Confirm logout",
+  "@settingsLogoutConfirmTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "settingsLogoutConfirmBody": "You will be signed out from this device.",
+  "@settingsLogoutConfirmBody": {
+    "description": "Body text for logout confirmation dialog"
+  },
+  "settingsCancel": "Cancel",
+  "@settingsCancel": {
+    "description": "Cancel button label"
+  },
+  "settingsConfirm": "Confirm",
+  "@settingsConfirm": {
+    "description": "Confirm button label"
+  }
 }

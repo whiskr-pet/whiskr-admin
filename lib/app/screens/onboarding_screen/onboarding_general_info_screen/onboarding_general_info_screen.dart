@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_general_info_screen/onboarding_stepper/onboarding_stepper.dart';
@@ -15,7 +14,6 @@ class OnboardingGeneralInfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorHelper.grey150.color,
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
@@ -42,7 +40,8 @@ class _BuildGeneralInfoHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final int currentStep = context.select<WAOnboardingProvider, int>((provider) => provider.currentStep);
 
     final double titleFontSize = Responsive.value(context: context, mobile: 26.0, tablet: 30.0, desktop: 34.0, widescreen: 40.0);
@@ -60,13 +59,13 @@ class _BuildGeneralInfoHeader extends StatelessWidget {
         Text(
           texts.getStepTitle(currentStep),
           textAlign: TextAlign.center,
-          style: theme.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900, fontSize: titleFontSize, color: ColorHelper.greenWeb.color),
+          style: themeData.textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.w900, fontSize: titleFontSize, color: colorScheme.primary),
         ),
         const SizedBox(height: 12),
         Text(
           texts.getStepDescription(currentStep),
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyMedium?.copyWith(fontSize: descriptionFontSize, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
+          style: themeData.textTheme.bodyMedium?.copyWith(fontSize: descriptionFontSize, fontWeight: FontWeight.w500, color: colorScheme.primary),
         ),
       ],
     );

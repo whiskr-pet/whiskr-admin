@@ -19,7 +19,7 @@ class RevenueChartStyle {
     this.gridColor = const Color(0xFFE5E7EB),
     this.labelColor = const Color(0xFF6B7280),
     this.tooltipBackgroundColor = const Color(0xFF0F766E),
-    this.tooltipTextColor = Colors.white,
+    this.tooltipTextColor = const Color(0xFFFFFFFF),
     this.lineWidth = 2.0,
     this.dotSize = 4.0,
     this.highlightDotSize = 8.0,

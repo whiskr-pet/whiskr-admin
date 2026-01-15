@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_search_module/w_search_module.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_search_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
@@ -173,16 +172,18 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final bool hasActiveFilters = _selectedStatus != null || _selectedActiveStatus != null || _selectedCategory != null || _selectedTags.isNotEmpty || _selectedSortBy != null;
     final InventoryTexts texts = TextsProvider.of(context)!.inventoryTexts;
 
     return Container(
       padding: EdgeInsets.all(Responsive.value(context: context, mobile: 12.0, tablet: 16.0, desktop: 16.0, widescreen: 20.0)),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: ColorHelper.greenWeb.color.withValues(alpha: 0.2), width: 1),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))],
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.22), width: 1),
+        boxShadow: <BoxShadow>[BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.10), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -191,30 +192,30 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
           // Header Row
           Row(
             children: [
-              Icon(Icons.filter_list_rounded, size: 20, color: ColorHelper.greenWeb.color),
+              Icon(Icons.filter_list_rounded, size: 20, color: colorScheme.primary),
               const SizedBox(width: 8),
               Text(
                 texts.inventoryFiltersTitle,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.grey[800]),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: colorScheme.onSurface),
               ),
               if (hasActiveFilters)
                 Container(
                   margin: const EdgeInsets.only(left: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(color: ColorHelper.greenWeb.color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+                  decoration: BoxDecoration(color: colorScheme.primary.withValues(alpha: 0.14), borderRadius: BorderRadius.circular(12)),
                   child: Text(
                     '${_getActiveFilterCount()}',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: ColorHelper.greenWeb.color),
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: colorScheme.primary),
                   ),
                 ),
               const Spacer(),
               if (hasActiveFilters)
                 TextButton.icon(
                   onPressed: _clearFilters,
-                  icon: Icon(Icons.clear_rounded, size: 16, color: Colors.red[400]),
+                  icon: Icon(Icons.clear_rounded, size: 16, color: colorScheme.error),
                   label: Text(
                     texts.inventoryFiltersClearAll,
-                    style: TextStyle(color: Colors.red[400], fontWeight: FontWeight.w500, fontSize: 13),
+                    style: TextStyle(color: colorScheme.error, fontWeight: FontWeight.w500, fontSize: 13),
                   ),
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -301,13 +302,13 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 children: [
                   Text(
                     texts.inventoryFiltersAdvanced,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: ColorHelper.greenWeb.color),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: colorScheme.primary),
                   ),
                   const SizedBox(width: 4),
                   AnimatedRotation(
                     turns: _showAdvancedFilters ? 0.5 : 0,
                     duration: const Duration(milliseconds: 300),
-                    child: Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: ColorHelper.greenWeb.color),
+                    child: Icon(Icons.keyboard_arrow_down_rounded, size: 20, color: colorScheme.primary),
                   ),
                 ],
               ),
@@ -331,9 +332,9 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey[300]!, width: 1),
+                    border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60), width: 1),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -348,7 +349,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       isExpanded: true,
                       icon: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(Icons.arrow_drop_down_rounded, color: ColorHelper.greenWeb.color),
+                        child: Icon(Icons.arrow_drop_down_rounded, color: colorScheme.primary),
                       ),
                       borderRadius: BorderRadius.circular(10),
                       items: [
@@ -394,8 +395,8 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                         label: Text(tag),
                         deleteIcon: const Icon(Icons.close_rounded, size: 16),
                         onDeleted: () => _removeTag(tag),
-                        backgroundColor: ColorHelper.greenWeb.color.withValues(alpha: 0.1),
-                        labelStyle: TextStyle(color: ColorHelper.greenWeb.color, fontSize: 12, fontWeight: FontWeight.w500),
+                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                        labelStyle: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.w500),
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       );
@@ -407,9 +408,9 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 // Tags Dropdown
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey[300]!, width: 1),
+                    border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60), width: 1),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -424,7 +425,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       isExpanded: true,
                       icon: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(Icons.arrow_drop_down_rounded, color: ColorHelper.greenWeb.color),
+                        child: Icon(Icons.arrow_drop_down_rounded, color: colorScheme.primary),
                       ),
                       borderRadius: BorderRadius.circular(10),
                       items: widget.availableTags.where((String tag) => !_selectedTags.contains(tag)).map((String tag) {
@@ -454,9 +455,9 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                 const SizedBox(height: 8),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey[300]!, width: 1),
+                    border: Border.all(color: colorScheme.outline.withValues(alpha: 0.60), width: 1),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
@@ -468,7 +469,7 @@ class _InventoryFiltersWidgetState extends State<InventoryFiltersWidget> with Si
                       isExpanded: true,
                       icon: Padding(
                         padding: const EdgeInsets.only(right: 12),
-                        child: Icon(Icons.arrow_drop_down_rounded, color: ColorHelper.greenWeb.color),
+                        child: Icon(Icons.arrow_drop_down_rounded, color: colorScheme.primary),
                       ),
                       borderRadius: BorderRadius.circular(10),
                       items: [
@@ -559,25 +560,27 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return FilterChip(
       label: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: isSelected ? Colors.white : ColorHelper.greenWeb.color),
+          Icon(icon, size: 16, color: isSelected ? colorScheme.onPrimary : colorScheme.primary),
           const SizedBox(width: 6),
           Text(label),
         ],
       ),
       selected: isSelected,
       onSelected: onSelected,
-      selectedColor: ColorHelper.greenWeb.color,
-      backgroundColor: ColorHelper.greenWeb.color.withValues(alpha: 0.1),
-      checkmarkColor: Colors.white,
-      labelStyle: TextStyle(color: isSelected ? Colors.white : ColorHelper.greenWeb.color, fontWeight: FontWeight.w500, fontSize: 13),
+      selectedColor: colorScheme.primary,
+      backgroundColor: colorScheme.primary.withValues(alpha: 0.14),
+      checkmarkColor: colorScheme.onPrimary,
+      labelStyle: TextStyle(color: isSelected ? colorScheme.onPrimary : colorScheme.primary, fontWeight: FontWeight.w500, fontSize: 13),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: isSelected ? ColorHelper.greenWeb.color : ColorHelper.greenWeb.color.withValues(alpha: 0.3), width: 1.5),
+        side: BorderSide(color: isSelected ? colorScheme.primary : colorScheme.primary.withValues(alpha: 0.35), width: 1.5),
       ),
     );
   }
@@ -591,14 +594,16 @@ class _SectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: Colors.grey[700]),
+        Icon(icon, size: 16, color: colorScheme.onSurfaceVariant),
         const SizedBox(width: 6),
         Text(
           label,
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Colors.grey[700]),
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
         ),
       ],
     );

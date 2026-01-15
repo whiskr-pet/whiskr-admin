@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:w_components/w_components.dart';
 import 'package:w_components/wa_analytics_top_products/wa_analytics_top_products.dart';
 import 'package:w_dashboard/helpers/stock_status_type.dart';
-import 'package:w_utils/color_helper/color_helper.dart';
 import 'package:w_utils/models/image_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_analytics_module/helpers/time_period_enum.dart';
@@ -44,12 +43,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 }
 
 class _BuildBody extends StatelessWidget {
-  const _BuildBody({super.key, required this.revenueData});
+  const _BuildBody({required this.revenueData});
 
   final RevenueTrendData revenueData;
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final horizontalPadding = Responsive.value(context: context, mobile: 24.0, tablet: 32.0, desktop: 40.0, widescreen: 48.0);
     final verticalPadding = Responsive.value(context: context, mobile: 16.0, tablet: 24.0, desktop: 32.0, widescreen: 40.0);
 
@@ -69,7 +70,7 @@ class _BuildBody extends StatelessWidget {
           Card(
             child: Container(
               padding: EdgeInsets.all(Responsive.value(context: context, mobile: 16.0, tablet: 20.0, desktop: 24.0, widescreen: 28.0)),
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: ColorHelper.white.color),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: colorScheme.surface),
               height: Responsive.value(context: context, mobile: 400.0, tablet: 450.0, desktop: 500.0, widescreen: 550.0),
               child: _SalesTrendStatistic(revenueData: revenueData),
             ),
@@ -84,11 +85,12 @@ class _BuildBody extends StatelessWidget {
 }
 
 class _BuildHeader extends StatelessWidget {
-  const _BuildHeader({super.key});
+  const _BuildHeader();
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     final double titleSize = Responsive.value(context: context, mobile: 24.0, tablet: 28.0, desktop: 32.0, widescreen: 36.0);
 
     return Column(
@@ -102,7 +104,7 @@ class _BuildHeader extends StatelessWidget {
         Text(
           'Monitor your business performance and insights',
           style: theme.textTheme.bodyMedium!.copyWith(
-            color: Colors.grey[600],
+            color: colorScheme.onSurfaceVariant,
             fontSize: Responsive.value(context: context, mobile: 14.0, tablet: 15.0, desktop: 16.0, widescreen: 17.0),
           ),
         ),
@@ -112,12 +114,17 @@ class _BuildHeader extends StatelessWidget {
 }
 
 class _RevenueSegment extends StatelessWidget {
-  const _RevenueSegment({super.key});
+  const _RevenueSegment();
 
   @override
   Widget build(BuildContext context) {
     // For tablet: 2 columns, desktop: 2 columns with more space, widescreen: 2 columns with max width
-    return ResponsiveBuilder(mobile: _buildMobileLayout(context), tablet: _buildTabletLayout(context), desktop: _buildDesktopLayout(context), widescreen: _buildWidescreenLayout(context));
+    return ResponsiveBuilder(
+      mobile: _buildMobileLayout(context),
+      tablet: _buildTabletLayout(context),
+      desktop: _buildDesktopLayout(context),
+      widescreen: _buildWidescreenLayout(context),
+    );
   }
 
   Widget _buildMobileLayout(BuildContext context) {
@@ -179,7 +186,7 @@ class _RevenueSegment extends StatelessWidget {
 }
 
 class _ProductStatisticSegment extends StatelessWidget {
-  const _ProductStatisticSegment({super.key});
+  const _ProductStatisticSegment();
 
   @override
   Widget build(BuildContext context) {
@@ -194,7 +201,12 @@ class _ProductStatisticSegment extends StatelessWidget {
           style: theme.textTheme.bodyMedium!.copyWith(fontSize: titleSize, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: Responsive.value(context: context, mobile: 16.0, tablet: 18.0, desktop: 20.0, widescreen: 22.0)),
-        ResponsiveBuilder(mobile: _buildMobileLayout(context), tablet: _buildTabletLayout(context), desktop: _buildDesktopLayout(context), widescreen: _buildWidescreenLayout(context)),
+        ResponsiveBuilder(
+          mobile: _buildMobileLayout(context),
+          tablet: _buildTabletLayout(context),
+          desktop: _buildDesktopLayout(context),
+          widescreen: _buildWidescreenLayout(context),
+        ),
       ],
     );
   }
@@ -258,7 +270,7 @@ class _ProductStatisticSegment extends StatelessWidget {
 }
 
 class _OrderStatisticSegment extends StatelessWidget {
-  const _OrderStatisticSegment({super.key});
+  const _OrderStatisticSegment();
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +285,12 @@ class _OrderStatisticSegment extends StatelessWidget {
           style: theme.textTheme.bodyMedium!.copyWith(fontSize: titleSize, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: Responsive.value(context: context, mobile: 16.0, tablet: 18.0, desktop: 20.0, widescreen: 22.0)),
-        ResponsiveBuilder(mobile: _buildMobileLayout(context), tablet: _buildTabletLayout(context), desktop: _buildDesktopLayout(context), widescreen: _buildWidescreenLayout(context)),
+        ResponsiveBuilder(
+          mobile: _buildMobileLayout(context),
+          tablet: _buildTabletLayout(context),
+          desktop: _buildDesktopLayout(context),
+          widescreen: _buildWidescreenLayout(context),
+        ),
       ],
     );
   }
@@ -366,7 +383,7 @@ class _OrderStatisticSegment extends StatelessWidget {
 }
 
 class _SalesTrendStatistic extends StatelessWidget {
-  const _SalesTrendStatistic({super.key, required this.revenueData});
+  const _SalesTrendStatistic({required this.revenueData});
 
   final RevenueTrendData revenueData;
 
@@ -399,14 +416,16 @@ class _SalesTrendStatistic extends StatelessWidget {
 }
 
 class _TimePeriodDropdown extends StatelessWidget {
-  const _TimePeriodDropdown({super.key});
+  const _TimePeriodDropdown();
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<WAAnalyticsProvider>();
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
 
     return PopupMenuButton<TimePeriod>(
-      color: Colors.white,
+      color: colorScheme.surface,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       offset: const Offset(0, 8),
@@ -425,7 +444,7 @@ class _TimePeriodDropdown extends StatelessWidget {
               isLast: period == TimePeriod.values.last,
               child: Text(
                 period.displayName,
-                style: TextStyle(color: const Color(0xFF374151), fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400),
+                style: TextStyle(color: colorScheme.onSurface, fontSize: 16, fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400),
               ),
             ),
           );
@@ -434,19 +453,19 @@ class _TimePeriodDropdown extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: const Color(0xFF0F766E), width: 1.5),
+          border: Border.all(color: colorScheme.primary, width: 1.5),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               provider.selectedPeriod.displayName,
-              style: const TextStyle(color: Color(0xFF0F766E), fontWeight: FontWeight.w600, fontSize: 16),
+              style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w600, fontSize: 16),
             ),
             const SizedBox(width: 8),
-            const Icon(Icons.arrow_drop_down, color: Color(0xFF0F766E), size: 24),
+            Icon(Icons.arrow_drop_down, color: colorScheme.primary, size: 24),
           ],
         ),
       ),
@@ -471,6 +490,8 @@ class _HoverMenuItemState extends State<_HoverMenuItem> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -479,10 +500,10 @@ class _HoverMenuItemState extends State<_HoverMenuItem> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
           color: widget.isSelected
-              ? const Color(0xFFD4E7D7)
+              ? colorScheme.primary.withValues(alpha: 0.14)
               : _isHovered
-              ? const Color(0xFFF3F4F6)
-              : Colors.white,
+              ? colorScheme.surfaceContainerHighest
+              : colorScheme.surface,
           borderRadius: widget.isFirst
               ? const BorderRadius.vertical(top: Radius.circular(12))
               : widget.isLast
@@ -504,24 +525,26 @@ class _FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: isSelected ? ColorHelper.greenWeb.color : const Color(0xFFE5E7EB)),
+          border: Border.all(color: isSelected ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.50)),
         ),
         child: Row(
           children: [
             Text(
               label,
-              style: TextStyle(color: isSelected ? ColorHelper.greenWeb.color : const Color(0xFF6B7280), fontWeight: FontWeight.w500),
+              style: TextStyle(color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant, fontWeight: FontWeight.w500),
             ),
             const SizedBox(width: 8),
-            Icon(Icons.arrow_drop_up, color: isSelected ? ColorHelper.greenWeb.color : const Color(0xFF6B7280)),
+            Icon(Icons.arrow_drop_up, color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant),
           ],
         ),
       ),
@@ -619,10 +642,10 @@ class RevenueLineChart extends StatelessWidget {
           getTouchedSpotIndicator: (LineChartBarData barData, List<int> spotIndexes) {
             return spotIndexes.map((spotIndex) {
               return TouchedSpotIndicatorData(
-                FlLine(color: style.lineColor.withOpacity(0.3), strokeWidth: 2),
+                FlLine(color: style.lineColor.withValues(alpha: 0.3), strokeWidth: 2),
                 FlDotData(
                   getDotPainter: (spot, percent, barData, index) {
-                    return FlDotCirclePainter(radius: 6, color: style.highlightColor, strokeWidth: 2, strokeColor: Colors.white);
+                    return FlDotCirclePainter(radius: 6, color: style.highlightColor, strokeWidth: 2, strokeColor: Theme.of(context).colorScheme.surface);
                   },
                 ),
               );
@@ -690,7 +713,7 @@ class RevenueLineChart extends StatelessWidget {
 }
 
 class _TopProductsSegment extends StatelessWidget {
-  const _TopProductsSegment({super.key});
+  const _TopProductsSegment();
 
   @override
   Widget build(BuildContext context) {

@@ -12,6 +12,9 @@ import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_intr
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_summary_screen/onboarding_summary_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/orders_and_appointments_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/splash_screen/splash_screen.dart';
+import 'package:whiskr_admin_panel/app/features/settings/views/settings_screen.dart';
+import 'package:whiskr_admin_panel/app/features/settings/views/profile/settings_edit_profile_screen.dart';
+import 'package:whiskr_admin_panel/app/features/settings/views/profile/settings_profile_screen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
 import '../app/screens/analytics_screen/analytics_screen.dart';
@@ -69,7 +72,21 @@ class RouteGenerator {
             path: settingsRoute,
             name: 'settings',
             builder: (BuildContext context, GoRouterState state) {
-              return const Scaffold(body: Center(child: Text('Settings - Coming Soon')));
+              return const SettingsScreen();
+            },
+          ),
+          GoRoute(
+            path: settingsProfileRoute,
+            name: 'settings-profile',
+            builder: (BuildContext context, GoRouterState state) {
+              return const SettingsProfileScreen();
+            },
+          ),
+          GoRoute(
+            path: settingsEditProfileRoute,
+            name: 'settings-edit-profile',
+            builder: (BuildContext context, GoRouterState state) {
+              return const SettingsEditProfileScreen();
             },
           ),
         ],

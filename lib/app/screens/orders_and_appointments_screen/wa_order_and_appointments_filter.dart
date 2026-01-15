@@ -28,56 +28,63 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       height: 72,
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE5E7EB)),
+        color: colorScheme.surface,
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.50)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         children: [
-          _buildFilterIcon(),
-          _buildDivider(),
+          _buildFilterIcon(context),
+          _buildDivider(context),
           _buildFilterOption(
+            context: context,
             label: 'Date',
             value: selectedDate,
             onTap: onDateTap,
           ),
-          _buildDivider(),
+          _buildDivider(context),
           _buildFilterOption(
+            context: context,
             label: 'Order Type',
             value: selectedOrderType,
             onTap: onOrderTypeTap,
           ),
-          _buildDivider(),
+          _buildDivider(context),
           _buildFilterOption(
+            context: context,
             label: 'Order Status',
             value: selectedOrderStatus,
             onTap: onOrderStatusTap,
           ),
-          _buildDivider(),
-          _buildResetButton(),
+          _buildDivider(context),
+          _buildResetButton(context),
         ],
       ),
     );
   }
 
-  Widget _buildFilterIcon() {
+  Widget _buildFilterIcon(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       width: 140,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.filter_list, size: 24, color: Colors.grey[800]),
+          Icon(Icons.filter_list, size: 24, color: colorScheme.onSurface),
           const SizedBox(width: 8),
           Text(
             'Filter By',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey[800],
+              color: colorScheme.onSurface,
             ),
           ),
         ],
@@ -85,15 +92,20 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
     );
   }
 
-  Widget _buildDivider() {
-    return Container(height: 40, width: 1, color: const Color(0xFFE5E7EB));
+  Widget _buildDivider(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
+    return Container(height: 40, width: 1, color: colorScheme.outline.withValues(alpha: 0.50));
   }
 
   Widget _buildFilterOption({
+    required BuildContext context,
     required String label,
     String? value,
     required VoidCallback onTap,
   }) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -109,7 +121,7 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: value != null ? Colors.grey[800] : Colors.grey[600],
+                    color: value != null ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -117,7 +129,7 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
               Icon(
                 Icons.keyboard_arrow_down,
                 size: 20,
-                color: Colors.grey[600],
+                color: colorScheme.onSurfaceVariant,
               ),
             ],
           ),
@@ -126,7 +138,9 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
     );
   }
 
-  Widget _buildResetButton() {
+  Widget _buildResetButton(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     return Container(
       width: 140,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -136,14 +150,14 @@ class WAOrdersAppointmentFilter extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.refresh, size: 20, color: Colors.orange[700]),
+            Icon(Icons.refresh, size: 20, color: colorScheme.secondary),
             const SizedBox(width: 6),
             Text(
               'Reset Filter',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.orange[700],
+                color: colorScheme.secondary,
               ),
             ),
           ],
@@ -183,10 +197,11 @@ class DateRangeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
+        color: colorScheme.primary,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
@@ -205,7 +220,7 @@ class DateRangeSelector extends StatelessWidget {
                 style: theme.textTheme.bodyMedium!.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: ColorHelper.white.color,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               if (selectedRange != null)
@@ -214,14 +229,14 @@ class DateRangeSelector extends StatelessWidget {
                   child: Text(
                     'Clear',
                     style: theme.textTheme.bodyMedium!.copyWith(
-                      color: ColorHelper.white.color,
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),
             ],
           ),
           const SizedBox(height: 16),
-          _buildPresetOption('Today', Icons.today, () {
+          _buildPresetOption(context: context, label: 'Today', icon: Icons.today, onTap: () {
             final now = DateTime.now();
             onSelected(
               DateTimeRange(
@@ -231,7 +246,7 @@ class DateRangeSelector extends StatelessWidget {
             );
           }),
           const SizedBox(height: 12),
-          _buildPresetOption('Last 7 Days', Icons.date_range, () {
+          _buildPresetOption(context: context, label: 'Last 7 Days', icon: Icons.date_range, onTap: () {
             final now = DateTime.now();
             onSelected(
               DateTimeRange(
@@ -245,7 +260,7 @@ class DateRangeSelector extends StatelessWidget {
             );
           }),
           const SizedBox(height: 12),
-          _buildPresetOption('Last 30 Days', Icons.calendar_month, () {
+          _buildPresetOption(context: context, label: 'Last 30 Days', icon: Icons.calendar_month, onTap: () {
             final now = DateTime.now();
             onSelected(
               DateTimeRange(
@@ -259,7 +274,7 @@ class DateRangeSelector extends StatelessWidget {
             );
           }),
           const SizedBox(height: 12),
-          _buildPresetOption('This Month', Icons.calendar_today, () {
+          _buildPresetOption(context: context, label: 'This Month', icon: Icons.calendar_today, onTap: () {
             final now = DateTime.now();
             onSelected(
               DateTimeRange(
@@ -276,7 +291,9 @@ class DateRangeSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildPresetOption(String label, IconData icon, VoidCallback onTap) {
+  Widget _buildPresetOption({required BuildContext context, required String label, required IconData icon, required VoidCallback onTap}) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final isSelected = _isPresetSelected(label);
     return InkWell(
       onTap: onTap,
@@ -287,13 +304,13 @@ class DateRangeSelector extends StatelessWidget {
           border: Border.all(
             color: isSelected
                 ? ColorHelper.orange500.color
-                : const Color(0xFFE5E7EB),
+                : colorScheme.outline.withValues(alpha: 0.50),
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
           color: isSelected
-              ? ColorHelper.orange500.color.withOpacity(0.05)
-              : Colors.white,
+              ? ColorHelper.orange500.color.withValues(alpha: 0.08)
+              : colorScheme.surface,
         ),
         child: Row(
           children: [
@@ -301,7 +318,7 @@ class DateRangeSelector extends StatelessWidget {
               icon,
               color: isSelected
                   ? ColorHelper.orange700.color
-                  : Colors.grey[600],
+                  : colorScheme.onSurfaceVariant,
               size: 24,
             ),
             const SizedBox(width: 12),
@@ -312,7 +329,7 @@ class DateRangeSelector extends StatelessWidget {
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                 color: isSelected
                     ? ColorHelper.orange700.color
-                    : Colors.grey[800],
+                    : colorScheme.onSurface,
               ),
             ),
             const Spacer(),
@@ -337,15 +354,12 @@ class DateRangeSelector extends StatelessWidget {
           lastDate: DateTime.now().add(const Duration(days: 365)),
           initialDateRange: selectedRange,
           builder: (context, child) {
+            final ThemeData themeData = Theme.of(context);
+            final ColorScheme baseColorScheme = themeData.colorScheme;
             return Theme(
-              data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
+              data: themeData.copyWith(
+                colorScheme: baseColorScheme.copyWith(
                   primary: ColorHelper.orange500.color,
-                  onPrimary: Colors.white,
-                  surface: Colors.white,
-                  onSurface: Colors.grey[800]!,
-                  primaryContainer: ColorHelper.greenWeb.color,
-                  onPrimaryContainer: Colors.white,
                   secondary: ColorHelper.orange300.color,
                 ),
               ),
@@ -364,13 +378,13 @@ class DateRangeSelector extends StatelessWidget {
           border: Border.all(
             color: selectedRange != null && !_isPresetSelected('')
                 ? ColorHelper.orange500.color
-                : const Color(0xFFE5E7EB),
+                : Theme.of(context).colorScheme.outline.withValues(alpha: 0.50),
             width: selectedRange != null && !_isPresetSelected('') ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
           color: selectedRange != null && !_isPresetSelected('')
-              ? Colors.orange.withOpacity(0.05)
-              : Colors.white,
+              ? ColorHelper.orange500.color.withValues(alpha: 0.08)
+              : Theme.of(context).colorScheme.surface,
         ),
         child: Row(
           children: [
@@ -378,7 +392,7 @@ class DateRangeSelector extends StatelessWidget {
               Icons.edit_calendar,
               color: selectedRange != null && !_isPresetSelected('')
                   ? ColorHelper.orange700.color
-                  : Colors.grey[600],
+                  : Theme.of(context).colorScheme.onSurfaceVariant,
               size: 24,
             ),
             const SizedBox(width: 12),
@@ -395,7 +409,7 @@ class DateRangeSelector extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[600]),
+            Icon(Icons.arrow_forward_ios, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
           ],
         ),
       ),
@@ -460,9 +474,10 @@ class OrderTypeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
+        color: colorScheme.primary,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
@@ -481,7 +496,7 @@ class OrderTypeSelector extends StatelessWidget {
                 style: theme.textTheme.bodyMedium!.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: ColorHelper.white.color,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               if (selectedType != null)
@@ -490,7 +505,7 @@ class OrderTypeSelector extends StatelessWidget {
                   child: Text(
                     'Clear',
                     style: theme.textTheme.bodyMedium!.copyWith(
-                      color: ColorHelper.white.color,
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -498,12 +513,14 @@ class OrderTypeSelector extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _buildOrderTypeOption(
+            context,
             OrderType.delivery,
             'Delivery',
             Icons.local_shipping_outlined,
           ),
           const SizedBox(height: 12),
           _buildOrderTypeOption(
+            context,
             OrderType.pickup,
             'Pickup',
             Icons.store_outlined,
@@ -514,7 +531,9 @@ class OrderTypeSelector extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderTypeOption(OrderType type, String label, IconData icon) {
+  Widget _buildOrderTypeOption(BuildContext context, OrderType type, String label, IconData icon) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final isSelected = selectedType == type;
     return InkWell(
       onTap: () => onSelected(type),
@@ -527,7 +546,7 @@ class OrderTypeSelector extends StatelessWidget {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
-          color: isSelected ? Colors.orange.withOpacity(0.05) : Colors.white,
+          color: isSelected ? colorScheme.secondary.withValues(alpha: 0.08) : colorScheme.surface,
         ),
         child: Row(
           children: [
@@ -585,9 +604,10 @@ class OrderStatusSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ColorScheme colorScheme = theme.colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: ColorHelper.greenWeb.color,
+        color: colorScheme.primary,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),
           topRight: Radius.circular(10),
@@ -606,7 +626,7 @@ class OrderStatusSelector extends StatelessWidget {
                 style: theme.textTheme.bodyMedium!.copyWith(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: ColorHelper.white.color,
+                  color: colorScheme.onPrimary,
                 ),
               ),
               if (selectedStatus != null)
@@ -615,7 +635,7 @@ class OrderStatusSelector extends StatelessWidget {
                   child: Text(
                     'Clear',
                     style: theme.textTheme.bodyMedium!.copyWith(
-                      color: ColorHelper.white.color,
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),
@@ -623,6 +643,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           _buildStatusOption(
+            context,
             StatusChipType.pending,
             'Pending',
             Icons.schedule,
@@ -630,6 +651,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildStatusOption(
+            context,
             StatusChipType.confirmed,
             'Confirmed',
             Icons.check_circle,
@@ -637,6 +659,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildStatusOption(
+            context,
             StatusChipType.processing,
             'Processing',
             Icons.build,
@@ -644,6 +667,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildStatusOption(
+            context,
             StatusChipType.shipped,
             'Shipped',
             Icons.local_shipping,
@@ -651,6 +675,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildStatusOption(
+            context,
             StatusChipType.delivered,
             'Delivered',
             Icons.done_all,
@@ -658,6 +683,7 @@ class OrderStatusSelector extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildStatusOption(
+            context,
             StatusChipType.cancelled,
             'Cancelled',
             Icons.cancel,
@@ -670,11 +696,14 @@ class OrderStatusSelector extends StatelessWidget {
   }
 
   Widget _buildStatusOption(
+    BuildContext context,
     StatusChipType status,
     String label,
     IconData icon,
     Color color,
   ) {
+    final ThemeData themeData = Theme.of(context);
+    final ColorScheme colorScheme = themeData.colorScheme;
     final isSelected = selectedStatus == status;
     return InkWell(
       onTap: () => onSelected(status),
@@ -687,7 +716,7 @@ class OrderStatusSelector extends StatelessWidget {
             width: isSelected ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(12),
-          color: isSelected ? color.withValues(alpha: 0.05) : Colors.white,
+          color: isSelected ? color.withValues(alpha: 0.08) : colorScheme.surface,
         ),
         child: Row(
           children: [
