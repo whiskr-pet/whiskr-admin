@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:whiskr_admin_panel/app/features/settings/widgets/settings_section_card.dart';
-import 'package:whiskr_admin_panel/app/features/settings/widgets/settings_tile.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/theme_mode_provider.dart';
 import 'package:whiskr_admin_panel/l10n/app_localizations.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
+
+import '../widgets/settings_section_card.dart';
+import '../widgets/settings_tile.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -29,10 +30,7 @@ class SettingsScreen extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: 24,
-              horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 60.0, desktop: 120.0, widescreen: 200.0),
-            ),
+            padding: EdgeInsets.symmetric(vertical: 24, horizontal: Responsive.value(context: context, mobile: 16.0, tablet: 60.0, desktop: 120.0, widescreen: 200.0)),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 900),
               child: Column(
@@ -46,30 +44,14 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSectionCard(
                     title: l10n.settingsSectionAccount,
                     children: <Widget>[
-                      SettingsTile(
-                        iconData: Icons.person_outline,
-                        title: l10n.settingsProfile,
-                        onTap: () => context.go(settingsProfileRoute),
-                      ),
-                      SettingsTile(
-                        iconData: Icons.edit_outlined,
-                        title: l10n.settingsEditProfile,
-                        subtitle: l10n.settingsEditProfileComingSoon,
-                        onTap: () => context.go(settingsEditProfileRoute),
-                        showDivider: false,
-                      ),
+                      SettingsTile(iconData: Icons.edit_outlined, title: l10n.settingsEditProfile, onTap: () => context.go(settingsEditProfileRoute), showDivider: false),
                     ],
                   ),
                   const SizedBox(height: 16),
                   SettingsSectionCard(
                     title: l10n.settingsSectionAppearance,
                     children: <Widget>[
-                      SettingsTile(
-                        iconData: Icons.dark_mode_outlined,
-                        title: l10n.settingsTheme,
-                        valueText: themeValueText,
-                        onTap: () => _openThemePicker(context),
-                      ),
+                      SettingsTile(iconData: Icons.dark_mode_outlined, title: l10n.settingsTheme, valueText: themeValueText, onTap: () => _openThemePicker(context)),
                       SettingsTile(
                         iconData: Icons.language_outlined,
                         title: l10n.settingsLanguage,
@@ -83,13 +65,7 @@ class SettingsScreen extends StatelessWidget {
                   SettingsSectionCard(
                     title: l10n.settingsSectionSecurity,
                     children: <Widget>[
-                      SettingsTile(
-                        iconData: Icons.logout,
-                        title: l10n.settingsLogout,
-                        isDestructive: true,
-                        onTap: () => _confirmAndLogout(context),
-                        showDivider: false,
-                      ),
+                      SettingsTile(iconData: Icons.logout, title: l10n.settingsLogout, isDestructive: true, onTap: () => _confirmAndLogout(context), showDivider: false),
                     ],
                   ),
                 ],
@@ -130,14 +106,8 @@ class SettingsScreen extends StatelessWidget {
           title: Text(l10n.settingsLogoutConfirmTitle),
           content: Text(l10n.settingsLogoutConfirmBody),
           actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: Text(l10n.settingsCancel),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: Text(l10n.settingsConfirm),
-            ),
+            TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.settingsCancel)),
+            FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.settingsConfirm)),
           ],
         );
       },
@@ -180,18 +150,9 @@ class _ThemeModePickerBottomSheet extends StatelessWidget {
               ListTile(
                 title: Text(l10n.settingsTheme, style: themeData.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               ),
-              RadioListTile<ThemeMode>(
-                value: ThemeMode.system,
-                title: Text(l10n.settingsThemeSystem),
-              ),
-              RadioListTile<ThemeMode>(
-                value: ThemeMode.light,
-                title: Text(l10n.settingsThemeLight),
-              ),
-              RadioListTile<ThemeMode>(
-                value: ThemeMode.dark,
-                title: Text(l10n.settingsThemeDark),
-              ),
+              RadioListTile<ThemeMode>(value: ThemeMode.system, title: Text(l10n.settingsThemeSystem)),
+              RadioListTile<ThemeMode>(value: ThemeMode.light, title: Text(l10n.settingsThemeLight)),
+              RadioListTile<ThemeMode>(value: ThemeMode.dark, title: Text(l10n.settingsThemeDark)),
             ],
           ),
         ),
@@ -234,14 +195,8 @@ class _LocalePickerBottomSheet extends StatelessWidget {
               ListTile(
                 title: Text(l10n.settingsLanguage, style: themeData.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               ),
-              RadioListTile<String>(
-                value: 'en',
-                title: Text(l10n.settingsLocaleEnglish),
-              ),
-              RadioListTile<String>(
-                value: 'bs',
-                title: Text(l10n.settingsLocaleBosnian),
-              ),
+              RadioListTile<String>(value: 'en', title: Text(l10n.settingsLocaleEnglish)),
+              RadioListTile<String>(value: 'bs', title: Text(l10n.settingsLocaleBosnian)),
             ],
           ),
         ),
@@ -280,4 +235,3 @@ class _SettingsLocaleLabel {
     return l10n.settingsLocaleEnglish;
   }
 }
-
