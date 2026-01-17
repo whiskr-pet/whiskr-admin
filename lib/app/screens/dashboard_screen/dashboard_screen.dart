@@ -9,9 +9,11 @@ import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dar
 import 'package:w_dashboard/helpers/stock_status_type.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
-import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:wa_orders_appointments_module/models/appointments_models/wa_appointments_model.dart';
+import 'package:wa_orders_appointments_module/providers/appointments_providers/wa_appointments_provider.dart';
+import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
@@ -24,8 +26,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  bool isPetShop = false;
-
   @override
   void initState() {
     super.initState();
@@ -36,26 +36,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _getInitialData() async {
     final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
+    final WaOrdersProvider ordersProvider = context.read<WaOrdersProvider>();
+    final WaAppointmentsProvider appointmentsProvider = context.read<WaAppointmentsProvider>();
     dashboardProvider.setLoading(true);
-    if (mounted) {
-      final ResponseModel<String> dataResponse = await context.read<WAOnboardingProvider>().getServiceAdmin();
-      if (dataResponse.isSuccess) {
-        if (mounted) {
-          final bool isPetShop = context.read<WAOnboardingProvider>().serviceAdminData.type == 'SHOP';
-          setState(() {
-            this.isPetShop = isPetShop;
-          });
-        }
-      } else {
-        // Handle error if needed
-      }
-      dashboardProvider.setLoading(false);
-    }
+    await context.read<WAOnboardingProvider>().getServiceAdmin();
+    Future.wait([ordersProvider.getLastOrdersLimit(), appointmentsProvider.getLastAppointmentsLimit()]);
+    dashboardProvider.setLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _BuildDashboardWelcome(isPetShop: isPetShop));
+    return Scaffold(
+      body: Selector<DashboardProvider, bool>(
+        selector: (context, dashboardProvider) => dashboardProvider.isPetShop,
+        builder: (context, isPetShop, child) {
+          return _BuildDashboardWelcome(isPetShop: isPetShop);
+        },
+      ),
+    );
   }
 }
 
@@ -98,10 +96,15 @@ class _BuildDashboardWelcome extends StatelessWidget {
               const SizedBox(height: 24),
               Text('Overview', style: theme.textTheme.headlineMedium),
               const SizedBox(height: 24),
-              if (Responsive.isTablet(context) || Responsive.isMobile(context)) ...[_BuildDashboardOverviewCardsTabletLayout()] else ...[_BuildDashboardOverviewCards(), const SizedBox(height: 24)],
-              if (!isPetShop) WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders) else _BuildDashboardAppointments(),
+              if (Responsive.isTablet(context) || Responsive.isMobile(context)) ...[
+                _BuildDashboardOverviewCardsTabletLayout(),
+              ] else ...[
+                _BuildDashboardOverviewCards(),
+                const SizedBox(height: 24),
+              ],
+              if (isPetShop) WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders) else _BuildDashboardAppointments(),
               const SizedBox(height: 24),
-              WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: lowStockProducts),
+              if (isPetShop) WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: lowStockProducts),
             ],
           );
         },
@@ -198,7 +201,10 @@ class _BuildDashboardAppointments extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WhiskrAdminDashboardTableSegmentAppointments(segmentTitle: 'Recent Appointments', appointments: appointments, priceTag: 'KM ');
+    return Selector<WaAppointmentsProvider, List<WaAppointmentsModel>>(
+      selector: (context, appointmentsProvider) => appointmentsProvider.lastAppointmentsList,
+      builder: (context, appointments, child) => WhiskrAdminDashboardTableSegmentAppointments(segmentTitle: 'Recent Appointments', appointments: appointments, priceTag: 'KM '),
+    );
   }
 }
 
@@ -239,72 +245,4 @@ List<RecentOrderModel> recentOrders = [
   RecentOrderModel(customerImg: '', name: 'Jane Doe', amount: 200, date: '2021-01-02', status: 'Delivered'),
   RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
   RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
-];
-
-List<AppointmentModel> appointments = [
-  AppointmentModel(
-    customerImg: '',
-    customer: 'John Doe',
-    petId: '123',
-    email: 'john@example.com',
-    phone: '1234567890',
-    address: '123 Main St, Anytown, USA',
-    items: [
-      AppointmentItemModel(name: 'Service 1', price: 100),
-      AppointmentItemModel(name: 'Service 22', price: 200),
-      AppointmentItemModel(name: 'Service 33', price: 300),
-      AppointmentItemModel(name: 'Service 44', price: 400),
-      AppointmentItemModel(name: 'Service 1', price: 100),
-      AppointmentItemModel(name: 'Service 22', price: 200),
-      AppointmentItemModel(name: 'Service 33', price: 300),
-      AppointmentItemModel(name: 'Service 44', price: 400),
-    ],
-    total: 1000,
-    date: DateTime.now(),
-    time: '10:00',
-    note: 'Note 1',
-    status: 'Confirmed',
-  ),
-  AppointmentModel(
-    customerImg: '',
-    customer: 'Jane Doe',
-    petId: '123',
-    email: 'jane@example.com',
-    phone: '1234567890',
-    address: '123 Main St, Anytown, USA',
-    items: [AppointmentItemModel(name: 'Service 2', price: 200)],
-    total: 200,
-    date: DateTime.now(),
-    time: '10:00',
-    note: 'Note 2',
-    status: 'Delivered',
-  ),
-  AppointmentModel(
-    customerImg: '',
-    customer: 'Jim Beam',
-    petId: '123',
-    email: 'jim@example.com',
-    phone: '1234567890',
-    address: '123 Main St, Anytown, USA',
-    items: [AppointmentItemModel(name: 'Service 3', price: 300)],
-    total: 300,
-    date: DateTime.now(),
-    time: '10:00',
-    note: 'Note 3',
-    status: 'Cancelled',
-  ),
-  AppointmentModel(
-    customerImg: '',
-    customer: 'Jim Beam',
-    petId: '123',
-    email: 'jim@example.com',
-    phone: '1234567890',
-    address: '123 Main St, Anytown, USA',
-    items: [AppointmentItemModel(name: 'Service 4', price: 400)],
-    total: 400,
-    date: DateTime.now(),
-    time: '10:00',
-    note: 'Note 4',
-    status: 'Cancelled',
-  ),
 ];
