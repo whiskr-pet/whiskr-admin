@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
@@ -107,7 +108,14 @@ class SettingsScreen extends StatelessWidget {
           content: Text(l10n.settingsLogoutConfirmBody),
           actions: <Widget>[
             TextButton(onPressed: () => Navigator.of(dialogContext).pop(false), child: Text(l10n.settingsCancel)),
-            FilledButton(onPressed: () => Navigator.of(dialogContext).pop(true), child: Text(l10n.settingsConfirm)),
+            FilledButton(
+              onPressed: () async {
+                await context.read<AuthenticationProvider>().userLogout().then((value) {
+                  if (context.mounted) context.go(loginRoute);
+                });
+              },
+              child: Text(l10n.settingsConfirm),
+            ),
           ],
         );
       },
