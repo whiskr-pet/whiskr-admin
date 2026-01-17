@@ -14,11 +14,13 @@ import 'package:wa_analytics_module/providers/wa_analytics_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:wa_inventory_services_module/providers/wa_services_providers/wa_services_provider.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
+import 'package:wa_onboarding_module/providers/wa_service_profile_provider.dart';
+import 'package:wa_orders_appointments_module/providers/appointments_providers/wa_appointments_provider.dart';
 import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/session_manager.dart';
 import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
-import 'package:whiskr_admin_panel/app/providers/theme_mode_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/texts_provider.dart';
+import 'package:whiskr_admin_panel/app/providers/theme_mode_provider.dart';
 import 'package:whiskr_admin_panel/app/theme/whiskr_themes.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
@@ -82,10 +84,12 @@ class WhiskrAdminApp extends StatelessWidget {
         ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
         ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
         ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
+        ChangeNotifierProvider<WAServiceProfileProvider>(create: (_) => WAServiceProfileProvider(), lazy: true),
         ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
         ChangeNotifierProvider<WAInventoryServicesProvider>(create: (_) => WAInventoryServicesProvider(), lazy: true),
         ChangeNotifierProvider<WAServicesProvider>(create: (_) => WAServicesProvider(), lazy: true),
         ChangeNotifierProvider<WaOrdersProvider>(create: (_) => WaOrdersProvider(), lazy: true),
+        ChangeNotifierProvider<WaAppointmentsProvider>(create: (_) => WaAppointmentsProvider(), lazy: true),
         ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
         ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
         ChangeNotifierProvider<ThemeModeProvider>(create: (_) => ThemeModeProvider(), lazy: true),

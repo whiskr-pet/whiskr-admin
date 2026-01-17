@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:w_dashboard/helpers/main_layout_menu_item.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
-import 'package:w_utils/services/service_type_service.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
@@ -19,7 +18,6 @@ class MainLayout extends StatefulWidget {
 
 class _MainLayoutState extends State<MainLayout> {
   final SideMenuController _sideMenuController = SideMenuController();
-  bool isTypeShop = false;
 
   List<MenuItem> _menuItems({required bool isTypeShop}) => [
     MenuItem(icon: Icons.dashboard, label: 'Dashboard', route: dashboardRoute),
@@ -48,10 +46,8 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   Future<void> _getInitialData() async {
-    final bool type = await ServiceTypeService.getServiceType();
-    setState(() {
-      isTypeShop = type;
-    });
+    final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
+    await dashboardProvider.fetchAndSetServiceType();
   }
 
   @override
@@ -62,23 +58,28 @@ class _MainLayoutState extends State<MainLayout> {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    return Scaffold(
-      appBar: _buildAppBar(context, mounted, _toggleSideMenu),
-      body: Row(
-        children: [
-          SideMenu(
-            controller: _sideMenuController,
-            mode: SideMenuMode.open,
-            hasResizer: false,
-            hasResizerToggle: false,
-            minWidth: 75,
-            maxWidth: 250,
-            backgroundColor: themeData.colorScheme.surface,
-            builder: (data) => SideMenuData(items: _buildMenuItems(isTypeShop)),
+    return Selector<DashboardProvider, bool>(
+      selector: (context, provider) => provider.isPetShop,
+      builder: (context, isPetShop, child) {
+        return Scaffold(
+          appBar: _buildAppBar(context, mounted, _toggleSideMenu),
+          body: Row(
+            children: [
+              SideMenu(
+                controller: _sideMenuController,
+                mode: SideMenuMode.open,
+                hasResizer: false,
+                hasResizerToggle: false,
+                minWidth: 75,
+                maxWidth: 250,
+                backgroundColor: themeData.colorScheme.surface,
+                builder: (data) => SideMenuData(items: _buildMenuItems(isPetShop)),
+              ),
+              Expanded(child: widget.child),
+            ],
           ),
-          Expanded(child: widget.child),
-        ],
-      ),
+        );
+      },
     );
   }
 
