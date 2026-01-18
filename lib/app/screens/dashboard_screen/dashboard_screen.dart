@@ -6,10 +6,14 @@ import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboar
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
 import 'package:w_components/wa_custom_overview_card/wa_custom_overview_card.dart';
-import 'package:w_dashboard/helpers/stock_status_type.dart';
+import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
+import 'package:w_dashboard/helpers/status_chip_type.dart';
 import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/color_helper/color_helper.dart';
+import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:w_utils/services/service_type_service.dart';
+import 'package:wa_inventory_services_module/providers/wa_inventory_providers/wa_inventory_services_provider.dart';
 import 'package:wa_onboarding_module/providers/wa_onboarding_provider.dart';
 import 'package:wa_orders_appointments_module/models/appointments_models/wa_appointments_model.dart';
 import 'package:wa_orders_appointments_module/providers/appointments_providers/wa_appointments_provider.dart';
@@ -17,6 +21,8 @@ import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orde
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
+
+import '../orders_and_appointments_screen/widgets/status_update_appointments_popup_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -37,10 +43,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _getInitialData() async {
     final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
     final WaOrdersProvider ordersProvider = context.read<WaOrdersProvider>();
+    final WAInventoryServicesProvider inventoryServicesProvider = context.read<WAInventoryServicesProvider>();
     final WaAppointmentsProvider appointmentsProvider = context.read<WaAppointmentsProvider>();
+    final WAOnboardingProvider onboardingProvider = context.read<WAOnboardingProvider>();
     dashboardProvider.setLoading(true);
-    await context.read<WAOnboardingProvider>().getServiceAdmin();
-    Future.wait([ordersProvider.getLastOrdersLimit(), appointmentsProvider.getLastAppointmentsLimit()]);
+    final bool isTypeShop = await ServiceTypeService.getServiceType();
+    dashboardProvider.setServiceType(isTypeShop);
+    await onboardingProvider.getServiceAdmin();
+    Future.wait([ordersProvider.getLastOrdersLimit(), appointmentsProvider.getLastAppointmentsLimit(), inventoryServicesProvider.getLowStockProducts()]);
     dashboardProvider.setLoading(false);
   }
 
@@ -102,9 +112,19 @@ class _BuildDashboardWelcome extends StatelessWidget {
                 _BuildDashboardOverviewCards(),
                 const SizedBox(height: 24),
               ],
-              if (isPetShop) WhiskrAdminDashboardTableSegment(segmentTitle: 'Recent Orders', priceTag: 'KM ', orders: recentOrders) else _BuildDashboardAppointments(),
+              if (isPetShop)
+                WhiskrAdminDashboardTableSegment(
+                  segmentTitle: 'Recent Orders',
+                  priceTag: 'KM ',
+                  orders: context.watch<WaOrdersProvider>().lastOrdersList,
+                  onRefresh: () async {
+                    await context.read<WaOrdersProvider>().getLastOrdersLimit();
+                  },
+                )
+              else
+                _BuildDashboardAppointments(),
               const SizedBox(height: 24),
-              if (isPetShop) WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: lowStockProducts),
+              if (isPetShop) WhiskrAdminDashboardStockTableSegment(segmentTitle: 'Low Stock Products', products: context.watch<WAInventoryServicesProvider>().lowStockProducts),
             ],
           );
         },
@@ -203,46 +223,41 @@ class _BuildDashboardAppointments extends StatelessWidget {
   Widget build(BuildContext context) {
     return Selector<WaAppointmentsProvider, List<WaAppointmentsModel>>(
       selector: (context, appointmentsProvider) => appointmentsProvider.lastAppointmentsList,
-      builder: (context, appointments, child) => WhiskrAdminDashboardTableSegmentAppointments(segmentTitle: 'Recent Appointments', appointments: appointments, priceTag: 'KM '),
+      builder: (context, appointments, child) => WhiskrAdminDashboardTableSegmentAppointments(
+        segmentTitle: 'Recent Appointments',
+        appointments: appointments,
+        priceTag: 'KM ',
+        onRefresh: () async => context.read<WaAppointmentsProvider>().getLastAppointmentsLimit(),
+        onStatusTap: (WaAppointmentsModel appointment) async {
+          await AppointmentStatusUpdatePopup.show(
+            context,
+            // Use the safe conversion method
+            currentStatus: AppointmentStatusTypeExtension.fromBackendString(appointment.status ?? ''),
+            appointmentId: appointment.id?.substring(0, 8) ?? '',
+            onStatusUpdate: (StatusChipType newStatus) async {
+              final WaAppointmentsProvider provider = context.read<WaAppointmentsProvider>();
+              provider.setSelectedAppointmentForUpdate(appointment);
+              provider.setStatusForUpdate(newStatus);
+
+              final ResponseModel<String> response = await provider.updateAppointmentStatus();
+
+              if (context.mounted) {
+                if (response.isSuccess) {
+                  await provider.getLastAppointmentsLimit();
+                  if (context.mounted) {
+                    WACustomSnackbar.instance.showSnack(
+                      context,
+                      'Appointment #${appointment.appointmentNumber} status updated to ${newStatus.toAppointmentType().title.toUpperCase()}',
+                    );
+                  }
+                } else {
+                  WACustomSnackbar.instance.showSnack(context, 'Failed to update status', type: .error);
+                }
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }
-
-// TODO: Remove this after BE connection
-List<LowStockProductModel> lowStockProducts = [
-  LowStockProductModel(
-    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/1000011769_8k55W-Lis.jpg?updatedAt=1728817523683',
-    name: 'Cat Food',
-    stock: 0,
-    category: 'Food',
-    status: LowStockProductStatus.outOfStock.title,
-  ),
-  LowStockProductModel(
-    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
-    name: 'Dog Food',
-    stock: 10,
-    category: 'Food',
-    status: LowStockProductStatus.lowStock.title,
-  ),
-  LowStockProductModel(
-    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
-    name: 'Dog Food',
-    stock: 10,
-    category: 'Food',
-    status: LowStockProductStatus.lowStock.title,
-  ),
-  LowStockProductModel(
-    image: 'https://ik.imagekit.io/petpals/pet-recipe-images/image_picker_637D0AF8-E5AB-4D47-82A5-923B6BB5C9A4-7340-00002CFE79C1C4EF_ugSLlVVbJ.jpg?updatedAt=1732786901469',
-    name: 'Dog Food',
-    stock: 10,
-    category: 'Food',
-    status: LowStockProductStatus.lowStock.title,
-  ),
-];
-
-List<RecentOrderModel> recentOrders = [
-  RecentOrderModel(customerImg: '', name: 'John Doe', amount: 100, date: '2021-01-01', status: 'Confirmed'),
-  RecentOrderModel(customerImg: '', name: 'Jane Doe', amount: 200, date: '2021-01-02', status: 'Delivered'),
-  RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
-  RecentOrderModel(customerImg: '', name: 'Jim Beam', amount: 300, date: '2021-01-03', status: 'Cancelled'),
-];
