@@ -400,7 +400,7 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
             // Appointment ID
             DataCell(
               Text(
-                appointment.id?.substring(0, 8) ?? '',
+                appointment.appointmentNumber ?? '',
                 style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: nameFontSize),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -411,9 +411,8 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
               Row(
                 spacing: 8,
                 children: [
-                  // todo replace with actual image url
                   _CustomerAvatarAppointment(
-                    imageUrl: '',
+                    imageUrl: appointment.userImage != null ? appointment.userImage!.url ?? '' : '',
                     customerName: appointment.customer ?? 'N/A',
                     radius: Responsive.value(context: context, mobile: 14.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0),
                   ),
@@ -503,10 +502,12 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
                       if (context.mounted) {
                         if (response.isSuccess) {
                           await provider.getAllAppointments();
-                          WACustomSnackbar.instance.showSnack(
-                            context,
-                            'Appointment #${appointment.id?.substring(0, 8)} status updated to ${newStatus.toAppointmentType().title.toUpperCase()}',
-                          );
+                          if (context.mounted) {
+                            WACustomSnackbar.instance.showSnack(
+                              context,
+                              'Appointment #${appointment.appointmentNumber} status updated to ${newStatus.toAppointmentType().title.toUpperCase()}',
+                            );
+                          }
                         } else {
                           WACustomSnackbar.instance.showSnack(context, 'Failed to update status', type: .error);
                         }
@@ -543,7 +544,7 @@ class _CustomerAvatarAppointment extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(colors: [colorScheme.primaryContainer, colorScheme.secondaryContainer], begin: Alignment.topLeft, end: Alignment.bottomRight),
-        boxShadow: [BoxShadow(color: colorScheme.primary.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 2))],
+        boxShadow: [BoxShadow(color: colorScheme.primary.withValues(alpha: 0.2), blurRadius: 8, offset: const Offset(0, 2))],
       ),
       child: CircleAvatar(
         radius: radius,
@@ -575,7 +576,7 @@ class _CustomerAvatarAppointment extends StatelessWidget {
       width: radius * 2,
       height: radius * 2,
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.8)], begin: Alignment.topLeft, end: Alignment.bottomRight),
       ),
       child: Center(
         child: Text(
