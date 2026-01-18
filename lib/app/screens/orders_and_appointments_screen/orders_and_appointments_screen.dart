@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:w_components/wa_custom_chip_widget/wa_chip_widget.dart';
 import 'package:w_components/wa_custom_snackbar/wa_custom_snackbar.dart';
 import 'package:w_dashboard/helpers/status_chip_type.dart';
-import 'package:w_dashboard/providers/dashboard_provider.dart';
 import 'package:w_utils/extensions/string_extensions.dart';
 import 'package:w_utils/models/response_model.dart';
 import 'package:w_utils/responsive_web/responsive_web_helper.dart';
+import 'package:w_utils/services/service_type_service.dart';
 import 'package:wa_orders_appointments_module/models/appointments_models/wa_appointments_model.dart';
 import 'package:wa_orders_appointments_module/models/orders_models/wa_orders_model.dart';
 import 'package:wa_orders_appointments_module/providers/appointments_providers/wa_appointments_provider.dart';
@@ -49,7 +49,7 @@ class _OrdersAndAppointmentsScreenState extends State<OrdersAndAppointmentsScree
   Future<void> _getInitialData() async {
     final WaOrdersProvider provider = context.read<WaOrdersProvider>();
     final WaAppointmentsProvider appointmentsProvider = context.read<WaAppointmentsProvider>();
-    final bool isTypeShop = context.read<DashboardProvider>().isPetShop;
+    final bool isTypeShop = await ServiceTypeService.getServiceType();
     setState(() {
       _isTypeShop = isTypeShop;
     });
@@ -238,7 +238,7 @@ class _WATable extends StatelessWidget {
 List<DataColumn> columns(BuildContext context) {
   return [
     DataColumn2(label: Text('Order number'), size: ColumnSize.S),
-    DataColumn2(label: Text('Name'), size: ColumnSize.S),
+    DataColumn2(label: Text('Name'), size: ColumnSize.M),
     DataColumn2(label: Text('Address'), size: ColumnSize.M),
     DataColumn2(label: Text('Date'), size: ColumnSize.S),
     DataColumn2(label: Text('Order Type'), size: ColumnSize.S),
@@ -270,11 +270,21 @@ List<DataRow> rows(BuildContext context, List<ServiceOrderModel> orders, Functio
             ),
             // Name
             DataCell(
-              Text(
-                '${order.user?.firstName ?? ''} ${order.user?.lastName}',
-                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+              Row(
+                spacing: 8,
+                children: [
+                  _CustomerAvatarAppointment(
+                    imageUrl: order.user?.image?.url ?? '',
+                    customerName: '${order.user?.firstName ?? ''} ${order.user?.lastName}',
+                    radius: Responsive.value(context: context, mobile: 14.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0),
+                  ),
+                  Text(
+                    '${order.user?.firstName ?? ''} ${order.user?.lastName}',
+                    style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
               ),
             ),
             // Address
@@ -368,7 +378,7 @@ class WAAppointmentsTable extends StatelessWidget {
 List<DataColumn> appointmentsColumns(BuildContext context) {
   return [
     DataColumn2(label: Text('Appointment ID'), size: ColumnSize.S),
-    DataColumn2(label: Text('Customer'), size: ColumnSize.S),
+    DataColumn2(label: Text('Customer'), size: ColumnSize.M),
     DataColumn2(label: Text('Order Created'), size: ColumnSize.S),
     DataColumn2(label: Text('Contact'), size: ColumnSize.M),
     DataColumn2(label: Text('Scheduled Date & Time'), size: ColumnSize.M),
@@ -398,11 +408,23 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
             ),
             // Customer Name
             DataCell(
-              Text(
-                appointment.customer ?? 'N/A',
-                style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+              Row(
+                spacing: 8,
+                children: [
+                  // todo replace with actual image url
+                  _CustomerAvatarAppointment(
+                    imageUrl: '',
+                    customerName: appointment.customer ?? 'N/A',
+                    radius: Responsive.value(context: context, mobile: 14.0, tablet: 16.0, desktop: 18.0, widescreen: 20.0),
+                  ),
+
+                  Text(
+                    appointment.customer ?? 'N/A',
+                    style: theme.textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.w500, fontSize: amountFontSize),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
               ),
             ),
             DataCell(
@@ -504,6 +526,94 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
         ),
       )
       .toList();
+}
+
+class _CustomerAvatarAppointment extends StatelessWidget {
+  const _CustomerAvatarAppointment({required this.imageUrl, required this.customerName, this.radius = 24});
+
+  final String imageUrl;
+  final String customerName;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(colors: [colorScheme.primaryContainer, colorScheme.secondaryContainer], begin: Alignment.topLeft, end: Alignment.bottomRight),
+        boxShadow: [BoxShadow(color: colorScheme.primary.withOpacity(0.2), blurRadius: 8, offset: const Offset(0, 2))],
+      ),
+      child: CircleAvatar(
+        radius: radius,
+        backgroundColor: Colors.transparent,
+        child: ClipOval(
+          child: imageUrl.isNotEmpty
+              ? Image.network(
+                  imageUrl,
+                  width: radius * 2,
+                  height: radius * 2,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return _buildInitials(context);
+                  },
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return _buildLoadingIndicator(context);
+                  },
+                )
+              : _buildInitials(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInitials(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+      ),
+      child: Center(
+        child: Text(
+          _getInitials(customerName),
+          style: TextStyle(color: colorScheme.onPrimary, fontSize: radius * 0.7, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingIndicator(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: radius * 2,
+      height: radius * 2,
+      color: colorScheme.surfaceContainerHighest,
+      child: Center(
+        child: SizedBox(
+          width: radius,
+          height: radius,
+          child: CircularProgressIndicator(strokeWidth: 2, color: colorScheme.primary),
+        ),
+      ),
+    );
+  }
+
+  String _getInitials(String name) {
+    final names = name.trim().split(' ');
+    final initials = StringBuffer();
+
+    for (var i = 0; i < names.length && i < 2; i++) {
+      if (names[i].isNotEmpty) {
+        initials.write(names[i][0].toUpperCase());
+      }
+    }
+
+    return initials.isEmpty ? '?' : initials.toString();
+  }
 }
 
 class _BuildPaginationControls extends StatelessWidget {

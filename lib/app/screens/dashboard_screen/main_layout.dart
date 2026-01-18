@@ -47,7 +47,15 @@ class _MainLayoutState extends State<MainLayout> {
 
   Future<void> _getInitialData() async {
     final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
+    final WAOnboardingProvider onboardingProvider = context.read<WAOnboardingProvider>();
+
     await dashboardProvider.fetchAndSetServiceType();
+
+    await onboardingProvider.getServiceAdmin();
+
+    await dashboardProvider.fetchAndSetServiceType();
+
+    setState(() {});
   }
 
   @override
