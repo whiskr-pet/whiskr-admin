@@ -15,8 +15,10 @@ import 'package:wa_orders_appointments_module/providers/appointments_providers/w
 import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
 import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_search_provider.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/appointment_status_chip.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/appointments_details_sheet.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/appointments_filters.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/order_type_chip_widget.dart';
+import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/orders_details_sheet.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/orders_filters.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/schedule_type_chip_widget.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/widgets/status_update_appointments_popup_widget.dart';
@@ -229,6 +231,7 @@ class _WATable extends StatelessWidget {
         fixedTopRows: 1,
         columns: columns,
         rows: rows,
+        showCheckboxColumn: false,
         empty: Center(child: Text('No ${isTypeShop ? "orders" : "appointments"}')),
       ),
     );
@@ -258,6 +261,10 @@ List<DataRow> rows(BuildContext context, List<ServiceOrderModel> orders, Functio
   return orders
       .map(
         (ServiceOrderModel order) => DataRow(
+          onSelectChanged: (_) {
+            context.read<WaOrdersProvider>().setOrderDetails(order);
+            showOrderDetailsSheet(context);
+          },
           cells: [
             // Order number
             DataCell(
@@ -396,6 +403,10 @@ List<DataRow> appointmentRows(BuildContext context, List<WaAppointmentsModel> ap
   return appointments
       .map(
         (WaAppointmentsModel appointment) => DataRow(
+          onSelectChanged: (_) {
+            context.read<WaAppointmentsProvider>().setAppointmentDetails(appointment);
+            showAppointmentDetailsSheet(context);
+          },
           cells: [
             // Appointment ID
             DataCell(
