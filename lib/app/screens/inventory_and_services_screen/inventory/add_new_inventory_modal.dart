@@ -70,14 +70,12 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
             decoration: BoxDecoration(
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(24),
-              boxShadow: <BoxShadow>[
-                BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.18), blurRadius: 40, offset: const Offset(0, 20)),
-              ],
+              boxShadow: <BoxShadow>[BoxShadow(color: themeData.shadowColor.withValues(alpha: 0.18), blurRadius: 40, offset: const Offset(0, 20))],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const ModalHeader(),
+                ModalHeader(isEditMode: widget.isEditMode),
                 Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.all(32),
@@ -201,7 +199,9 @@ class _AddInventoryModalState extends State<AddInventoryModal> with SingleTicker
 }
 
 class ModalHeader extends StatelessWidget {
-  const ModalHeader({super.key});
+  const ModalHeader({super.key, this.isEditMode = false});
+
+  final bool isEditMode;
 
   @override
   Widget build(BuildContext context) {
@@ -222,7 +222,7 @@ class ModalHeader extends StatelessWidget {
             child: Icon(Icons.add_shopping_cart, color: colorScheme.onPrimary, size: 28),
           ),
           const SizedBox(width: 16),
-          Text(texts.inventoryAddProductButton, style: themeData.textTheme.bodyLarge!.copyWith(fontSize: 24, color: colorScheme.onPrimary)),
+          Text(isEditMode ? 'Edit product' : texts.inventoryAddProductButton, style: themeData.textTheme.bodyLarge!.copyWith(fontSize: 24, color: colorScheme.onPrimary)),
         ],
       ),
     );

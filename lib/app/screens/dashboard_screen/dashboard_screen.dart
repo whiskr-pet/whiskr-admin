@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:w_authentication/providers/authentication_provider.dart';
 import 'package:w_components/wa_custom_dashboard_appointments/wa_custom_dashboard_appointments.dart';
 import 'package:w_components/wa_custom_dashboard_orders/wa_custom_dashboard_orders.dart';
 import 'package:w_components/wa_custom_dashboard_stock/wa_custom_dashboard_low_stock_products.dart';
@@ -20,7 +18,6 @@ import 'package:wa_orders_appointments_module/providers/appointments_providers/w
 import 'package:wa_orders_appointments_module/providers/orders_providers/wa_orders_provider.dart';
 import 'package:whiskr_admin_panel/app/helpers/dashboard_view_helper.dart';
 import 'package:whiskr_admin_panel/app/helpers/loading_animation_helper.dart';
-import 'package:whiskr_admin_panel/routing/routes.dart';
 
 import '../orders_and_appointments_screen/widgets/status_update_appointments_popup_widget.dart';
 
@@ -94,14 +91,6 @@ class _BuildDashboardWelcome extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 24),
-              TextButton(
-                onPressed: () async {
-                  await context.read<AuthenticationProvider>().userLogout().then((value) {
-                    if (context.mounted) context.go(loginRoute);
-                  });
-                },
-                child: Text('logout'),
-              ),
               _BuildDashboardQuickActions(isPetShop: isPetShop),
               const SizedBox(height: 24),
               Text('Overview', style: theme.textTheme.headlineMedium),
@@ -205,7 +194,7 @@ class _BuildDashboardQuickActions extends StatelessWidget {
       spacing: 8,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: dashboardViewHelper
-          .dashboardOverviewHelperModels(isPetShop)
+          .dashboardOverviewHelperModels(isPetShop, context)
           .map(
             (model) => Expanded(
               child: ElevatedButton.icon(onPressed: model.onPressed, icon: Icon(model.icon), label: Text(model.title)),
