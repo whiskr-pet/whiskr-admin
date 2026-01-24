@@ -4,7 +4,7 @@ import 'config/flavor_config.dart';
 import 'main_common.dart';
 
 void main() async {
-  await initializeApp(flavor: Flavor.PRODUCTION, appName: 'Whiskr Admin (PRODUCTION)', env: 'prod', dotEnvFile: '.env.prod');
+  await initializeApp(flavor: Flavor.PRODUCTION, appName: 'Whiskr Admin (PRODUCTION)', env: 'prod', dotEnvFile: 'dotenv.prod');
 
   runApp(const WhiskrAdminApp());
 }
