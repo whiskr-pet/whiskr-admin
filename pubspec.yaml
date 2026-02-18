@@ -25,6 +25,7 @@ dependencies:
   provider: ^6.1.1  
   flutter_dotenv: ^5.1.0
   flutter_svg: ^2.0.9
+  intl: ^0.20.2
   cached_network_image: ^3.3.0
   image_picker: ^1.0.4
   shared_preferences: ^2.2.2
@@ -36,6 +37,7 @@ dependencies:
   go_router: ^16.2.4
   data_table_2: ^2.6.0
   flutter_side_menu: ^0.5.41
+  syncfusion_flutter_calendar: ^29.2.11+1
   lottie: ^3.3.1
   fl_chart: ^0.69.2
   latlong2: ^0.9.1
@@ -130,6 +132,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 dependency_overrides:
+  timezone: ^0.10.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

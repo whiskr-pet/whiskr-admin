@@ -21,15 +21,30 @@ class _MainLayoutState extends State<MainLayout> {
 
   List<MenuItem> _menuItems({required bool isTypeShop}) => [
     MenuItem(icon: Icons.dashboard, label: 'Dashboard', route: dashboardRoute),
-    MenuItem(icon: Icons.analytics, label: isTypeShop ? 'Inventory' : 'Services', route: inventoryRoute),
-    MenuItem(icon: Icons.folder, label: isTypeShop ? 'Orders' : 'Appointments', route: ordersRoute),
+    MenuItem(
+      icon: Icons.analytics,
+      label: isTypeShop ? 'Inventory' : 'Services',
+      route: inventoryRoute,
+    ),
+    MenuItem(
+      icon: Icons.folder,
+      label: isTypeShop ? 'Orders' : 'Appointments',
+      route: ordersRoute,
+    ),
+    MenuItem(
+      icon: Icons.calendar_month,
+      label: 'Calendar',
+      route: calendarRoute,
+    ),
     MenuItem(icon: Icons.people, label: 'Analytics', route: analyticsRoute),
     MenuItem(icon: Icons.settings, label: 'Settings', route: settingsRoute),
   ];
 
   void _toggleSideMenu() {
     context.read<DashboardProvider>().toggleSideMenu();
-    final bool isSideMenuOpen = context.read<DashboardProvider>().isSideMenuOpen;
+    final bool isSideMenuOpen = context
+        .read<DashboardProvider>()
+        .isSideMenuOpen;
     if (isSideMenuOpen) {
       _sideMenuController.open();
     } else {
@@ -46,8 +61,10 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   Future<void> _getInitialData() async {
-    final DashboardProvider dashboardProvider = context.read<DashboardProvider>();
-    final WAOnboardingProvider onboardingProvider = context.read<WAOnboardingProvider>();
+    final DashboardProvider dashboardProvider = context
+        .read<DashboardProvider>();
+    final WAOnboardingProvider onboardingProvider = context
+        .read<WAOnboardingProvider>();
 
     await dashboardProvider.fetchAndSetServiceType();
 
@@ -81,7 +98,8 @@ class _MainLayoutState extends State<MainLayout> {
                 minWidth: 75,
                 maxWidth: 250,
                 backgroundColor: themeData.colorScheme.surface,
-                builder: (data) => SideMenuData(items: _buildMenuItems(isPetShop)),
+                builder: (data) =>
+                    SideMenuData(items: _buildMenuItems(isPetShop)),
               ),
               Expanded(child: widget.child),
             ],
@@ -96,7 +114,9 @@ class _MainLayoutState extends State<MainLayout> {
       final index = entry.key;
       final item = entry.value;
       final String route = item.route;
-      final isSelected = context.read<DashboardProvider>().isSelectedIndexEqualTo(index);
+      final isSelected = context
+          .read<DashboardProvider>()
+          .isSelectedIndexEqualTo(index);
       final ThemeData themeData = Theme.of(context);
       final ColorScheme colorScheme = themeData.colorScheme;
       return SideMenuItemDataTile(
@@ -107,8 +127,15 @@ class _MainLayoutState extends State<MainLayout> {
         },
         title: item.label,
         titleStyle: themeData.textTheme.bodyMedium,
-        selectedTitleStyle: themeData.textTheme.bodyMedium!.copyWith(color: colorScheme.onPrimary, fontWeight: FontWeight.bold),
-        icon: Icon(item.icon, color: isSelected ? colorScheme.onPrimary : colorScheme.primary, size: 20),
+        selectedTitleStyle: themeData.textTheme.bodyMedium!.copyWith(
+          color: colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
+        ),
+        icon: Icon(
+          item.icon,
+          color: isSelected ? colorScheme.onPrimary : colorScheme.primary,
+          size: 20,
+        ),
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         hoverColor: colorScheme.primary.withValues(alpha: 0.55),
         hasSelectedLine: false,
@@ -118,7 +145,11 @@ class _MainLayoutState extends State<MainLayout> {
   }
 }
 
-PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallback onMenuToggle) {
+PreferredSizeWidget _buildAppBar(
+  BuildContext context,
+  bool mounted,
+  VoidCallback onMenuToggle,
+) {
   final ThemeData themeData = Theme.of(context);
   final ColorScheme colorScheme = themeData.colorScheme;
   return AppBar(
@@ -128,7 +159,12 @@ PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallbac
       children: [
         const SizedBox(width: 10),
         IconButton(
-          icon: Icon(context.watch<DashboardProvider>().isSideMenuOpen ? Icons.menu_open : Icons.menu, color: colorScheme.primary),
+          icon: Icon(
+            context.watch<DashboardProvider>().isSideMenuOpen
+                ? Icons.menu_open
+                : Icons.menu,
+            color: colorScheme.primary,
+          ),
           onPressed: onMenuToggle,
           tooltip: 'Toggle Menu',
         ),
@@ -137,7 +173,11 @@ PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallbac
           width: 40,
           height: 40,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-          child: Image.asset('assets/images/appicon.png', width: 40, height: 40),
+          child: Image.asset(
+            'assets/images/appicon.png',
+            width: 40,
+            height: 40,
+          ),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -149,7 +189,13 @@ PreferredSizeWidget _buildAppBar(BuildContext context, bool mounted, VoidCallbac
         ),
       ],
     ),
-    leadingWidth: Responsive.value(context: context, mobile: 250, tablet: 250, desktop: 250, widescreen: 250),
+    leadingWidth: Responsive.value(
+      context: context,
+      mobile: 250,
+      tablet: 250,
+      desktop: 250,
+      widescreen: 250,
+    ),
     actions: [_BuildActionProfile()],
   );
 }
@@ -163,14 +209,27 @@ class _BuildActionProfile extends StatelessWidget {
     return Consumer<WAOnboardingProvider>(
       builder: (context, provider, _) => Row(
         children: [
-          CircleAvatar(radius: 18, backgroundImage: NetworkImage(provider.serviceAdminData.serviceProfileImage?.url ?? '')),
+          CircleAvatar(
+            radius: 18,
+            backgroundImage: NetworkImage(
+              provider.serviceAdminData.serviceProfileImage?.url ?? '',
+            ),
+          ),
           const SizedBox(width: 8),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(provider.serviceAdminData.contact?.email ?? '', style: themeData.textTheme.bodyMedium),
-              Text('Admin', style: themeData.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+              Text(
+                provider.serviceAdminData.contact?.email ?? '',
+                style: themeData.textTheme.bodyMedium,
+              ),
+              Text(
+                'Admin',
+                style: themeData.textTheme.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
           const SizedBox(width: 30),
