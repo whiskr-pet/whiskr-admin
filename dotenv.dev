@@ -1,4 +1,0 @@
-FLAVOR=dev
-BASE_URL=https://pet-pals-backend.onrender.com/
-APP_NAME='Whiskr Admin (DEV)'
-ENV=dev
