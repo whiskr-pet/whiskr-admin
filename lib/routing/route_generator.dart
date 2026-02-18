@@ -12,6 +12,7 @@ import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_intr
 import 'package:whiskr_admin_panel/app/screens/onboarding_screen/onboarding_summary_screen/onboarding_summary_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/orders_and_appointments_screen/orders_and_appointments_screen.dart';
 import 'package:whiskr_admin_panel/app/screens/splash_screen/splash_screen.dart';
+import 'package:whiskr_admin_panel/features/calendar/calendar_screen.dart';
 import 'package:whiskr_admin_panel/routing/routes.dart';
 
 import '../app/screens/analytics_screen/analytics_screen.dart';
@@ -24,7 +25,8 @@ class RouteGenerator {
   late final GoRouter _router = GoRouter(
     initialLocation: splashRoute,
     navigatorKey: locator<NavigationService>().navigationKey,
-    redirect: (BuildContext context, GoRouterState state) async => RouterUtils.redirect(context, state),
+    redirect: (BuildContext context, GoRouterState state) async =>
+        RouterUtils.redirect(context, state),
     routes: <RouteBase>[
       // Shell route wraps all authenticated admin routes with MainLayout
       ShellRoute(
@@ -54,6 +56,13 @@ class RouteGenerator {
             },
           ),
           GoRoute(
+            path: calendarRoute,
+            name: 'calendar',
+            builder: (BuildContext context, GoRouterState state) {
+              return const CalendarScreen();
+            },
+          ),
+          GoRoute(
             path: analyticsRoute,
             name: 'analytics',
             builder: (BuildContext context, GoRouterState state) {
@@ -64,7 +73,9 @@ class RouteGenerator {
             path: usersRoute,
             name: 'users',
             builder: (BuildContext context, GoRouterState state) {
-              return const Scaffold(body: Center(child: Text('Users Management - Coming Soon')));
+              return const Scaffold(
+                body: Center(child: Text('Users Management - Coming Soon')),
+              );
             },
           ),
           GoRoute(

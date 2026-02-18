@@ -62,4 +62,4 @@ lib/l10n/
 coverage/
 
 # DevTools
-devtools_options.yaml
+devtools_options.yamldotenv.*

@@ -183,23 +183,28 @@ class _BuildDashboardOverviewCards extends StatelessWidget {
 }
 
 class _BuildDashboardQuickActions extends StatelessWidget {
-  _BuildDashboardQuickActions({this.isPetShop = false});
+  const _BuildDashboardQuickActions({required this.isPetShop});
 
   final bool isPetShop;
-  final DashboardViewHelper dashboardViewHelper = DashboardViewHelper();
 
   @override
   Widget build(BuildContext context) {
     return Row(
       spacing: 8,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: dashboardViewHelper
-          .dashboardOverviewHelperModels(isPetShop, context)
+      children: DashboardViewHelper.getDashboardOverviewModels(
+        isPetShop ? DashboardType.petShop : DashboardType.serviceProvider,
+        context,
+      )
           .map(
             (model) => Expanded(
-              child: ElevatedButton.icon(onPressed: model.onPressed, icon: Icon(model.icon), label: Text(model.title)),
-            ),
-          )
+          child: ElevatedButton.icon(
+            onPressed: model.onPressed,
+            icon: Icon(model.icon),
+            label: Text(model.title),
+          ),
+        ),
+      )
           .toList(),
     );
   }
@@ -240,7 +245,7 @@ class _BuildDashboardAppointments extends StatelessWidget {
                     );
                   }
                 } else {
-                  WACustomSnackbar.instance.showSnack(context, 'Failed to update status', type: .error);
+                  WACustomSnackbar.instance.showSnack(context, 'Failed to update status', type: WACustomSnackbarType.error);
                 }
               }
             },

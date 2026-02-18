@@ -3,6 +3,7 @@ const String loginRoute = '/login';
 const String dashboardRoute = '/dashboard';
 const String inventoryRoute = '/inventory';
 const String ordersRoute = '/orders';
+const String calendarRoute = '/calendar';
 const String servicesRoute = '/services';
 const String analyticsRoute = '/analytics';
 const String usersRoute = '/users';
