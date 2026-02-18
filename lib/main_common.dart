@@ -22,13 +22,19 @@ import 'package:whiskr_admin_panel/app/providers/locale_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/texts_provider.dart';
 import 'package:whiskr_admin_panel/app/providers/theme_mode_provider.dart';
 import 'package:whiskr_admin_panel/app/theme/whiskr_themes.dart';
+import 'package:whiskr_admin_panel/features/calendar/calendar_provider.dart';
 import 'package:whiskr_admin_panel/routing/route_generator.dart';
 
 import 'config/flavor_config.dart';
 import 'l10n/app_localizations.dart';
 import 'localization_models/localization_models.dart';
 
-Future<void> initializeApp({required Flavor flavor, required String appName, required String env, required String dotEnvFile}) async {
+Future<void> initializeApp({
+  required Flavor flavor,
+  required String appName,
+  required String env,
+  required String dotEnvFile,
+}) async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: dotEnvFile);
@@ -36,7 +42,8 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   // Get environment variables from .env file
   final String baseUrl = dotenv.env['BASE_URL'] ?? 'DEVTEST';
   final String flavorString = dotenv.env['FLAVOR'] ?? 'dev';
-  final String mapboxAccessToken = dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? 'NOTOKEN';
+  final String mapboxAccessToken =
+      dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? 'NOTOKEN';
 
   debugPrint('🔗 Environment Variables Loaded:');
   debugPrint('  BASE_URL: $baseUrl');
@@ -48,7 +55,12 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
   // Initialize FlavorConfig
   FlavorConfig(
     flavor: flavor,
-    values: FlavorValues(baseUrl: baseUrl, appName: appName, env: env, mapboxAccessToken: mapboxAccessToken),
+    values: FlavorValues(
+      baseUrl: baseUrl,
+      appName: appName,
+      env: env,
+      mapboxAccessToken: mapboxAccessToken,
+    ),
   );
 
   await storagePrefs.init();
@@ -59,7 +71,9 @@ Future<void> initializeApp({required Flavor flavor, required String appName, req
       baseUrl: baseUrl,
       aiServiceBaseUrl: '',
       openWeatherBaseUrl: '',
-      refreshPath: ApiPathHelperAuthentication.getValue(ApiPathAuthentication.refreshToken),
+      refreshPath: ApiPathHelperAuthentication.getValue(
+        ApiPathAuthentication.refreshToken,
+      ),
       autoAttachAuthHeader: true,
       defaultAccessTtl: const Duration(minutes: 30),
       defaultRefreshTtl: const Duration(days: 7),
@@ -80,49 +94,99 @@ class WhiskrAdminApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<CustomThemeProvider>(create: (_) => CustomThemeProvider(), lazy: true),
-        ChangeNotifierProvider<AuthenticationProvider>(create: (_) => AuthenticationProvider(), lazy: true),
-        ChangeNotifierProvider<DashboardProvider>(create: (_) => DashboardProvider(), lazy: true),
-        ChangeNotifierProvider<WAOnboardingProvider>(create: (_) => WAOnboardingProvider(), lazy: true),
-        ChangeNotifierProvider<WAServiceProfileProvider>(create: (_) => WAServiceProfileProvider(), lazy: true),
-        ChangeNotifierProvider<ImageHandleProvider>(create: (_) => ImageHandleProvider(), lazy: true),
-        ChangeNotifierProvider<WAInventoryServicesProvider>(create: (_) => WAInventoryServicesProvider(), lazy: true),
-        ChangeNotifierProvider<WAServicesProvider>(create: (_) => WAServicesProvider(), lazy: true),
-        ChangeNotifierProvider<WaOrdersProvider>(create: (_) => WaOrdersProvider(), lazy: true),
-        ChangeNotifierProvider<WaAppointmentsProvider>(create: (_) => WaAppointmentsProvider(), lazy: true),
-        ChangeNotifierProvider<WAAnalyticsProvider>(create: (_) => WAAnalyticsProvider(), lazy: true),
-        ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider(), lazy: true),
-        ChangeNotifierProvider<ThemeModeProvider>(create: (_) => ThemeModeProvider(), lazy: true),
+        ChangeNotifierProvider<CustomThemeProvider>(
+          create: (_) => CustomThemeProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<AuthenticationProvider>(
+          create: (_) => AuthenticationProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<DashboardProvider>(
+          create: (_) => DashboardProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WAOnboardingProvider>(
+          create: (_) => WAOnboardingProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WAServiceProfileProvider>(
+          create: (_) => WAServiceProfileProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<ImageHandleProvider>(
+          create: (_) => ImageHandleProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WAInventoryServicesProvider>(
+          create: (_) => WAInventoryServicesProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WAServicesProvider>(
+          create: (_) => WAServicesProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WaOrdersProvider>(
+          create: (_) => WaOrdersProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WaAppointmentsProvider>(
+          create: (_) => WaAppointmentsProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<WAAnalyticsProvider>(
+          create: (_) => WAAnalyticsProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<CalendarProvider>(
+          create: (_) => CalendarProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<LocaleProvider>(
+          create: (_) => LocaleProvider(),
+          lazy: true,
+        ),
+        ChangeNotifierProvider<ThemeModeProvider>(
+          create: (_) => ThemeModeProvider(),
+          lazy: true,
+        ),
       ],
       child: Consumer3<CustomThemeProvider, LocaleProvider, ThemeModeProvider>(
-        builder: (BuildContext context, CustomThemeProvider customThemeProvider, LocaleProvider localeProvider, ThemeModeProvider themeModeProvider, Widget? child) {
-          return MaterialApp.router(
-            title: config.values.appName,
-            debugShowCheckedModeBanner: false,
-            routerConfig: routeGenerator.router,
-            theme: WhiskrThemes.lightTheme(),
-            darkTheme: WhiskrThemes.darkTheme(),
-            themeMode: themeModeProvider.themeMode,
-            locale: localeProvider.locale,
-            supportedLocales: AppLocalizations.supportedLocales,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
+        builder:
+            (
+              BuildContext context,
+              CustomThemeProvider customThemeProvider,
+              LocaleProvider localeProvider,
+              ThemeModeProvider themeModeProvider,
+              Widget? child,
+            ) {
+              return MaterialApp.router(
+                title: config.values.appName,
+                debugShowCheckedModeBanner: false,
+                routerConfig: routeGenerator.router,
+                theme: WhiskrThemes.lightTheme(),
+                darkTheme: WhiskrThemes.darkTheme(),
+                themeMode: themeModeProvider.themeMode,
+                locale: localeProvider.locale,
+                supportedLocales: AppLocalizations.supportedLocales,
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
 
-            builder: (BuildContext context, Widget? child) {
-              return TextsProvider(
-                loginTexts: LoginTexts(context),
-                onboardingTexts: OnboardingTexts(context),
-                inventoryTexts: InventoryTexts(context),
-                serviceOfferedText: ServiceOfferedText(context),
-                child: child!,
+                builder: (BuildContext context, Widget? child) {
+                  return TextsProvider(
+                    loginTexts: LoginTexts(context),
+                    onboardingTexts: OnboardingTexts(context),
+                    inventoryTexts: InventoryTexts(context),
+                    serviceOfferedText: ServiceOfferedText(context),
+                    child: child!,
+                  );
+                },
               );
             },
-          );
-        },
       ),
     );
   }
