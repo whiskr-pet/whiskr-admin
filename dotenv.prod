@@ -1,0 +1,5 @@
+#FLAVOR=prod
+#BASE_URL=https://pet-pals-backend.onrender.com/
+#MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiZGFuaXM5NiIsImEiOiJjbTMzYmU3cDMxZ245MmtzaGRxczlwa2syIn0.QXGFcbCmIv0EKU5dsmDK5g
+#APP_NAME='Whiskr Admin (PROD)'
+#ENV=prod

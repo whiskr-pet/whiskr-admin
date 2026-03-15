@@ -7,7 +7,7 @@ class OnboardingHelper {
   List<TitleSummaryValue> generalInfoRow(WAOnboardingProvider provider) => [
     TitleSummaryValue('Phone', provider.phoneController.text),
     TitleSummaryValue('Email', provider.emailController.text),
-    TitleSummaryValue('Website', provider.websiteController.text),
+    TitleSummaryValue('Website', provider.websiteController.text)
   ];
 
   List<TitleSummaryValue> locationInfoRow(WAOnboardingProvider provider) => [
